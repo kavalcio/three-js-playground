@@ -12,19 +12,19 @@ const POLYGON_COUNT = 2;
 const SPEED = 0.8;
 const UNIFORM_COLOR = false;
 
-let polygons = [];
+const init = (root) => {
+  let polygons = [];
 
-let params = {
-  echoCount: ECHO_COUNT,
-  vertexCount: VERTEX_COUNT,
-  polygonCount: POLYGON_COUNT,
-  speed: SPEED,
-  uniformColor: UNIFORM_COLOR,
-};
+  let params = {
+    echoCount: ECHO_COUNT,
+    vertexCount: VERTEX_COUNT,
+    polygonCount: POLYGON_COUNT,
+    speed: SPEED,
+    uniformColor: UNIFORM_COLOR,
+  };
 
-let paramsToApply = { ...params };
+  let paramsToApply = { ...params };
 
-export const mystify = (root) => {
   const { scene, renderer, camera, gui, stats } = initializeScene({ root });
 
   camera.position.z = 70;
@@ -173,4 +173,8 @@ export const mystify = (root) => {
   }
 
   animate();
+};
+
+export default {
+  init,
 };

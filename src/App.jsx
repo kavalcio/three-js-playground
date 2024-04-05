@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 
 import { Home, Template } from '@/pages';
-import { mystify } from 'src/demos';
+import { ROUTES } from 'src/utils/routes';
 
 const router = createBrowserRouter([
   {
@@ -13,10 +13,10 @@ const router = createBrowserRouter([
         path: '/',
         element: <Home />,
       },
-      {
-        path: '/mystify',
-        element: <Template initializer={mystify} />,
-      },
+      ...ROUTES.map((route) => ({
+        path: route.path,
+        element: <Template demo={route.component} />,
+      })),
     ],
   },
 ]);

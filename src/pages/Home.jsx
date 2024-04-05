@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { ROUTES } from 'src/utils/routes';
 
 export const Home = () => {
   return (
@@ -12,8 +13,12 @@ export const Home = () => {
         padding: 15,
       }}
     >
-      Root
-      <Link to="/mystify">Mystify</Link>
+      Demos
+      {ROUTES.map((route) => (
+        <Link key={route.path} to={route.path}>
+          {route.title}
+        </Link>
+      ))}
     </div>
   );
 };
