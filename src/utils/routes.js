@@ -5,6 +5,9 @@ import {
   inkblot,
   dice,
   dither,
+  galaxy,
+  vertexSnapping,
+  refraction,
 } from '@/demos';
 
 export const ROUTES = [
@@ -37,5 +40,20 @@ export const ROUTES = [
     path: '/dither',
     title: 'Dither',
     component: dither,
+  },
+  {
+    path: '/galaxy',
+    title: 'Galaxy',
+    component: galaxy,
+  },
+  {
+    path: '/vertex-snapping',
+    title: 'Vertex Snapping',
+    component: vertexSnapping,
+  },
+  {
+    path: '/refraction',
+    title: 'Refraction',
+    component: refraction,
   },
 ];

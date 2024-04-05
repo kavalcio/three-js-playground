@@ -4,3 +4,6 @@ export { default as postprocessing } from './postprocessing';
 export { default as inkblot } from './inkblot';
 export { default as dice } from './dice';
 export { default as dither } from './dither';
+export { default as galaxy } from './galaxy';
+export { default as vertexSnapping } from './vertexSnapping';
+export { default as refraction } from './refraction';
