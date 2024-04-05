@@ -1,4 +1,4 @@
-import { fractalBranches, mystify } from '@/demos';
+import { fractalBranches, mystify, ragingSea } from '@/demos';
 
 export const ROUTES = [
   {
@@ -10,5 +10,10 @@ export const ROUTES = [
     path: '/fractal-branches',
     title: 'Fractal Branches',
     component: fractalBranches,
+  },
+  {
+    path: '/raging-sea',
+    title: 'Raging Sea',
+    component: ragingSea,
   },
 ];

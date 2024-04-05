@@ -19,6 +19,7 @@
       "@/constants": ["src/constants/index.ts"],
       "@/pages": ["src/pages/index.ts"],
       "@/utils": ["src/utils/index.ts"],
+      "@/demos": ["src/demos/index.ts"],
     },
     "types": ["vite/client"]
   },

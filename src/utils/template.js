@@ -19,8 +19,7 @@ export const initializeScene = ({ root, antialias = true } = {}) => {
   // Create renderer
   const renderer = new THREE.WebGLRenderer({ antialias });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  // const controls = new OrbitControls(camera, renderer.domElement);
-  // document.body.appendChild(renderer.domElement);
+  const controls = new OrbitControls(camera, renderer.domElement);
   root.appendChild(renderer.domElement);
 
   function onWindowResize() {
@@ -49,7 +48,7 @@ export const initializeScene = ({ root, antialias = true } = {}) => {
     scene,
     renderer,
     camera,
-    // controls,
+    controls,
     gui,
     stats,
   };
