@@ -38,7 +38,7 @@ export const initializeScene = ({ root, antialias = true } = {}) => {
   window.addEventListener('resize', onWindowResize, false);
 
   // Create GUI
-  const gui = new GUI();
+  const gui = new GUI({ container: root });
 
   const stats = new Stats();
   stats.showPanel(0);

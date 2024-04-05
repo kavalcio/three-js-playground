@@ -57,3 +57,11 @@ button:focus-visible {
   margin: 0 auto;
   text-align: center;
 }
+
+.lil-gui.root {
+  max-height: 100%;
+  position: fixed;
+  top: 0;
+  right: 15px;
+  z-index: 1001;
+}
