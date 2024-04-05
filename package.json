@@ -14,6 +14,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.12",
     "@mui/material": "^5.15.11",
+    "cannon-es": "^0.20.0",
     "leva": "^0.9.35",
     "lil-gui": "^0.19.2",
     "react": "^18.2.0",
