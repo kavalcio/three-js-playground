@@ -15,9 +15,11 @@
     "@mui/icons-material": "^5.15.12",
     "@mui/material": "^5.15.11",
     "leva": "^0.9.35",
+    "lil-gui": "^0.19.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3",
+    "stats.js": "^0.17.0",
     "three": "^0.163.0"
   },
   "devDependencies": {

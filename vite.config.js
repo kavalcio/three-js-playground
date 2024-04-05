@@ -9,9 +9,10 @@ export default defineConfig({
     port: 3002,
   },
   resolve: {
-    extensions: ['.mdx', '.js', '.jsx'],
+    extensions: ['.mdx', '.js', '.jsx', '.ts', '.tsx'],
     alias: {
       '@': '/src',
+      src: '/src',
     },
   },
 });

@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 
-import { Home } from '@/pages';
+import { Home, Template } from '@/pages';
+import { mystify } from 'src/demos';
 
 const router = createBrowserRouter([
   {
@@ -13,12 +14,8 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: '/about',
-        element: <div>About</div>,
-      },
-      {
-        path: '/experience',
-        element: <div>Experience</div>,
+        path: '/mystify',
+        element: <Template initializer={mystify} />,
       },
     ],
   },

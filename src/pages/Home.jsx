@@ -13,8 +13,7 @@ export const Home = () => {
       }}
     >
       Root
-      <Link to="/about">About</Link>
-      <Link to="/experience">Experience</Link>
+      <Link to="/mystify">Mystify</Link>
     </div>
   );
 };
