@@ -8,6 +8,7 @@ import {
   galaxy,
   vertexSnapping,
   refraction,
+  solarSystem,
 } from '@/demos';
 
 export const ROUTES = [
@@ -55,5 +56,10 @@ export const ROUTES = [
     path: '/refraction',
     title: 'Refraction',
     component: refraction,
+  },
+  {
+    path: '/solar-system',
+    title: 'Solar System',
+    component: solarSystem,
   },
 ];

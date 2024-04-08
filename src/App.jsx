@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import { Home, Template } from '@/pages';
 import { ROUTES } from 'src/utils/routes';
 
+// TODO: add proper 404 page
 const router = createBrowserRouter([
   {
     path: '/',
