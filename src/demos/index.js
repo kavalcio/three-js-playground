@@ -8,3 +8,4 @@ export { default as galaxy } from './galaxy';
 export { default as vertexSnapping } from './vertexSnapping';
 export { default as refraction } from './refraction';
 export { default as solarSystem } from './solarSystem';
+export { default as mapGenerator } from './mapGenerator';

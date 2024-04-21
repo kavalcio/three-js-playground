@@ -19,6 +19,9 @@ export const Home = () => {
           {route.title}
         </Link>
       ))}
+      <Link key={'/weather'} to={'/weather'}>
+        Weather App
+      </Link>
     </div>
   );
 };
