@@ -18,6 +18,7 @@ import { initializeScene } from 'src/utils/template';
 // TODO: for film grain, create a different random value for each color channel?
 // TODO: add the ability to manually shift shader pass order in gui. is that possible?
 // TODO: add ability to toggle object texture on/off?
+// TODO: hexagonal pixellation pattern instead of square?
 
 const init = (root) => {
   const PixellationShader = {
