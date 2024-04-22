@@ -10,16 +10,25 @@ import vertexShader from 'src/shaders/dither/vertex.glsl';
 import chromaticAberrationFragmentShader from 'src/shaders/postprocessing/fragment-chromatic-aberration.glsl';
 import filmGrainFragmentShader from 'src/shaders/postprocessing/fragment-film-grain.glsl';
 import bayerFragmentShader from 'src/shaders/dither/fragment-bayer.glsl';
+import pixellationFragmentShader from 'src/shaders/postprocessing/fragment-pixellation.glsl';
 
 import { getNormalizedBayerMatrix } from 'src/utils/misc';
 import { initializeScene } from 'src/utils/template';
 
-// TODO: add custom color option to bayer dither shader?
 // TODO: for film grain, create a different random value for each color channel?
 // TODO: add the ability to manually shift shader pass order in gui. is that possible?
 // TODO: add ability to toggle object texture on/off?
 
 const init = (root) => {
+  const PixellationShader = {
+    uniforms: {
+      uMap: { type: 't' },
+      uResolution: { value: 100 },
+    },
+    vertexShader,
+    fragmentShader: pixellationFragmentShader,
+  };
+
   const ChromaticAberrationShader = {
     uniforms: {
       uMap: { type: 't' },
@@ -73,11 +82,15 @@ const init = (root) => {
   composer.outputColorSpace = THREE.LinearSRGBColorSpace;
   const renderPass = new RenderPass(scene, camera);
   composer.addPass(renderPass);
+  const pixellationPass = new ShaderPass(PixellationShader, 'uMap');
+  composer.addPass(pixellationPass);
+  pixellationPass.enabled = false;
   const chromaticAberrationPass = new ShaderPass(
     ChromaticAberrationShader,
     'uMap',
   );
   composer.addPass(chromaticAberrationPass);
+  chromaticAberrationPass.enabled = false;
   const smaaPass = new SMAAPass(
     window.innerWidth * renderer.getPixelRatio(),
     window.innerHeight * renderer.getPixelRatio(),
@@ -114,6 +127,14 @@ const init = (root) => {
   };
 
   // Create GUI
+  const pixellationUi = gui.addFolder('Pixellation');
+  pixellationUi.add(pixellationPass, 'enabled');
+  pixellationUi
+    .add(pixellationPass.uniforms.uResolution, 'value')
+    .name('Resolution')
+    .step(10)
+    .min(10)
+    .max(300);
   const chromaticAberrationGui = gui.addFolder('Chromatic Aberration');
   chromaticAberrationGui.open();
   chromaticAberrationGui.add(chromaticAberrationPass, 'enabled');
