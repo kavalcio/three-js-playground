@@ -24,6 +24,7 @@ const init = (root) => {
     uniforms: {
       uMap: { type: 't' },
       uResolution: { value: 100 },
+      uPixellationMethodIndex: { value: 0 },
     },
     vertexShader,
     fragmentShader: pixellationFragmentShader,
@@ -129,6 +130,10 @@ const init = (root) => {
   // Create GUI
   const pixellationUi = gui.addFolder('Pixellation');
   pixellationUi.add(pixellationPass, 'enabled');
+  pixellationUi
+    .add(pixellationPass.uniforms.uPixellationMethodIndex, 'value')
+    .name('Pixellation Method')
+    .options({ Median: 0, Mean: 1 });
   pixellationUi
     .add(pixellationPass.uniforms.uResolution, 'value')
     .name('Resolution')
