@@ -133,7 +133,7 @@ const init = (root) => {
   pixellationUi.add(pixellationPass, 'enabled');
   pixellationUi
     .add(pixellationPass.uniforms.uPixellationMethodIndex, 'value')
-    .name('Pixellation Method')
+    .name('Sampling Method')
     .options({ Median: 0, Mean: 1 });
   pixellationUi
     .add(pixellationPass.uniforms.uResolution, 'value')
