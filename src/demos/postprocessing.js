@@ -11,6 +11,7 @@ import chromaticAberrationFragmentShader from 'src/shaders/postprocessing/fragme
 import filmGrainFragmentShader from 'src/shaders/postprocessing/fragment-film-grain.glsl';
 import bayerFragmentShader from 'src/shaders/dither/fragment-bayer.glsl';
 import pixellationFragmentShader from 'src/shaders/postprocessing/fragment-pixellation.glsl';
+import tileFragmentShader from 'src/shaders/postprocessing/fragment-tile.glsl';
 
 import { getNormalizedBayerMatrix } from 'src/utils/misc';
 import { initializeScene } from 'src/utils/template';
@@ -21,6 +22,16 @@ import { initializeScene } from 'src/utils/template';
 // TODO: hexagonal pixellation pattern instead of square?
 
 const init = (root) => {
+  const loader = new THREE.TextureLoader();
+
+  const tileTexture = loader.load(`src/assets/azulejos.webp`);
+  if (tileTexture) {
+    tileTexture.userData.aspect =
+      tileTexture.source?.data?.width / tileTexture.source?.data?.height;
+    tileTexture.wrapS = THREE.RepeatWrapping;
+    tileTexture.wrapT = THREE.RepeatWrapping;
+  }
+
   const PixellationShader = {
     uniforms: {
       uMap: { type: 't' },
@@ -59,6 +70,18 @@ const init = (root) => {
     },
     vertexShader,
     fragmentShader: filmGrainFragmentShader,
+  };
+
+  const TileShader = {
+    uniforms: {
+      uMap: { type: 't' },
+
+      uResolution: { value: [window.innerWidth, window.innerHeight] },
+      uTileMap: { value: tileTexture },
+      uMapPx: { value: [1 / 6, 1 / 5] },
+    },
+    vertexShader,
+    fragmentShader: tileFragmentShader,
   };
 
   // const imageTexture = new THREE.TextureLoader().load(bgImage);
@@ -104,6 +127,9 @@ const init = (root) => {
   const filmGrainPass = new ShaderPass(FilmGrainShader, 'uMap');
   composer.addPass(filmGrainPass);
   filmGrainPass.enabled = false;
+  const tilePass = new ShaderPass(TileShader, 'uMap');
+  composer.addPass(tilePass);
+  tilePass.enabled = true;
 
   // Create lights
   const ambientLight = new THREE.AmbientLight(0x404040, 6);
@@ -160,6 +186,9 @@ const init = (root) => {
     .name('intensity')
     .min(0)
     .max(1);
+  const tileUi = gui.addFolder('Tile');
+  tileUi.open();
+  tileUi.add(tilePass, 'enabled');
 
   function animate() {
     requestAnimationFrame(animate);
