@@ -9,6 +9,7 @@ import {
   vertexSnapping,
   refraction,
   solarSystem,
+  mapGenerator,
 } from '@/demos';
 
 export const ROUTES = [
@@ -61,5 +62,10 @@ export const ROUTES = [
     path: '/solar-system',
     title: 'Solar System',
     component: solarSystem,
+  },
+  {
+    path: '/map-generator',
+    title: 'Map Generator',
+    component: mapGenerator,
   },
 ];
