@@ -24,7 +24,8 @@ import { initializeScene } from 'src/utils/template';
 import { getNormalizedBayerMatrix } from 'src/utils/misc';
 
 /* TODOS:
-- Add halftone dithering matrix method - Is this the same thing as stippling?
+- Allow setting url hash to specify which dithering algorithm to use
+- Add stippling method
 - Add variable dark and bright color options
 - Implement non-monochrome dithering
 - Add text on screen to show which dithering algorithm is being used

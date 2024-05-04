@@ -15,6 +15,7 @@ import pixellationFragmentShader from 'src/shaders/postprocessing/fragment-pixel
 import { getNormalizedBayerMatrix } from 'src/utils/misc';
 import { initializeScene } from 'src/utils/template';
 
+// TODO: add custom color option to bayer dither shader?
 // TODO: for film grain, create a different random value for each color channel?
 // TODO: add the ability to manually shift shader pass order in gui. is that possible?
 // TODO: add ability to toggle object texture on/off?
@@ -26,6 +27,9 @@ const init = (root) => {
       uMap: { type: 't' },
       uResolution: { value: 100 },
       uPixellationMethodIndex: { value: 0 },
+      uAspectRatio: {
+        value: window.innerWidth / window.innerHeight,
+      },
     },
     vertexShader,
     fragmentShader: pixellationFragmentShader,
@@ -104,6 +108,11 @@ const init = (root) => {
   const filmGrainPass = new ShaderPass(FilmGrainShader, 'uMap');
   composer.addPass(filmGrainPass);
   filmGrainPass.enabled = false;
+
+  window.addEventListener('resize', () => {
+    pixellationPass.uniforms.uAspectRatio.value =
+      window.innerWidth / window.innerHeight;
+  });
 
   // Create lights
   const ambientLight = new THREE.AmbientLight(0x404040, 6);
