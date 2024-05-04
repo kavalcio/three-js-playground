@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 
 import { initializeScene } from 'src/utils/template';
 
@@ -12,14 +13,19 @@ const init = (root) => {
   camera.position.set(8, 0, 60);
   controls.update();
 
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
-  directionalLight.position.set(1, 1, 1);
-  scene.add(directionalLight);
+  // env map
+  const rgbeLoader = new RGBELoader();
+  rgbeLoader.load('/src/assets/the_sky_is_on_fire_1k.hdr', (environmentMap) => {
+    console.log(environmentMap);
+    environmentMap.mapping = THREE.EquirectangularReflectionMapping;
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
-  scene.add(ambientLight);
+    scene.background = environmentMap;
+    scene.environment = environmentMap;
+  });
+  scene.backgroundBlurriness = 0.07;
+  scene.backgroundIntensity = 0.5;
 
-  const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+  const material = new THREE.MeshStandardMaterial({ color: 0x22ee22 });
 
   const customUniforms = {
     uTime: { value: 0 },
