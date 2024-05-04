@@ -50,6 +50,8 @@ const init = (root) => {
       uThresholdArray: { value: null },
       uThresholdMatrixWidth: { value: null },
       uThresholdTexture: { value: null },
+      uBrightColor: { value: new THREE.Color(0.85, 0.9, 0.85) },
+      uDarkColor: { value: new THREE.Color(0.1, 0.15, 0.1) },
     },
   });
 
@@ -84,20 +86,39 @@ const init = (root) => {
   const planeGeo = new THREE.PlaneGeometry(100, 60);
   const planeObj = new THREE.Mesh(planeGeo, ditherMaterial);
   scene.add(planeObj);
-  // planeObj.position.z = -20;
 
   // Create GUI
-  gui.add({ Original: () => applyNoDither() }, 'Original');
-  gui.add({ 'Fixed threshold': () => applyFixedDither() }, 'Fixed threshold');
-  gui.add(
+  gui
+    .addColor(ditherMaterial.uniforms.uBrightColor, 'value')
+    .name('Bright color');
+  gui.addColor(ditherMaterial.uniforms.uDarkColor, 'value').name('Dark color');
+  const methodFolder = gui.addFolder('Dithering methods');
+  methodFolder.add({ Original: () => applyNoDither() }, 'Original');
+  methodFolder.add(
+    { 'Fixed threshold': () => applyFixedDither() },
+    'Fixed threshold',
+  );
+  methodFolder.add(
     { 'Random threshold': () => applyRandomDither() },
     'Random threshold',
   );
-  gui.add({ 'Bayer (level 0)': () => applyBayerDither(0) }, 'Bayer (level 0)');
-  gui.add({ 'Bayer (level 1)': () => applyBayerDither(1) }, 'Bayer (level 1)');
-  gui.add({ 'Bayer (level 2)': () => applyBayerDither(2) }, 'Bayer (level 2)');
-  gui.add({ 'Bayer (level 3)': () => applyBayerDither(3) }, 'Bayer (level 3)');
-  gui.add({ 'Blue noise': () => applyBlueNoise() }, 'Blue noise');
+  methodFolder.add(
+    { 'Bayer (level 0)': () => applyBayerDither(0) },
+    'Bayer (level 0)',
+  );
+  methodFolder.add(
+    { 'Bayer (level 1)': () => applyBayerDither(1) },
+    'Bayer (level 1)',
+  );
+  methodFolder.add(
+    { 'Bayer (level 2)': () => applyBayerDither(2) },
+    'Bayer (level 2)',
+  );
+  methodFolder.add(
+    { 'Bayer (level 3)': () => applyBayerDither(3) },
+    'Bayer (level 3)',
+  );
+  methodFolder.add({ 'Blue noise': () => applyBlueNoise() }, 'Blue noise');
 
   function animate() {
     requestAnimationFrame(animate);

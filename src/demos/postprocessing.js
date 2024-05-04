@@ -50,6 +50,8 @@ const init = (root) => {
       uMap: { type: 't' },
       uThresholdArray: { value: getNormalizedBayerMatrix(bayerOrder) },
       uThresholdMatrixWidth: { value: Math.pow(2, bayerOrder + 1) },
+      uBrightColor: { value: new THREE.Color(0xfff00f) },
+      uDarkColor: { value: new THREE.Color(0x770000) },
     },
     vertexShader,
     fragmentShader: bayerFragmentShader,
@@ -63,16 +65,6 @@ const init = (root) => {
     },
     vertexShader,
     fragmentShader: filmGrainFragmentShader,
-  };
-
-  // const imageTexture = new THREE.TextureLoader().load(bgImage);
-  const createObject = () => {
-    const obj = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(10),
-      // new THREE.MeshPhongMaterial({ color: 0xbbffdd, map: imageTexture }),
-      new THREE.MeshPhongMaterial({ color: 0xbbffdd }),
-    );
-    return obj;
   };
 
   const { scene, renderer, camera, gui, stats, controls } = initializeScene({
@@ -124,11 +116,21 @@ const init = (root) => {
   scene.add(directionalLight);
 
   // Create objects
-  const obj1 = createObject();
+  const obj1 = new THREE.Mesh(
+    new THREE.TorusKnotGeometry(8, 3, 100, 16),
+    new THREE.MeshPhongMaterial({ color: 0xffbbdd }),
+  );
   scene.add(obj1);
-
-  const obj2 = createObject();
+  const obj2 = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(10),
+    new THREE.MeshPhongMaterial({ color: 0xbbffdd }),
+  );
   scene.add(obj2);
+  const obj3 = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(10),
+    new THREE.MeshPhongMaterial({ color: 0xbbffdd }),
+  );
+  scene.add(obj3);
 
   // Create clock
   const clock = new THREE.Clock();
@@ -161,6 +163,12 @@ const init = (root) => {
   const bayerDitherGui = gui.addFolder('Bayer Dithering');
   bayerDitherGui.open();
   bayerDitherGui.add(bayerDitherPass, 'enabled');
+  bayerDitherGui
+    .addColor(bayerDitherPass.uniforms.uBrightColor, 'value')
+    .name('Bright Color');
+  bayerDitherGui
+    .addColor(bayerDitherPass.uniforms.uDarkColor, 'value')
+    .name('Dark Color');
   const filmGrainGui = gui.addFolder('Film Grain');
   filmGrainGui.open();
   filmGrainGui.add(filmGrainPass, 'enabled');
@@ -175,12 +183,18 @@ const init = (root) => {
     stats.begin();
 
     // Rotate obj
-    obj2.rotation.x -= 0.01;
-    obj2.rotation.z += 0.01;
+    obj1.rotation.y += 0.006;
+    obj1.rotation.z -= 0.006;
+    obj2.rotation.x -= 0.008;
+    obj2.rotation.z += 0.008;
+    obj3.rotation.x -= 0.008;
+    obj3.rotation.z += 0.008;
 
     // Move obj in a circle
-    obj2.position.x = 20 * Math.cos(Date.now() * 0.0005);
-    obj2.position.y = 20 * Math.sin(Date.now() * 0.0005);
+    obj2.position.x = 30 * Math.cos(Date.now() * 0.0003);
+    obj2.position.y = 30 * Math.sin(Date.now() * 0.0003);
+    obj3.position.x = 30 * Math.cos(Date.now() * 0.0003 + Math.PI);
+    obj3.position.y = 30 * Math.sin(Date.now() * 0.0003 + Math.PI);
 
     tick();
 
