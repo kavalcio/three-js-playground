@@ -3,13 +3,13 @@ import { smootherstep } from 'three/src/math/MathUtils';
 
 import { initializeScene } from 'src/utils/template';
 
-import vertexShader from 'src/shaders/inkblot/vertex.glsl';
-import fragmentShader from 'src/shaders/inkblot/fragment.glsl';
+import vertexShader from './shaders/vertex.glsl';
+import fragmentShader from './shaders/fragment.glsl';
 
 // TODO: make the plane rectangular?
 // TODO: when we set speed to 0, we always get the same inkblot. can we randomize it?
 
-const init = (root) => {
+export const init = (root) => {
   const params = { stepSize: 3 };
 
   const { scene, renderer, camera, gui, stats, controls } = initializeScene({
@@ -73,8 +73,4 @@ const init = (root) => {
   };
 
   tick();
-};
-
-export default {
-  init,
 };

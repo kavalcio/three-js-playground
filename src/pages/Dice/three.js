@@ -6,7 +6,7 @@ import {
   getPolyhedronShape,
   updateFaceNormals,
   findDownFacingNormalIndex,
-} from 'src/utils/dice';
+} from './utils';
 
 const DIE_TYPES = {
   D4: 'D4',
@@ -28,7 +28,7 @@ const WALL_HEIGHT = 3;
 // TODO: normals not working for cubes, probably because it's an indexed geometry
 // TODO: each polygon triangle has its own normal. merge these for faces
 
-const init = (root) => {
+export const init = (root) => {
   let params = {
     d4Count: 1,
     d6Count: 0,
@@ -312,8 +312,4 @@ const init = (root) => {
   }
 
   animate();
-};
-
-export default {
-  init,
 };

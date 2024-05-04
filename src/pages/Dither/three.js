@@ -31,7 +31,7 @@ import { getNormalizedBayerMatrix } from 'src/utils/misc';
 - Add text on screen to show which dithering algorithm is being used
 */
 
-const init = (root) => {
+export const init = (root) => {
   const { scene, renderer, camera, gui, stats } = initializeScene({ root });
 
   camera.position.z = 100;
@@ -129,8 +129,4 @@ const init = (root) => {
   }
 
   animate();
-};
-
-export default {
-  init,
 };

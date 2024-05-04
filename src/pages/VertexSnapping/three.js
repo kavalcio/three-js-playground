@@ -3,7 +3,7 @@ import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 
 import { initializeScene } from 'src/utils/template';
 
-const init = (root) => {
+export const init = (root) => {
   const { scene, renderer, camera, gui, stats, controls } = initializeScene({
     root,
   });
@@ -83,5 +83,3 @@ const init = (root) => {
 
   tick();
 };
-
-export default { init };

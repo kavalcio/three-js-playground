@@ -6,12 +6,12 @@ import {
   checkObjectNonBloomed,
   restoreNonBloomedObjectMaterial,
   BLOOM_LAYER_ID,
-} from 'src/utils/solarSystem';
+} from './utils';
 
 // TODO: try out tonemapping
 // TODO: get outer wilds assets using AssetStudio
 
-const init = (root) => {
+export const init = (root) => {
   const { scene, renderer, camera, gui, stats, controls } = initializeScene({
     root,
   });
@@ -64,5 +64,3 @@ const init = (root) => {
 
   tick();
 };
-
-export default { init };

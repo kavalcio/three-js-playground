@@ -4,7 +4,7 @@ import { initializeScene } from 'src/utils/template';
 import { getRandomPolarCoordinate } from 'src/utils/misc';
 import starImage from 'src/assets/star.png';
 
-const init = (root) => {
+export const init = (root) => {
   const params = {
     particleCount: 250000,
     particleSize: 0.02,
@@ -115,8 +115,4 @@ const init = (root) => {
   };
 
   tick();
-};
-
-export default {
-  init,
 };

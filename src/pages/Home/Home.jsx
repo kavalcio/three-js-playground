@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ROUTES } from 'src/utils/routes';
+import { ROUTES } from '@/constants';
 
 export const Home = () => {
   return (
@@ -14,7 +14,7 @@ export const Home = () => {
       }}
     >
       Demos
-      {ROUTES.map((route) => (
+      {Object.values(ROUTES).map((route) => (
         <Link key={route.path} to={route.path}>
           {route.title}
         </Link>

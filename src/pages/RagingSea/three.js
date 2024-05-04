@@ -2,12 +2,12 @@ import * as THREE from 'three';
 
 import { initializeScene } from 'src/utils/template';
 
-import vertexShader from 'src/shaders/raging-sea/vertex.glsl';
-import fragmentShader from 'src/shaders/raging-sea/fragment.glsl';
+import vertexShader from './shaders/vertex.glsl';
+import fragmentShader from './shaders/fragment.glsl';
 
 // TODO: make plane large and add fog so that you can't see the edges?
 
-const init = (root) => {
+export const init = (root) => {
   const params = {
     peakColor: 0xa0ffe8,
     valleyColor: 0x184650,
@@ -156,8 +156,4 @@ const init = (root) => {
   };
 
   tick();
-};
-
-export default {
-  init,
 };

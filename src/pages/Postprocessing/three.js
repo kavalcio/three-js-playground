@@ -21,7 +21,7 @@ import { initializeScene } from 'src/utils/template';
 // TODO: add ability to toggle object texture on/off?
 // TODO: hexagonal pixellation pattern instead of square?
 
-const init = (root) => {
+export const init = (root) => {
   const PixellationShader = {
     uniforms: {
       uMap: { type: 't' },
@@ -203,8 +203,4 @@ const init = (root) => {
   }
 
   animate();
-};
-
-export default {
-  init,
 };

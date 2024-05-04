@@ -5,7 +5,7 @@ import { initializeScene } from 'src/utils/template';
 
 const DISTANCE = -30;
 
-const init = (root) => {
+export const init = (root) => {
   let params = {
     distance: DISTANCE,
   };
@@ -72,5 +72,3 @@ const init = (root) => {
 
   animate();
 };
-
-export default { init };

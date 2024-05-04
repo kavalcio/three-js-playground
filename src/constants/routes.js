@@ -1,65 +1,42 @@
-import {
-  fractalBranches,
-  ragingSea,
-  postprocessing,
-  inkblot,
-  dice,
-  dither,
-  galaxy,
-  vertexSnapping,
-  refraction,
-  solarSystem,
-} from '@/demos';
-
-export const ROUTES = [
-  {
+export const ROUTES = {
+  fractalBranches: {
     path: '/fractal-branches',
     title: 'Fractal Branches',
-    component: fractalBranches,
   },
-  {
+  ragingSea: {
     path: '/raging-sea',
     title: 'Raging Sea',
-    component: ragingSea,
   },
-  {
+  postprocessing: {
     path: '/postprocessing',
     title: 'Postprocessing',
-    component: postprocessing,
   },
-  {
+  inkblot: {
     path: '/inkblot',
     title: 'Inkblot',
-    component: inkblot,
   },
-  {
+  dice: {
     path: '/dice',
     title: 'Dice',
-    component: dice,
   },
-  {
+  dither: {
     path: '/dither',
     title: 'Dither',
-    component: dither,
   },
-  {
+  galaxy: {
     path: '/galaxy',
     title: 'Galaxy',
-    component: galaxy,
   },
-  {
+  vertexSnapping: {
     path: '/vertex-snapping',
     title: 'Vertex Snapping',
-    component: vertexSnapping,
   },
-  {
+  refraction: {
     path: '/refraction',
     title: 'Refraction',
-    component: refraction,
   },
-  {
+  solarSystem: {
     path: '/solar-system',
     title: 'Solar System',
-    component: solarSystem,
   },
-];
+};

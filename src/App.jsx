@@ -1,7 +1,19 @@
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 
-import { Home, Template } from '@/pages';
-import { ROUTES } from 'src/utils/routes';
+import {
+  Dice,
+  Dither,
+  FractalBranches,
+  Galaxy,
+  Home,
+  Inkblot,
+  Postprocessing,
+  RagingSea,
+  Refraction,
+  SolarSystem,
+  VertexSnapping,
+} from '@/pages';
+import { ROUTES } from '@/constants';
 
 // TODO: add proper 404 page
 const router = createBrowserRouter([
@@ -14,10 +26,46 @@ const router = createBrowserRouter([
         path: '/',
         element: <Home />,
       },
-      ...ROUTES.map((route) => ({
-        path: route.path,
-        element: <Template demo={route.component} />,
-      })),
+      {
+        path: ROUTES.ragingSea.path,
+        element: <RagingSea />,
+      },
+      {
+        path: ROUTES.dither.path,
+        element: <Dither />,
+      },
+      {
+        path: ROUTES.dice.path,
+        element: <Dice />,
+      },
+      {
+        path: ROUTES.galaxy.path,
+        element: <Galaxy />,
+      },
+      {
+        path: ROUTES.vertexSnapping.path,
+        element: <VertexSnapping />,
+      },
+      {
+        path: ROUTES.inkblot.path,
+        element: <Inkblot />,
+      },
+      {
+        path: ROUTES.refraction.path,
+        element: <Refraction />,
+      },
+      {
+        path: ROUTES.postprocessing.path,
+        element: <Postprocessing />,
+      },
+      {
+        path: ROUTES.fractalBranches.path,
+        element: <FractalBranches />,
+      },
+      {
+        path: ROUTES.solarSystem.path,
+        element: <SolarSystem />,
+      },
     ],
   },
 ]);

@@ -1,12 +1,13 @@
 import { useEffect, useRef } from 'react';
 
-export const Template = ({ demo }) => {
+import { init } from './three';
+
+export const Refraction = () => {
   const rootRef = useRef(null);
 
   useEffect(() => {
-    console.log('demo.init');
-    demo.init(rootRef.current);
-  }, [demo]);
+    init(rootRef.current);
+  }, []);
 
   return <div ref={rootRef} />;
 };
