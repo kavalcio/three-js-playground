@@ -15,6 +15,7 @@ import blueFragmentShader from 'src/shaders/dither/fragment-blue.glsl';
 import fixedFragmentShader from 'src/shaders/dither/fragment-fixed.glsl';
 import randomFragmentShader from 'src/shaders/dither/fragment-random.glsl';
 import originalFragmentShader from 'src/shaders/dither/fragment-original.glsl';
+import bayerColorFragmentShader from 'src/shaders/dither/fragment-color.glsl';
 import bgImage from 'src/assets/xp_background.jpg';
 
 /* Blue noise mask downloaded from: http://momentsingraphics.de/BlueNoise.html */
@@ -79,6 +80,12 @@ export const init = (root) => {
     ditherMaterial.uniforms.uThresholdTexture.value = blueNoiseTexture;
     ditherMaterial.needsUpdate = true;
   };
+  const applyBayerColor = () => {
+    ditherMaterial.fragmentShader = bayerColorFragmentShader;
+    ditherMaterial.uniforms.uThresholdMatrixWidth.value = Math.pow(2, 3);
+    ditherMaterial.uniforms.uThresholdArray.value = getNormalizedBayerMatrix(2);
+    ditherMaterial.needsUpdate = true;
+  };
 
   // Initialize page to show Bayer dithering
   applyBayerDither(1);
@@ -119,6 +126,9 @@ export const init = (root) => {
     'Bayer (level 3)',
   );
   methodFolder.add({ 'Blue noise': () => applyBlueNoise() }, 'Blue noise');
+  methodFolder
+    .add({ applyBayerColor }, 'applyBayerColor')
+    .name('Bayer (24-bit color)');
 
   function animate() {
     requestAnimationFrame(animate);

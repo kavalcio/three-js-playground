@@ -3,6 +3,8 @@ precision mediump float;
 
 varying vec2 vUv;
 uniform sampler2D uMap;
+uniform vec3 uBrightColor;
+uniform vec3 uDarkColor;
 
 float random(vec2 uv)
 {
@@ -18,5 +20,5 @@ void main()
 
   float thresholdValue = random(vUv);
 
-  gl_FragColor = (brightness) > thresholdValue ? vec4(0.8, 0.8, 0.8, 1.) : vec4(0.1, 0.15, 0.1, 1.);
+  gl_FragColor = (brightness) > thresholdValue ? vec4(uBrightColor, 1.) : vec4(uDarkColor, 1.);
 }
