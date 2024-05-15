@@ -27,20 +27,23 @@ import { getNormalizedBayerMatrix } from 'src/utils/misc';
 /* TODOS:
 - Allow setting url hash to specify which dithering algorithm to use
 - Add stippling method
-- Add variable dark and bright color options
-- Implement non-monochrome dithering
 - Add text on screen to show which dithering algorithm is being used
 */
 
-export const init = (root) => {
+export const init = ({ root }) => {
   const { scene, renderer, camera, gui, stats } = initializeScene({ root });
 
   camera.position.z = 100;
   camera.fov = 35;
   camera.updateProjectionMatrix();
 
+  let planeObj;
+
   // Create material
-  const imageTexture = new THREE.TextureLoader().load(bgImage);
+  const imageTexture = new THREE.TextureLoader().load(bgImage, (texture) => {
+    const imageAspectRatio = texture.image.width / texture.image.height;
+    planeObj.scale.set(imageAspectRatio, 1, 1);
+  });
   const blueNoiseTexture = new THREE.TextureLoader().load(blueNoiseImage);
   const ditherMaterial = new THREE.ShaderMaterial({
     vertexShader,
@@ -90,8 +93,8 @@ export const init = (root) => {
   // Initialize page to show Bayer dithering
   applyBayerDither(1);
 
-  const planeGeo = new THREE.PlaneGeometry(100, 60);
-  const planeObj = new THREE.Mesh(planeGeo, ditherMaterial);
+  const planeGeo = new THREE.PlaneGeometry(60, 60);
+  planeObj = new THREE.Mesh(planeGeo, ditherMaterial);
   scene.add(planeObj);
 
   // Create GUI
@@ -99,6 +102,16 @@ export const init = (root) => {
     .addColor(ditherMaterial.uniforms.uBrightColor, 'value')
     .name('Bright color');
   gui.addColor(ditherMaterial.uniforms.uDarkColor, 'value').name('Dark color');
+  gui
+    .add(
+      {
+        loadFile: () => {
+          document.getElementById('fileInput').click();
+        },
+      },
+      'loadFile',
+    )
+    .name('Upload Image');
   const methodFolder = gui.addFolder('Dithering methods');
   methodFolder.add({ Original: () => applyNoDither() }, 'Original');
   methodFolder.add(
@@ -139,4 +152,6 @@ export const init = (root) => {
   }
 
   animate();
+
+  return { material: ditherMaterial, mesh: planeObj };
 };
