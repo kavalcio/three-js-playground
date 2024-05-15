@@ -7,7 +7,7 @@ import fragmentShader from './shaders/fragment.glsl';
 
 // TODO: make plane large and add fog so that you can't see the edges?
 
-export const init = (root) => {
+export const init = ({ root, onModalOpen }) => {
   const params = {
     peakColor: 0xa0ffe8,
     valleyColor: 0x184650,
@@ -55,7 +55,9 @@ export const init = (root) => {
   const clock = new THREE.Clock();
 
   gui.width = 300;
-
+  gui
+    .add({ openModal: () => onModalOpen() }, 'openModal')
+    .name('About This Demo');
   const colorFolder = gui.addFolder('Color');
   colorFolder.open();
   colorFolder

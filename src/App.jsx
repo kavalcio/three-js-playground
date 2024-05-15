@@ -16,6 +16,7 @@ import {
 import { ROUTES } from '@/constants';
 
 // TODO: add proper 404 page
+// TODO: add ability to preset demo params through query params
 const router = createBrowserRouter([
   {
     path: '/',
