@@ -25,7 +25,10 @@ export const init = (root) => {
   scene.backgroundBlurriness = 0.07;
   scene.backgroundIntensity = 0.5;
 
-  const material = new THREE.MeshStandardMaterial({ color: 0x22ee22 });
+  const material = new THREE.MeshStandardMaterial({
+    color: '#999999',
+    roughness: 0.2,
+  });
 
   const customUniforms = {
     uTime: { value: 0 },
@@ -61,7 +64,6 @@ export const init = (root) => {
     new THREE.TorusKnotGeometry(6, 2, 128, 32),
     material,
   );
-  object.position.set(3, -2, 0);
   scene.add(object);
 
   const clock = new THREE.Clock();
