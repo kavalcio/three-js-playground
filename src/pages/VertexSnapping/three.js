@@ -16,7 +16,6 @@ export const init = (root) => {
   // env map
   const rgbeLoader = new RGBELoader();
   rgbeLoader.load('/src/assets/the_sky_is_on_fire_1k.hdr', (environmentMap) => {
-    console.log(environmentMap);
     environmentMap.mapping = THREE.EquirectangularReflectionMapping;
 
     scene.background = environmentMap;
@@ -30,35 +29,76 @@ export const init = (root) => {
     roughness: 0.2,
   });
 
-  const customUniforms = {
-    uTime: { value: 0 },
+  const params = {
+    rotationSpeed: 0.002,
   };
 
-  material.onBeforeCompile = (shader) => {
-    console.log(shader);
-    shader.uniforms.uTime = customUniforms.uTime;
-    shader.vertexShader = shader.vertexShader.replace(
+  const customUniforms = {
+    uTime: { value: 0 },
+    uSnappingResolution: { value: 2 },
+  };
+
+  material.onBeforeCompile = (material) => {
+    material.uniforms.uTime = customUniforms.uTime;
+    material.uniforms.uSnappingResolution = customUniforms.uSnappingResolution;
+    material.vertexShader = material.vertexShader.replace(
       '#include <common>',
       `
         #include <common>
 
         uniform float uTime;
+        uniform float uSnappingResolution;
     `,
     );
-    shader.vertexShader = shader.vertexShader.replace(
-      '#include <begin_vertex>',
+    material.vertexShader = material.vertexShader.replace(
+      '#include <project_vertex>',
       `
-        #include <begin_vertex>
+        vec4 mvPosition = vec4( transformed, 1.0 );
 
-        float snappingPower = 2.0;
+        #ifdef USE_BATCHING
+        
+          mvPosition = batchingMatrix * mvPosition;
+        
+        #endif
+        
+        #ifdef USE_INSTANCING
+        
+          mvPosition = instanceMatrix * mvPosition;
+        
+        #endif
+        
+        // mvPosition = modelViewMatrix * mvPosition;
+        mvPosition = modelMatrix * mvPosition;
+        
+        mvPosition = vec4(
+          round(mvPosition.x * uSnappingResolution) / uSnappingResolution,
+          round(mvPosition.y * uSnappingResolution) / uSnappingResolution,
+          round(mvPosition.z * uSnappingResolution) / uSnappingResolution,
+          1.0);
 
-        transformed = vec3(
-          floor(transformed.x * snappingPower) / snappingPower,
-          floor((transformed.y + sin(uTime) * 2.0) * snappingPower) / snappingPower,
-          floor(transformed.z * snappingPower) / snappingPower);
+        mvPosition = viewMatrix * mvPosition;
+        
+        gl_Position = projectionMatrix * mvPosition;
     `,
     );
   };
+
+  // TODO: should this snap to world space or view space? right now it's snapping to view space
+  // TODO: pretty easy to make it snap to world space, just need to do snapping between the modelMatrix multiplication and the viewMatrix multiplication
+
+  gui
+    .add(customUniforms.uSnappingResolution, 'value')
+    .min(0.5)
+    .max(10)
+    .step(0.1)
+    .name('Snap Resolution');
+  gui.add(params, 'rotationSpeed').min(0).max(0.01).name('Rotation Speed');
+  gui
+    .add(material, 'flatShading')
+    .name('Flat Shading')
+    .onChange(() => {
+      material.needsUpdate = true;
+    });
 
   const object = new THREE.Mesh(
     new THREE.TorusKnotGeometry(6, 2, 128, 32),
@@ -76,8 +116,8 @@ export const init = (root) => {
 
     customUniforms.uTime.value = elapsedTime;
 
-    // object.rotateX(0.005);
-    // object.rotateY(0.005);
+    object.rotateX(params.rotationSpeed);
+    object.rotateY(params.rotationSpeed);
 
     renderer.render(scene, camera);
     stats.end();
