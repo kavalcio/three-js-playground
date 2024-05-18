@@ -20,7 +20,7 @@
       "@/pages": ["src/pages/index.ts"],
       "@/utils": ["src/utils/index.ts"],
     },
-    "types": ["vite/client"]
+    "types": ["vite/client", "three"]
   },
   "include": [
     "src",
