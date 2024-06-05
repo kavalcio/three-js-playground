@@ -15,7 +15,7 @@ export const init = (root) => {
 
   // env map
   const rgbeLoader = new RGBELoader();
-  rgbeLoader.load('/src/assets/the_sky_is_on_fire_1k.hdr', (environmentMap) => {
+  rgbeLoader.load('/the_sky_is_on_fire_1k.hdr', (environmentMap) => {
     environmentMap.mapping = THREE.EquirectangularReflectionMapping;
 
     scene.background = environmentMap;
