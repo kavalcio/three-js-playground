@@ -72,7 +72,7 @@ export const init = (root) => {
   let mixer;
 
   const gltfLoader = new GLTFLoader();
-  gltfLoader.load('src/assets/models/scp/scene.gltf', (gltf) => {
+  gltfLoader.load('/models/scp/scene.gltf', (gltf) => {
     console.log({ gltf });
     model = gltf.scene;
 
