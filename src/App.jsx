@@ -7,6 +7,7 @@ import {
   Galaxy,
   Home,
   Inkblot,
+  Demake,
   Postprocessing,
   RagingSea,
   Refraction,
@@ -66,6 +67,10 @@ const router = createBrowserRouter([
       {
         path: ROUTES.solarSystem.path,
         element: <SolarSystem />,
+      },
+      {
+        path: ROUTES.demake.path,
+        element: <Demake />,
       },
     ],
   },

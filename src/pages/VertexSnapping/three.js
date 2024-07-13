@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 
+import vertexSnappingShader from 'src/shaders/vertex-snapping/vertex.glsl';
 import { initializeScene } from 'src/utils/template';
 
 export const init = (root) => {
@@ -52,34 +53,7 @@ export const init = (root) => {
     );
     material.vertexShader = material.vertexShader.replace(
       '#include <project_vertex>',
-      `
-        vec4 mvPosition = vec4( transformed, 1.0 );
-
-        #ifdef USE_BATCHING
-        
-          mvPosition = batchingMatrix * mvPosition;
-        
-        #endif
-        
-        #ifdef USE_INSTANCING
-        
-          mvPosition = instanceMatrix * mvPosition;
-        
-        #endif
-        
-        // mvPosition = modelViewMatrix * mvPosition;
-        mvPosition = modelMatrix * mvPosition;
-        
-        mvPosition = vec4(
-          round(mvPosition.x * uSnappingResolution) / uSnappingResolution,
-          round(mvPosition.y * uSnappingResolution) / uSnappingResolution,
-          round(mvPosition.z * uSnappingResolution) / uSnappingResolution,
-          1.0);
-
-        mvPosition = viewMatrix * mvPosition;
-        
-        gl_Position = projectionMatrix * mvPosition;
-    `,
+      vertexSnappingShader,
     );
   };
 

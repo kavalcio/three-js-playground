@@ -39,4 +39,8 @@ export const ROUTES = {
     path: '/solar-system',
     title: 'Solar System',
   },
+  demake: {
+    path: '/demake',
+    title: 'Demake',
+  },
 };

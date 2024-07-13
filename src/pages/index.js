@@ -9,3 +9,4 @@ export * from './Inkblot';
 export * from './SolarSystem';
 export * from './FractalBranches';
 export * from './Postprocessing';
+export * from './Demake';

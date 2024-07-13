@@ -1,0 +1,11 @@
+Model Information:
+* title:	SCP: Unity | SCP-427-1
+* source:	https://sketchfab.com/3d-models/scp-unity-scp-427-1-0b33790f0f2447da9a25cddb079c563e
+* author:	ThatJamGuy (https://sketchfab.com/ThatJamGuy)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "SCP: Unity | SCP-427-1" (https://sketchfab.com/3d-models/scp-unity-scp-427-1-0b33790f0f2447da9a25cddb079c563e) by ThatJamGuy (https://sketchfab.com/ThatJamGuy) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

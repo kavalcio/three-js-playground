@@ -1,28 +1,25 @@
-// uniform mat4 projectionMatrix;
-// uniform mat4 viewMatrix;
-// uniform mat4 modelMatrix;
+vec4 mvPosition = vec4( transformed, 1.0 );
 
-// attribute vec3 position;
-// varying vec2 vUv;
+#ifdef USE_BATCHING
 
-void main()
-{
-  // vUv = uv;
+  mvPosition = batchingMatrix * mvPosition;
 
-  // ----
-  // vec3 snappedPosition = vec3(floor(position.x), floor(position.y), floor(position.z));
-  // gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(snappedPosition, 1.0);
+#endif
 
-  // vec3 origPosition = (projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0)).xyz;
-  // gl_Position = vec4(origPosition.x, origPosition.y, origPosition.z, 1.0);
+#ifdef USE_INSTANCING
 
-  // -----
+  mvPosition = instanceMatrix * mvPosition;
 
-  vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+#endif
 
-  modelPosition = vec4(floor(modelPosition.x), floor(modelPosition.y), floor(modelPosition.z), modelPosition.w);
+mvPosition = modelMatrix * mvPosition;
 
-  vec4 viewPosition = viewMatrix * modelPosition;
+mvPosition = vec4(
+  round(mvPosition.x * uSnappingResolution) / uSnappingResolution,
+  round(mvPosition.y * uSnappingResolution) / uSnappingResolution,
+  round(mvPosition.z * uSnappingResolution) / uSnappingResolution,
+  1.0);
 
-  gl_Position = projectionMatrix * viewPosition;
-}
+mvPosition = viewMatrix * mvPosition;
+
+gl_Position = projectionMatrix * mvPosition;
