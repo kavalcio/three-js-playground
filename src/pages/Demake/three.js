@@ -3,15 +3,18 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 
 import vertexShader from 'src/shaders/dither/vertex.glsl';
 import pixellationFragmentShader from 'src/shaders/postprocessing/fragment-pixellation.glsl';
 import bayerColorFragmentShader from 'src/shaders/dither/fragment-color.glsl';
 import vertexSnappingShader from 'src/shaders/vertex-snapping/vertex.glsl';
+import chromaticAberrationFragmentShader from 'src/shaders/postprocessing/fragment-chromatic-aberration.glsl';
 
 import { getNormalizedBayerMatrix } from 'src/utils/misc';
 import { initializeScene } from 'src/utils/template';
 
+// TODO: some shader passes mess with the colors and make everything darker. look into it (maybe gamma correction? or outputEncoding?)
 export const init = (root) => {
   const PixellationShader = {
     uniforms: {
@@ -39,10 +42,20 @@ export const init = (root) => {
     fragmentShader: bayerColorFragmentShader,
   };
 
+  const ChromaticAberrationShader = {
+    uniforms: {
+      uMap: { type: 't' },
+      uChromaticAberrationOffset: { value: 0.05 },
+    },
+    vertexShader,
+    fragmentShader: chromaticAberrationFragmentShader,
+  };
+
   const { scene, renderer, camera, gui, stats, controls } = initializeScene({
     root,
     antialias: false,
   });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
   const customUniforms = {
     uTime: { value: 0 },
@@ -77,15 +90,30 @@ export const init = (root) => {
     model = gltf.scene;
 
     model.traverse((child) => {
+      if (child.userData.name === 'Plane__0') {
+        const parent = child.parent;
+        parent.remove(child);
+      }
       if (child.userData.name === 'Object_269') {
         modelMaterial = child.material;
         child.material.onBeforeCompile = addVertexSnappingToMaterial;
       }
     });
 
+    modelMaterial.roughness = 0.6;
+
     gui
       .add(modelMaterial, 'flatShading')
       .name('Flat Shading')
+      .onChange(() => {
+        modelMaterial.needsUpdate = true;
+      });
+
+    gui
+      .add(modelMaterial, 'roughness')
+      .min(0)
+      .max(1)
+      .name('Roughness')
       .onChange(() => {
         modelMaterial.needsUpdate = true;
       });
@@ -117,19 +145,28 @@ export const init = (root) => {
   composer.addPass(bayerDitherPass);
   bayerDitherPass.enabled = false;
 
+  const chromaticAberrationPass = new ShaderPass(
+    ChromaticAberrationShader,
+    'uMap',
+  );
+  composer.addPass(chromaticAberrationPass);
+  chromaticAberrationPass.enabled = false;
+
   window.addEventListener('resize', () => {
     pixellationPass.uniforms.uAspectRatio.value =
       window.innerWidth / window.innerHeight;
   });
 
-  // Create lights
-  const ambientLight = new THREE.AmbientLight(0x404040, 6);
-  scene.add(ambientLight);
+  // Create env map
+  const rgbeLoader = new RGBELoader();
+  rgbeLoader.load('/the_sky_is_on_fire_1k.hdr', (environmentMap) => {
+    environmentMap.mapping = THREE.EquirectangularReflectionMapping;
 
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
-  directionalLight.position.x = 1;
-  directionalLight.position.z = 1;
-  scene.add(directionalLight);
+    scene.background = environmentMap;
+    scene.environment = environmentMap;
+  });
+  scene.backgroundBlurriness = 0.07;
+  scene.backgroundIntensity = 0.5;
 
   // Create GUI
   const pixellationUi = gui.addFolder('Pixellation');
@@ -146,17 +183,15 @@ export const init = (root) => {
     .max(300);
 
   const chromaticAberrationGui = gui.addFolder('Chromatic Aberration');
-  chromaticAberrationGui.open();
+  chromaticAberrationGui.add(chromaticAberrationPass, 'enabled');
+  chromaticAberrationGui
+    .add(chromaticAberrationPass.uniforms.uChromaticAberrationOffset, 'value')
+    .name('intensity')
+    .min(0)
+    .max(0.2);
 
   const bayerDitherGui = gui.addFolder('Bayer Dithering');
-  bayerDitherGui.open();
   bayerDitherGui.add(bayerDitherPass, 'enabled');
-  bayerDitherGui
-    .addColor(bayerDitherPass.uniforms.uBrightColor, 'value')
-    .name('Bright Color');
-  bayerDitherGui
-    .addColor(bayerDitherPass.uniforms.uDarkColor, 'value')
-    .name('Dark Color');
 
   gui
     .add(customUniforms.uSnappingResolution, 'value')
