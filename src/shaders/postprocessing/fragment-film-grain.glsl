@@ -22,4 +22,7 @@ void main()
   vec4 color = texture(uMap, vUv);
   float rand = (random(vUv, uTime) - 0.5) * uIntensity;
   gl_FragColor = vec4(vec3(rand), 1.0) + color;
+
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
 }

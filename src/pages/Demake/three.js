@@ -14,7 +14,6 @@ import chromaticAberrationFragmentShader from 'src/shaders/postprocessing/fragme
 import { getNormalizedBayerMatrix } from 'src/utils/misc';
 import { initializeScene } from 'src/utils/template';
 
-// TODO: some shader passes mess with the colors and make everything darker. look into it (maybe gamma correction? or outputEncoding?)
 export const init = (root) => {
   const PixellationShader = {
     uniforms: {
@@ -124,11 +123,11 @@ export const init = (root) => {
 
     scene.add(model);
     model.scale.set(10, 10, 10);
-    // camera.lookAt(model.position);
   });
 
-  camera.position.set(20, 55, 30);
+  camera.position.set(40, 40, 50);
   camera.needsUpdate = true;
+  controls.target = new THREE.Vector3(0, 10, 0);
   controls.update();
 
   // Postprocessing

@@ -26,4 +26,7 @@ void main()
     }
     gl_FragColor = vec4(sumColor.r / sampleStepCount, sumColor.g / sampleStepCount, sumColor.b / sampleStepCount, 1.);
   }
+
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
 }

@@ -12,4 +12,7 @@ void main()
   float g = texture(uMap, vUv).g;
   float b = texture(uMap, vUv - vec2(offset.x, offset.y)).b;
   gl_FragColor = vec4(r, g, b, 1.0);
+
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
 }

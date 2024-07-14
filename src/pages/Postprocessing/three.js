@@ -90,11 +90,12 @@ export const init = (root) => {
   );
   composer.addPass(chromaticAberrationPass);
   chromaticAberrationPass.enabled = false;
-  const smaaPass = new SMAAPass(
-    window.innerWidth * renderer.getPixelRatio(),
-    window.innerHeight * renderer.getPixelRatio(),
-  );
-  composer.addPass(smaaPass);
+  // TODO: now this causes gamma issues
+  // const smaaPass = new SMAAPass(
+  //   window.innerWidth * renderer.getPixelRatio(),
+  //   window.innerHeight * renderer.getPixelRatio(),
+  // );
+  // composer.addPass(smaaPass);
   const bayerDitherPass = new ShaderPass(BayerDitherShader, 'uMap');
   composer.addPass(bayerDitherPass);
   bayerDitherPass.enabled = false;
@@ -108,10 +109,10 @@ export const init = (root) => {
   });
 
   // Create lights
-  const ambientLight = new THREE.AmbientLight(0x404040, 6);
+  const ambientLight = new THREE.AmbientLight(0x404040, 2);
   scene.add(ambientLight);
 
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
   directionalLight.position.x = 1;
   directionalLight.position.z = 1;
   scene.add(directionalLight);

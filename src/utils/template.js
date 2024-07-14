@@ -19,6 +19,7 @@ export const initializeScene = ({ root, antialias = true } = {}) => {
   // Create renderer
   const renderer = new THREE.WebGLRenderer({ antialias });
   renderer.setSize(window.innerWidth, window.innerHeight);
+  // renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   const controls = new OrbitControls(camera, renderer.domElement);
   root.appendChild(renderer.domElement);
 
