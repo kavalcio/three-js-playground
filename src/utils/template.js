@@ -32,6 +32,7 @@ export const initializeScene = ({ root, antialias = true } = {}) => {
       Math.atan(tanFOV * (window.innerHeight / initialWindowHeight));
     camera.updateProjectionMatrix();
     camera.lookAt(scene.position);
+    controls.update();
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.render(scene, camera);
   }
