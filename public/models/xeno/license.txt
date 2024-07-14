@@ -1,0 +1,11 @@
+Model Information:
+* title:	PS1/Low Poly Xenomorph (1979 Alien)
+* source:	https://sketchfab.com/3d-models/ps1low-poly-xenomorph-1979-alien-7ec8ecca16f44235ac6b8a1291b72d19
+* author:	Jellypack (https://sketchfab.com/jellypack)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "PS1/Low Poly Xenomorph (1979 Alien)" (https://sketchfab.com/3d-models/ps1low-poly-xenomorph-1979-alien-7ec8ecca16f44235ac6b8a1291b72d19) by Jellypack (https://sketchfab.com/jellypack) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)

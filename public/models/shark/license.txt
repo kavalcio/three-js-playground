@@ -1,0 +1,11 @@
+Model Information:
+* title:	PS1/Low Poly Great White Shark
+* source:	https://sketchfab.com/3d-models/ps1low-poly-great-white-shark-54b11fd3f157410faa7ab146d7fc5da5
+* author:	Jellypack (https://sketchfab.com/jellypack)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "PS1/Low Poly Great White Shark" (https://sketchfab.com/3d-models/ps1low-poly-great-white-shark-54b11fd3f157410faa7ab146d7fc5da5) by Jellypack (https://sketchfab.com/jellypack) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)

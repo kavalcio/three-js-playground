@@ -18,7 +18,7 @@ export const init = (root) => {
   const PixellationShader = {
     uniforms: {
       uMap: { type: 't' },
-      uResolution: { value: 100 },
+      uResolution: { value: 230 },
       uPixellationMethodIndex: { value: 0 },
       uAspectRatio: {
         value: window.innerWidth / window.innerHeight,
@@ -44,7 +44,7 @@ export const init = (root) => {
   const ChromaticAberrationShader = {
     uniforms: {
       uMap: { type: 't' },
-      uChromaticAberrationOffset: { value: 0.05 },
+      uChromaticAberrationOffset: { value: 0.02 },
     },
     vertexShader,
     fragmentShader: chromaticAberrationFragmentShader,
@@ -58,7 +58,7 @@ export const init = (root) => {
 
   const customUniforms = {
     uTime: { value: 0 },
-    uSnappingResolution: { value: 2 },
+    uSnappingResolution: { value: 3 },
   };
 
   const addVertexSnappingToMaterial = (material) => {
@@ -80,42 +80,20 @@ export const init = (root) => {
   };
 
   let model;
-  let modelMaterial;
   let mixer;
 
   const gltfLoader = new GLTFLoader();
-  gltfLoader.load('/models/scp/scene.gltf', (gltf) => {
+  gltfLoader.load('/models/xeno/scene.gltf', (gltf) => {
+    // gltfLoader.load('/models/shark/scene.gltf', (gltf) => {
     console.log({ gltf });
     model = gltf.scene;
 
     model.traverse((child) => {
-      if (child.userData.name === 'Plane__0') {
-        const parent = child.parent;
-        parent.remove(child);
-      }
-      if (child.userData.name === 'Object_269') {
-        modelMaterial = child.material;
+      if (child.isMesh) {
+        console.log({ child });
         child.material.onBeforeCompile = addVertexSnappingToMaterial;
       }
     });
-
-    modelMaterial.roughness = 0.6;
-
-    gui
-      .add(modelMaterial, 'flatShading')
-      .name('Flat Shading')
-      .onChange(() => {
-        modelMaterial.needsUpdate = true;
-      });
-
-    gui
-      .add(modelMaterial, 'roughness')
-      .min(0)
-      .max(1)
-      .name('Roughness')
-      .onChange(() => {
-        modelMaterial.needsUpdate = true;
-      });
 
     mixer = new THREE.AnimationMixer(gltf.scene);
     const action = mixer.clipAction(gltf.animations[0]);
@@ -125,9 +103,9 @@ export const init = (root) => {
     model.scale.set(10, 10, 10);
   });
 
-  camera.position.set(40, 40, 50);
+  camera.position.set(30, 35, 30);
   camera.needsUpdate = true;
-  controls.target = new THREE.Vector3(0, 10, 0);
+  controls.target = new THREE.Vector3(0, 15, 0);
   controls.update();
 
   // Postprocessing
@@ -138,18 +116,16 @@ export const init = (root) => {
 
   const pixellationPass = new ShaderPass(PixellationShader, 'uMap');
   composer.addPass(pixellationPass);
-  pixellationPass.enabled = false;
-
-  const bayerDitherPass = new ShaderPass(BayerDitherShader, 'uMap');
-  composer.addPass(bayerDitherPass);
-  bayerDitherPass.enabled = false;
 
   const chromaticAberrationPass = new ShaderPass(
     ChromaticAberrationShader,
     'uMap',
   );
   composer.addPass(chromaticAberrationPass);
-  chromaticAberrationPass.enabled = false;
+
+  const bayerDitherPass = new ShaderPass(BayerDitherShader, 'uMap');
+  composer.addPass(bayerDitherPass);
+  bayerDitherPass.enabled = false;
 
   window.addEventListener('resize', () => {
     pixellationPass.uniforms.uAspectRatio.value =
@@ -192,7 +168,8 @@ export const init = (root) => {
   const bayerDitherGui = gui.addFolder('Bayer Dithering');
   bayerDitherGui.add(bayerDitherPass, 'enabled');
 
-  gui
+  const vertexSnappingGui = gui.addFolder('Vertex Snapping');
+  vertexSnappingGui
     .add(customUniforms.uSnappingResolution, 'value')
     .min(0.5)
     .max(10)
