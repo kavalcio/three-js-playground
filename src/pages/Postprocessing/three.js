@@ -5,6 +5,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
+import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js';
 
 import vertexShader from 'src/shaders/dither/vertex.glsl';
 import chromaticAberrationFragmentShader from 'src/shaders/postprocessing/fragment-chromatic-aberration.glsl';
@@ -90,22 +91,24 @@ export const init = (root) => {
   );
   composer.addPass(chromaticAberrationPass);
   chromaticAberrationPass.enabled = false;
-  // TODO: now this causes gamma issues
-  // const smaaPass = new SMAAPass(
-  //   window.innerWidth * renderer.getPixelRatio(),
-  //   window.innerHeight * renderer.getPixelRatio(),
-  // );
-  // composer.addPass(smaaPass);
+  const smaaPass = new SMAAPass(
+    window.innerWidth * renderer.getPixelRatio(),
+    window.innerHeight * renderer.getPixelRatio(),
+  );
+  composer.addPass(smaaPass);
   const bayerDitherPass = new ShaderPass(BayerDitherShader, 'uMap');
   composer.addPass(bayerDitherPass);
   bayerDitherPass.enabled = false;
   const filmGrainPass = new ShaderPass(FilmGrainShader, 'uMap');
   composer.addPass(filmGrainPass);
   filmGrainPass.enabled = false;
+  const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
+  composer.addPass(gammaCorrectionPass);
 
   window.addEventListener('resize', () => {
     pixellationPass.uniforms.uAspectRatio.value =
       window.innerWidth / window.innerHeight;
+    composer.setSize(window.innerWidth, window.innerHeight);
   });
 
   // Create lights

@@ -103,7 +103,7 @@ export const init = (root) => {
     model.scale.set(10, 10, 10);
   });
 
-  camera.position.set(30, 35, 30);
+  camera.position.set(30, 20, 40);
   camera.needsUpdate = true;
   controls.target = new THREE.Vector3(0, 15, 0);
   controls.update();
@@ -111,6 +111,10 @@ export const init = (root) => {
   // Postprocessing
   const composer = new EffectComposer(renderer);
   composer.outputColorSpace = THREE.LinearSRGBColorSpace;
+  window.addEventListener('resize', () => {
+    composer.setSize(window.innerWidth, window.innerHeight);
+  });
+
   const renderPass = new RenderPass(scene, camera);
   composer.addPass(renderPass);
 
