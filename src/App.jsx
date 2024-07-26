@@ -18,6 +18,7 @@ import { ROUTES } from '@/constants';
 
 // TODO: add proper 404 page
 // TODO: add ability to preset demo params through query params
+// TODO: canvas gets re-added to DOM when saving file instead of replacing old instance
 const router = createBrowserRouter([
   {
     path: '/',

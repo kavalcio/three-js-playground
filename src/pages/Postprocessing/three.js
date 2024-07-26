@@ -16,10 +16,8 @@ import pixellationFragmentShader from 'src/shaders/postprocessing/fragment-pixel
 import { getNormalizedBayerMatrix } from 'src/utils/misc';
 import { initializeScene } from 'src/utils/template';
 
-// TODO: add custom color option to bayer dither shader?
 // TODO: for film grain, create a different random value for each color channel?
 // TODO: add the ability to manually shift shader pass order in gui. is that possible?
-// TODO: add ability to toggle object texture on/off?
 // TODO: hexagonal pixellation pattern instead of square?
 // TODO: add lighting envmap
 

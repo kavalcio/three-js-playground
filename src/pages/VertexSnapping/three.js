@@ -57,9 +57,6 @@ export const init = (root) => {
     );
   };
 
-  // TODO: should this snap to world space or view space? right now it's snapping to view space
-  // TODO: pretty easy to make it snap to world space, just need to do snapping between the modelMatrix multiplication and the viewMatrix multiplication
-
   gui
     .add(customUniforms.uSnappingResolution, 'value')
     .min(0.5)
