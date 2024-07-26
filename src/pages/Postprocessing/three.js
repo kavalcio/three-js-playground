@@ -4,7 +4,6 @@ import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
-import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js';
 
 import vertexShader from 'src/shaders/dither/vertex.glsl';
@@ -20,6 +19,10 @@ import { initializeScene } from 'src/utils/template';
 // TODO: add the ability to manually shift shader pass order in gui. is that possible?
 // TODO: hexagonal pixellation pattern instead of square?
 // TODO: add lighting envmap
+
+const params = {
+  rotationSpeed: 1,
+};
 
 export const init = (root) => {
   const PixellationShader = {
@@ -71,35 +74,46 @@ export const init = (root) => {
     root,
     antialias: false,
   });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
   camera.position.set(58, 55, 130);
   controls.update();
 
   // Postprocessing
-  const composer = new EffectComposer(renderer);
+  const renderTarget = new THREE.WebGLRenderTarget(
+    window.innerWidth,
+    window.innerHeight,
+    {
+      samples: 2,
+    },
+  );
+
+  const composer = new EffectComposer(renderer, renderTarget);
+  composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   composer.outputColorSpace = THREE.LinearSRGBColorSpace;
+
   const renderPass = new RenderPass(scene, camera);
   composer.addPass(renderPass);
+
   const pixellationPass = new ShaderPass(PixellationShader, 'uMap');
   composer.addPass(pixellationPass);
   pixellationPass.enabled = false;
+
   const chromaticAberrationPass = new ShaderPass(
     ChromaticAberrationShader,
     'uMap',
   );
   composer.addPass(chromaticAberrationPass);
   chromaticAberrationPass.enabled = false;
-  const smaaPass = new SMAAPass(
-    window.innerWidth * renderer.getPixelRatio(),
-    window.innerHeight * renderer.getPixelRatio(),
-  );
-  composer.addPass(smaaPass);
+
   const bayerDitherPass = new ShaderPass(BayerDitherShader, 'uMap');
   composer.addPass(bayerDitherPass);
   bayerDitherPass.enabled = false;
+
   const filmGrainPass = new ShaderPass(FilmGrainShader, 'uMap');
   composer.addPass(filmGrainPass);
   filmGrainPass.enabled = false;
+
   const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
   composer.addPass(gammaCorrectionPass);
 
@@ -107,6 +121,7 @@ export const init = (root) => {
     pixellationPass.uniforms.uAspectRatio.value =
       window.innerWidth / window.innerHeight;
     composer.setSize(window.innerWidth, window.innerHeight);
+    composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   });
 
   // Create lights
@@ -143,6 +158,7 @@ export const init = (root) => {
   };
 
   // Create GUI
+  gui.add(params, 'rotationSpeed').min(0).max(3).name('Rotation Speed');
   const pixellationUi = gui.addFolder('Pixellation');
   pixellationUi.add(pixellationPass, 'enabled');
   pixellationUi
@@ -181,23 +197,26 @@ export const init = (root) => {
     .min(0)
     .max(1);
 
+  let objectPositionAngle = 0;
+
   function animate() {
     requestAnimationFrame(animate);
     stats.begin();
 
     // Rotate obj
-    obj1.rotation.y += 0.006;
-    obj1.rotation.z -= 0.006;
-    obj2.rotation.x -= 0.008;
-    obj2.rotation.z += 0.008;
-    obj3.rotation.x -= 0.008;
-    obj3.rotation.z += 0.008;
+    obj1.rotation.y += 0.006 * params.rotationSpeed;
+    obj1.rotation.z -= 0.006 * params.rotationSpeed;
+    obj2.rotation.x -= 0.008 * params.rotationSpeed;
+    obj2.rotation.z += 0.008 * params.rotationSpeed;
+    obj3.rotation.x -= 0.008 * params.rotationSpeed;
+    obj3.rotation.z += 0.008 * params.rotationSpeed;
 
     // Move obj in a circle
-    obj2.position.x = 30 * Math.cos(Date.now() * 0.0003);
-    obj2.position.y = 30 * Math.sin(Date.now() * 0.0003);
-    obj3.position.x = 30 * Math.cos(Date.now() * 0.0003 + Math.PI);
-    obj3.position.y = 30 * Math.sin(Date.now() * 0.0003 + Math.PI);
+    objectPositionAngle += 0.005 * params.rotationSpeed;
+    obj2.position.x = 30 * Math.cos(objectPositionAngle);
+    obj2.position.y = 30 * Math.sin(objectPositionAngle);
+    obj3.position.x = 30 * Math.cos(objectPositionAngle + Math.PI);
+    obj3.position.y = 30 * Math.sin(objectPositionAngle + Math.PI);
 
     tick();
 
