@@ -64,7 +64,9 @@ export const init = (root) => {
     wireframe: true,
   });
 
-  const { scene, renderer, camera, gui, stats } = initializeScene({ root });
+  const { scene, renderer, camera, gui, stats, controls } = initializeScene({
+    root,
+  });
 
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -288,6 +290,8 @@ export const init = (root) => {
   function animate() {
     requestAnimationFrame(animate);
     stats.begin();
+
+    controls.update();
 
     // Update physics world
     const deltaTime = clock.getDelta();

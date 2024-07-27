@@ -108,6 +108,8 @@ export const init = (root) => {
     requestAnimationFrame(tick);
     stats.begin();
 
+    controls.update();
+
     geometry.rotateY(0.001 * spinDirection);
 
     stats.end();

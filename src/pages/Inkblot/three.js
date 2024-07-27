@@ -58,6 +58,8 @@ export const init = (root) => {
     requestAnimationFrame(tick);
     stats.begin();
 
+    controls.update();
+
     const elapsedTime = clock.getElapsedTime();
 
     if (params.stepSize === 0) {

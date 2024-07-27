@@ -10,7 +10,9 @@ export const init = (root) => {
     distance: DISTANCE,
   };
 
-  const { scene, renderer, camera, gui, stats } = initializeScene({ root });
+  const { scene, renderer, camera, gui, stats, controls } = initializeScene({
+    root,
+  });
 
   scene.background = new THREE.Color(0x222222);
 
@@ -62,6 +64,8 @@ export const init = (root) => {
   function animate() {
     requestAnimationFrame(animate);
     stats.begin();
+
+    controls.update();
 
     // Move background
     bgMesh.position.set(0, 0, params.distance);

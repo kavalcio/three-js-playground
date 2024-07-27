@@ -21,22 +21,18 @@ export const initializeScene = ({ root, antialias = true } = {}) => {
   renderer.setSize(window.innerWidth, window.innerHeight);
   // renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
   root.appendChild(renderer.domElement);
 
-  function onWindowResize() {
+  const onWindowResize = () => {
     // Adjust camera and renderer on window resize
     camera.aspect = window.innerWidth / window.innerHeight;
-    const initialWindowHeight = window.innerHeight;
-    const tanFOV = Math.tan(((Math.PI / 180) * camera.fov) / 2);
-    camera.fov =
-      (360 / Math.PI) *
-      Math.atan(tanFOV * (window.innerHeight / initialWindowHeight));
     camera.updateProjectionMatrix();
-    camera.lookAt(scene.position);
     controls.update();
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.render(scene, camera);
-  }
+  };
+  onWindowResize();
   window.addEventListener('resize', onWindowResize, false);
 
   // Create GUI

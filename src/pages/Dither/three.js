@@ -31,7 +31,9 @@ import { getNormalizedBayerMatrix } from 'src/utils/misc';
 */
 
 export const init = ({ root }) => {
-  const { scene, renderer, camera, gui, stats } = initializeScene({ root });
+  const { scene, renderer, camera, gui, stats, controls } = initializeScene({
+    root,
+  });
 
   camera.position.z = 100;
   camera.fov = 35;
@@ -146,6 +148,8 @@ export const init = ({ root }) => {
   function animate() {
     requestAnimationFrame(animate);
     stats.begin();
+
+    controls.update();
 
     stats.end();
     renderer.render(scene, camera);

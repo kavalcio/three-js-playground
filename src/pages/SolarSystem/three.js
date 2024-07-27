@@ -54,6 +54,8 @@ export const init = (root) => {
     requestAnimationFrame(tick);
     stats.begin();
 
+    controls.update();
+
     scene.traverse(checkObjectNonBloomed);
     bloomComposer.render(scene, camera);
     scene.traverse(restoreNonBloomedObjectMaterial);

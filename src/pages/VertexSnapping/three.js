@@ -83,6 +83,8 @@ export const init = (root) => {
     requestAnimationFrame(tick);
     stats.begin();
 
+    controls.update();
+
     const elapsedTime = clock.getElapsedTime();
 
     customUniforms.uTime.value = elapsedTime;

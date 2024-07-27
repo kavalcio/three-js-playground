@@ -203,6 +203,8 @@ export const init = (root) => {
     requestAnimationFrame(animate);
     stats.begin();
 
+    controls.update();
+
     // Rotate obj
     obj1.rotation.y += 0.006 * params.rotationSpeed;
     obj1.rotation.z -= 0.006 * params.rotationSpeed;

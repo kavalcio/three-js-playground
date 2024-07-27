@@ -42,7 +42,14 @@ export const Dither = () => {
   return (
     <>
       <div ref={rootRef} />
-      <input type="file" id="fileInput" onChange={onImageSelect} />
+      <input
+        type="file"
+        id="fileInput"
+        style={{
+          display: 'none',
+        }}
+        onChange={onImageSelect}
+      />
     </>
   );
 };

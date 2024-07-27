@@ -149,6 +149,8 @@ export const init = ({ root, onModalOpen }) => {
     requestAnimationFrame(tick);
     stats.begin();
 
+    controls.update();
+
     const elapsedTime = clock.getElapsedTime();
 
     material.uniforms.uTime.value = elapsedTime;

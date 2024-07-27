@@ -36,7 +36,9 @@ export const init = (root) => {
       (key) => (params[key] = paramsToApply[key]),
     );
 
-  const { scene, renderer, camera, gui, stats } = initializeScene({ root });
+  const { scene, renderer, camera, gui, stats, controls } = initializeScene({
+    root,
+  });
 
   camera.position.z = 200;
 
@@ -200,6 +202,8 @@ export const init = (root) => {
   function animate() {
     requestAnimationFrame(animate);
     stats.begin();
+
+    controls.update();
 
     rotateBranch(tree.children[0], dynamicParams.rotationSpeed);
 

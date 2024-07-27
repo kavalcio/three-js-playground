@@ -186,6 +186,8 @@ export const init = (root) => {
     requestAnimationFrame(animate);
     stats.begin();
 
+    controls.update();
+
     const deltaTime = clock.getDelta();
 
     if (mixer) {
