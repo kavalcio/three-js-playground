@@ -13,6 +13,7 @@ import {
   Refraction,
   SolarSystem,
   VertexSnapping,
+  CoffeeSmoke,
 } from '@/pages';
 import { ROUTES } from '@/constants';
 
@@ -72,6 +73,10 @@ const router = createBrowserRouter([
       {
         path: ROUTES.demake.path,
         element: <Demake />,
+      },
+      {
+        path: ROUTES.coffeeSmoke.path,
+        element: <CoffeeSmoke />,
       },
     ],
   },

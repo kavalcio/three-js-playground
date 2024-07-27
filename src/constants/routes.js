@@ -43,4 +43,8 @@ export const ROUTES = {
     path: '/demake',
     title: 'Demake',
   },
+  coffeeSmoke: {
+    path: '/coffee-smoke',
+    title: 'Coffee Smoke',
+  },
 };
