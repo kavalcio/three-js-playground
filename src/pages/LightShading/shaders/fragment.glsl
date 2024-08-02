@@ -1,5 +1,11 @@
-uniform vec3 uColor;
-uniform float uSpecularPower;
+uniform vec3 uModelColor;
+uniform vec3 uAmbientColor;
+uniform float uAmbientIntensity;
+uniform vec3 uDirectionalColor;
+uniform float uDirectionalDiffuseIntensity;
+uniform float uDirectionalSpecularIntensity;
+uniform float uDirectionalSpecularPower;
+uniform vec3 uDirectionalPosition;
 
 varying vec3 vNormal;
 varying vec3 vModelPosition;
@@ -9,7 +15,7 @@ varying vec3 vModelPosition;
 
 void main()
 {
-  vec3 color = uColor;
+  vec3 color = uModelColor;
 
   vec3 normal = normalize(vNormal);
   vec3 viewDirection = normalize(vModelPosition - cameraPosition);
@@ -18,18 +24,19 @@ void main()
 
   // Ambient light
   light += ambientLight(
-    vec3(1.0, 1.0, 1.0),
-    0.05
+    uAmbientColor,
+    uAmbientIntensity
   );
 
   // Directional light
   light += directionalLight(
-    vec3(0.0, 0.0, 3.0),  // Light position
-    viewDirection,        // View direction
-    normal,               // Normal
-    vec3(1.0, 1.0, 1.0),  // Light color
-    1.0,                  // Light intensity
-    uSpecularPower        // Specular power
+    uDirectionalPosition,            // Light position
+    viewDirection,                  // View direction
+    normal,                         // Normal
+    uDirectionalColor,              // Light color
+    uDirectionalDiffuseIntensity,   // Diffuse Light intensity
+    uDirectionalSpecularIntensity,  // Specular Light intensity
+    uDirectionalSpecularPower       // Specular power
   );
 
   color *= light;

@@ -3,7 +3,8 @@ vec3 directionalLight(
   vec3 viewDirection,
   vec3 normal,
   vec3 lightColor,
-  float lightIntensity,
+  float diffuseLightIntensity,
+  float specularLightIntensity,
   float specularPower
 ) {
   vec3 lightDirection = normalize(lightPosition);
@@ -16,5 +17,5 @@ vec3 directionalLight(
   float specular = max(-dot(reflectedLightDirection, viewDirection), 0.0);
   specular = pow(specular, specularPower);
 
-  return lightColor * lightIntensity * (diffuse + specular);
+  return lightColor * (diffuseLightIntensity * diffuse + specularLightIntensity * specular);
 }

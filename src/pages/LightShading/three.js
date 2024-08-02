@@ -16,8 +16,16 @@ export const init = (root) => {
 
   const material = new THREE.ShaderMaterial({
     uniforms: {
-      uColor: { value: new THREE.Color(0xffffff) },
-      uSpecularPower: { value: 20 },
+      uModelColor: { value: new THREE.Color(0xffffff) },
+
+      uAmbientColor: { value: new THREE.Color(0xffffff) },
+      uAmbientIntensity: { value: 0.05 },
+
+      uDirectionalColor: { value: new THREE.Color(0xffffff) },
+      uDirectionalDiffuseIntensity: { value: 0.5 },
+      uDirectionalSpecularIntensity: { value: 0.5 },
+      uDirectionalSpecularPower: { value: 20 },
+      uDirectionalPosition: { value: new THREE.Vector3(0.0, 0.0, 3.0) },
     },
     vertexShader,
     fragmentShader,
@@ -52,10 +60,57 @@ export const init = (root) => {
   directionalLightHelper.position.set(0, 0, 3);
   scene.add(directionalLightHelper);
 
-  gui.addColor(material.uniforms.uColor, 'value').name('Color');
-  gui
-    .add(material.uniforms.uSpecularPower, 'value', 1, 100, 1)
+  // GUI
+  const sceneFolder = gui.addFolder('Scene');
+  sceneFolder
+    .addColor(material.uniforms.uModelColor, 'value')
+    .name('Model Color');
+
+  const ambientLightFolder = gui.addFolder('Ambient Light');
+  ambientLightFolder
+    .addColor(material.uniforms.uAmbientColor, 'value')
+    .name('Color');
+  ambientLightFolder
+    .add(material.uniforms.uAmbientIntensity, 'value', 0, 1, 0.01)
+    .name('Intensity');
+
+  const directionalLightFolder = gui.addFolder('Directional Light');
+  directionalLightFolder
+    .addColor(material.uniforms.uDirectionalColor, 'value')
+    .name('Color')
+    .onChange(() => {
+      directionalLightHelper.material.color =
+        material.uniforms.uDirectionalColor.value;
+    });
+  directionalLightFolder
+    .add(material.uniforms.uDirectionalDiffuseIntensity, 'value', 0, 2, 0.1)
+    .name('Diffuse Intensity');
+  directionalLightFolder
+    .add(material.uniforms.uDirectionalSpecularIntensity, 'value', 0, 2, 0.1)
+    .name('Specular Intensity');
+  directionalLightFolder
+    .add(material.uniforms.uDirectionalSpecularPower, 'value', 1, 100, 1)
     .name('Specular Power');
+
+  const onDirectionalLightPositionChange = () => {
+    directionalLightHelper.position.copy(
+      material.uniforms.uDirectionalPosition.value,
+    );
+    directionalLightHelper.lookAt(0, 0, 0);
+  };
+
+  directionalLightFolder
+    .add(material.uniforms.uDirectionalPosition.value, 'x', -10, 10, 0.1)
+    .name('Position X')
+    .onChange(onDirectionalLightPositionChange);
+  directionalLightFolder
+    .add(material.uniforms.uDirectionalPosition.value, 'y', -10, 10, 0.1)
+    .name('Position Y')
+    .onChange(onDirectionalLightPositionChange);
+  directionalLightFolder
+    .add(material.uniforms.uDirectionalPosition.value, 'z', -10, 10, 0.1)
+    .name('Position Z')
+    .onChange(onDirectionalLightPositionChange);
 
   const clock = new THREE.Clock();
 
