@@ -1,4 +1,5 @@
 varying vec3 vNormal;
+varying vec3 vModelPosition;
 
 void main()
 {
@@ -6,4 +7,5 @@ void main()
   gl_Position = projectionMatrix * viewMatrix * modelPosition;
 
   vNormal = (modelMatrix * vec4(normal, 0.0)).xyz;
+  vModelPosition = modelPosition.xyz;
 }

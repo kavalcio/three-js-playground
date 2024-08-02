@@ -5,6 +5,7 @@ import { initializeScene } from 'src/utils/template';
 import vertexShader from './shaders/vertex.glsl';
 import fragmentShader from './shaders/fragment.glsl';
 
+// TODO: add gui controls for light color, position, intensity, etc.
 export const init = (root) => {
   const { scene, renderer, camera, gui, stats, controls } = initializeScene({
     root,
@@ -16,6 +17,7 @@ export const init = (root) => {
   const material = new THREE.ShaderMaterial({
     uniforms: {
       uColor: { value: new THREE.Color(0xffffff) },
+      uSpecularPower: { value: 20 },
     },
     vertexShader,
     fragmentShader,
@@ -42,7 +44,18 @@ export const init = (root) => {
   icosahedron.position.x = 3;
   scene.add(icosahedron);
 
+  // Light helpers
+  const directionalLightHelper = new THREE.Mesh(
+    new THREE.PlaneGeometry(),
+    new THREE.MeshBasicMaterial({ side: THREE.DoubleSide }),
+  );
+  directionalLightHelper.position.set(0, 0, 3);
+  scene.add(directionalLightHelper);
+
   gui.addColor(material.uniforms.uColor, 'value').name('Color');
+  gui
+    .add(material.uniforms.uSpecularPower, 'value', 1, 100, 1)
+    .name('Specular Power');
 
   const clock = new THREE.Clock();
 
