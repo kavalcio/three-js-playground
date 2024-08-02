@@ -51,4 +51,8 @@ export const ROUTES = {
     path: '/hologram',
     title: 'Hologram',
   },
+  lightShading: {
+    path: '/light-shading',
+    title: 'Light Shading',
+  },
 };

@@ -12,3 +12,4 @@ export * from './FractalBranches';
 export * from './Postprocessing';
 export * from './Demake';
 export * from './Hologram';
+export * from './LightShading';

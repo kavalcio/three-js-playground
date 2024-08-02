@@ -22,6 +22,7 @@ export const initializeScene = ({ root, antialias = true } = {}) => {
   // renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
+  controls.dampingFactor = 0.18;
   root.appendChild(renderer.domElement);
 
   const onWindowResize = () => {
