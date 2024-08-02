@@ -1,17 +1,26 @@
 uniform vec3 uModelColor;
+
 uniform vec3 uAmbientColor;
 uniform float uAmbientIntensity;
+
 uniform vec3 uDirectionalColor;
 uniform float uDirectionalDiffuseIntensity;
 uniform float uDirectionalSpecularIntensity;
 uniform float uDirectionalSpecularPower;
 uniform vec3 uDirectionalPosition;
 
+uniform vec3 uPointColor;
+uniform float uPointDiffuseIntensity;
+uniform float uPointSpecularIntensity;
+uniform float uPointSpecularPower;
+uniform vec3 uPointPosition;
+
 varying vec3 vNormal;
 varying vec3 vModelPosition;
 
 #include ./utils/ambientLight.glsl
 #include ./utils/directionalLight.glsl
+#include ./utils/pointLight.glsl
 
 void main()
 {
@@ -30,13 +39,25 @@ void main()
 
   // Directional light
   light += directionalLight(
-    uDirectionalPosition,            // Light position
+    uDirectionalPosition,           // Light position
     viewDirection,                  // View direction
     normal,                         // Normal
     uDirectionalColor,              // Light color
     uDirectionalDiffuseIntensity,   // Diffuse Light intensity
     uDirectionalSpecularIntensity,  // Specular Light intensity
     uDirectionalSpecularPower       // Specular power
+  );
+
+  // Point light
+  light += pointLight(
+    uPointPosition,                 // Light position
+    vModelPosition,                 // Model position
+    viewDirection,                  // View direction
+    normal,                         // Normal
+    uPointColor,                    // Light color
+    uPointDiffuseIntensity,         // Diffuse Light intensity
+    uPointSpecularIntensity,        // Specular Light intensity
+    uPointSpecularPower             // Specular power
   );
 
   color *= light;

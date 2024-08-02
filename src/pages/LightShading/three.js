@@ -5,31 +5,51 @@ import { initializeScene } from 'src/utils/template';
 import vertexShader from './shaders/vertex.glsl';
 import fragmentShader from './shaders/fragment.glsl';
 
-// TODO: add gui controls for light color, position, intensity, etc.
+const LPB = 5; // Light position bounds
+
+const params = {
+  ambientColor: 0xffffff,
+  directionalColor: 0xff8c2e,
+  pointColor: 0xd60270,
+};
+
 export const init = (root) => {
   const { scene, renderer, camera, gui, stats, controls } = initializeScene({
     root,
   });
-  // renderer.setClearColor(0x222233);
 
   camera.position.set(7, 7, 7);
+
+  /**
+   * Material
+   */
 
   const material = new THREE.ShaderMaterial({
     uniforms: {
       uModelColor: { value: new THREE.Color(0xffffff) },
 
-      uAmbientColor: { value: new THREE.Color(0xffffff) },
-      uAmbientIntensity: { value: 0.05 },
+      uAmbientColor: { value: new THREE.Color(params.ambientColor) },
+      uAmbientIntensity: { value: 0.01 },
 
-      uDirectionalColor: { value: new THREE.Color(0xffffff) },
-      uDirectionalDiffuseIntensity: { value: 0.5 },
-      uDirectionalSpecularIntensity: { value: 0.5 },
+      uDirectionalColor: { value: new THREE.Color(params.directionalColor) },
+      uDirectionalDiffuseIntensity: { value: 0.6 },
+      uDirectionalSpecularIntensity: { value: 1.0 },
       uDirectionalSpecularPower: { value: 20 },
       uDirectionalPosition: { value: new THREE.Vector3(0.0, 0.0, 3.0) },
+
+      uPointColor: { value: new THREE.Color(params.pointColor) },
+      uPointDiffuseIntensity: { value: 1.2 },
+      uPointSpecularIntensity: { value: 1.2 },
+      uPointSpecularPower: { value: 15 },
+      uPointPosition: { value: new THREE.Vector3(1.2, 1.6, 0.8) },
     },
     vertexShader,
     fragmentShader,
   });
+
+  /**
+   * Objects
+   */
 
   // Torus knot
   const torusKnot = new THREE.Mesh(
@@ -52,33 +72,58 @@ export const init = (root) => {
   icosahedron.position.x = 3;
   scene.add(icosahedron);
 
-  // Light helpers
+  /**
+   * Light helpers
+   */
   const directionalLightHelper = new THREE.Mesh(
     new THREE.PlaneGeometry(),
     new THREE.MeshBasicMaterial({ side: THREE.DoubleSide }),
   );
-  directionalLightHelper.position.set(0, 0, 3);
+  directionalLightHelper.position.copy(
+    material.uniforms.uDirectionalPosition.value,
+  );
+  directionalLightHelper.lookAt(0, 0, 0);
+  directionalLightHelper.material.color =
+    material.uniforms.uDirectionalColor.value;
   scene.add(directionalLightHelper);
 
-  // GUI
+  const pointLightHelper = new THREE.Mesh(
+    new THREE.SphereGeometry(0.1),
+    new THREE.MeshBasicMaterial(),
+  );
+  pointLightHelper.position.copy(material.uniforms.uPointPosition.value);
+  pointLightHelper.material.color = material.uniforms.uPointColor.value;
+  scene.add(pointLightHelper);
+
+  /**
+   * GUI
+   */
+
+  // Scene
   const sceneFolder = gui.addFolder('Scene');
   sceneFolder
     .addColor(material.uniforms.uModelColor, 'value')
     .name('Model Color');
 
+  // Ambient light
   const ambientLightFolder = gui.addFolder('Ambient Light');
   ambientLightFolder
-    .addColor(material.uniforms.uAmbientColor, 'value')
-    .name('Color');
+    .addColor(params, 'ambientColor')
+    .name('Color')
+    .onChange((value) => {
+      material.uniforms.uAmbientColor.value.set(value);
+    });
   ambientLightFolder
     .add(material.uniforms.uAmbientIntensity, 'value', 0, 1, 0.01)
     .name('Intensity');
 
+  // Directional light
   const directionalLightFolder = gui.addFolder('Directional Light');
   directionalLightFolder
-    .addColor(material.uniforms.uDirectionalColor, 'value')
+    .addColor(params, 'directionalColor')
     .name('Color')
     .onChange(() => {
+      material.uniforms.uDirectionalColor.value.set(params.directionalColor);
       directionalLightHelper.material.color =
         material.uniforms.uDirectionalColor.value;
     });
@@ -91,26 +136,58 @@ export const init = (root) => {
   directionalLightFolder
     .add(material.uniforms.uDirectionalSpecularPower, 'value', 1, 100, 1)
     .name('Specular Power');
-
   const onDirectionalLightPositionChange = () => {
     directionalLightHelper.position.copy(
       material.uniforms.uDirectionalPosition.value,
     );
     directionalLightHelper.lookAt(0, 0, 0);
   };
-
   directionalLightFolder
-    .add(material.uniforms.uDirectionalPosition.value, 'x', -10, 10, 0.1)
+    .add(material.uniforms.uDirectionalPosition.value, 'x', -LPB, LPB, 0.1)
     .name('Position X')
     .onChange(onDirectionalLightPositionChange);
   directionalLightFolder
-    .add(material.uniforms.uDirectionalPosition.value, 'y', -10, 10, 0.1)
+    .add(material.uniforms.uDirectionalPosition.value, 'y', -LPB, LPB, 0.1)
     .name('Position Y')
     .onChange(onDirectionalLightPositionChange);
   directionalLightFolder
-    .add(material.uniforms.uDirectionalPosition.value, 'z', -10, 10, 0.1)
+    .add(material.uniforms.uDirectionalPosition.value, 'z', -LPB, LPB, 0.1)
     .name('Position Z')
     .onChange(onDirectionalLightPositionChange);
+
+  // Point light
+  const pointLightFolder = gui.addFolder('Point Light');
+  pointLightFolder
+    .addColor(params, 'pointColor')
+    .name('Color')
+    .onChange(() => {
+      material.uniforms.uPointColor.value.set(params.pointColor);
+      pointLightHelper.material.color = material.uniforms.uPointColor.value;
+    });
+  pointLightFolder
+    .add(material.uniforms.uPointDiffuseIntensity, 'value', 0, 2, 0.1)
+    .name('Diffuse Intensity');
+  pointLightFolder
+    .add(material.uniforms.uPointSpecularIntensity, 'value', 0, 2, 0.1)
+    .name('Specular Intensity');
+  pointLightFolder
+    .add(material.uniforms.uPointSpecularPower, 'value', 1, 100, 1)
+    .name('Specular Power');
+  const onPointLightPositionChange = () => {
+    pointLightHelper.position.copy(material.uniforms.uPointPosition.value);
+  };
+  pointLightFolder
+    .add(material.uniforms.uPointPosition.value, 'x', -LPB, LPB, 0.1)
+    .name('Position X')
+    .onChange(onPointLightPositionChange);
+  pointLightFolder
+    .add(material.uniforms.uPointPosition.value, 'y', -LPB, LPB, 0.1)
+    .name('Position Y')
+    .onChange(onPointLightPositionChange);
+  pointLightFolder
+    .add(material.uniforms.uPointPosition.value, 'z', -LPB, LPB, 0.1)
+    .name('Position Z')
+    .onChange(onPointLightPositionChange);
 
   const clock = new THREE.Clock();
 
