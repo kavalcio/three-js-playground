@@ -14,6 +14,7 @@ import {
   SolarSystem,
   VertexSnapping,
   CoffeeSmoke,
+  Hologram,
 } from '@/pages';
 import { ROUTES } from '@/constants';
 
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
         path: ROUTES.coffeeSmoke.path,
         element: <CoffeeSmoke />,
       },
+      // {
+      //   path: ROUTES.hologram.path,
+      //   element: <Hologram />,
+      // },
     ],
   },
 ]);

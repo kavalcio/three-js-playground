@@ -47,4 +47,8 @@ export const ROUTES = {
     path: '/coffee-smoke',
     title: 'Coffee Smoke',
   },
+  hologram: {
+    path: '/hologram',
+    title: 'Hologram',
+  },
 };
