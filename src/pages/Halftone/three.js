@@ -24,6 +24,7 @@ export const init = (root) => {
       uResolution: {
         value: new THREE.Vector2(window.innerWidth, window.innerHeight),
       },
+      uInvert: { value: false },
     },
     vertexShader,
     fragmentShader,
@@ -74,8 +75,9 @@ export const init = (root) => {
     .addColor(params, 'modelColor')
     .name('Model color')
     .onChange(() => {
-      material.uniforms.vModelColor.value.set(params.modelColor);
+      material.uniforms.uModelColor.value.set(params.modelColor);
     });
+  gui.add(material.uniforms.uInvert, 'value').name('Invert');
 
   const clock = new THREE.Clock();
 
