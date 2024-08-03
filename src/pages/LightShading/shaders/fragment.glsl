@@ -18,9 +18,9 @@ uniform vec3 uPointPosition;
 varying vec3 vNormal;
 varying vec3 vModelPosition;
 
-#include ./utils/ambientLight.glsl
-#include ./utils/directionalLight.glsl
-#include ./utils/pointLight.glsl
+#include ../../../shaders/lighting/ambientLight.glsl
+#include ../../../shaders/lighting/directionalLight.glsl
+#include ../../../shaders/lighting/pointLight.glsl
 
 void main()
 {

@@ -51,6 +51,10 @@ export const ROUTES = {
     path: '/hologram',
     title: 'Hologram',
   },
+  halftone: {
+    path: '/halftone',
+    title: 'Halftone',
+  },
   lightShading: {
     path: '/light-shading',
     title: 'Light Shading',

@@ -15,6 +15,7 @@ import {
   VertexSnapping,
   CoffeeSmoke,
   Hologram,
+  Halftone,
   LightShading,
 } from '@/pages';
 import { ROUTES } from '@/constants';
@@ -83,6 +84,10 @@ const router = createBrowserRouter([
       {
         path: ROUTES.hologram.path,
         element: <Hologram />,
+      },
+      {
+        path: ROUTES.halftone.path,
+        element: <Halftone />,
       },
       {
         path: ROUTES.lightShading.path,
