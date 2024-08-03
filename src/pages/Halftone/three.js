@@ -16,14 +16,24 @@ export const init = (root) => {
   });
   renderer.setClearColor(params.backgroundColor);
 
-  camera.position.set(7, 7, 7);
+  camera.position.set(0, 0, 12);
 
   const material = new THREE.ShaderMaterial({
     uniforms: {
-      vModelColor: { value: new THREE.Color(params.modelColor) },
+      uModelColor: { value: new THREE.Color(params.modelColor) },
+      uResolution: {
+        value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+      },
     },
     vertexShader,
     fragmentShader,
+  });
+
+  window.addEventListener('resize', () => {
+    material.uniforms.uResolution.value.set(
+      window.innerWidth,
+      window.innerHeight,
+    );
   });
 
   /**
