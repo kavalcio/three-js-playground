@@ -44,17 +44,18 @@ void main()
   uv = mod(uv * repetitions, 1.);
 
   float circlePattern = (1. - distance(vec2(0.5), uv));
-  float brightness = (0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b);
+  float brightness = min((0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b), 1.0);
 
-  // TODO: change step function threshold based on brightness of uModelColor
+  // TODO: change step function threshold based on brightness of uModelColor. Tried this and it's a bit tricky.
+  float blendedBrightness, halftone;
   if (uInvert) {
-    float invertedBlendedBrightness = blendLinearLight(circlePattern, 1. - brightness);
-    float invertedHalftone = step(0.95, invertedBlendedBrightness);
+    blendedBrightness = blendLinearLight(circlePattern, 1. - brightness);
+    halftone = step(0.95, blendedBrightness);
 
-    color = mix(color, uShadowColor, invertedHalftone);
+    color = mix(color, uShadowColor, halftone);
   } else {
-    float blendedBrightness = blendLinearLight(circlePattern, brightness);
-    float halftone = step(0.3, blendedBrightness);
+    blendedBrightness = blendLinearLight(circlePattern, brightness);
+    halftone = step(0.3, blendedBrightness);
 
     color = mix(color, uShadowColor, 1. - halftone);
   }
