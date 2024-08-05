@@ -14,6 +14,7 @@ import chromaticAberrationFragmentShader from 'src/shaders/postprocessing/fragme
 import { getNormalizedBayerMatrix } from 'src/utils/misc';
 import { initializeScene } from 'src/utils/template';
 
+// TODO: enable gzip compression for 3d files (.glb, .gltf, etc.)
 export const init = (root) => {
   const PixellationShader = {
     uniforms: {

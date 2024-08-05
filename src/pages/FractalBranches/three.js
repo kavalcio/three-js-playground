@@ -10,6 +10,7 @@ const RECURSION_DEPTH = 5;
 const ROTATION_SPEED = 0.001;
 const BRANCH_SHRINK_RATE = 0.7;
 
+// TODO: add InstancedMeshes
 export const init = (root) => {
   const params = {
     baseHeight:

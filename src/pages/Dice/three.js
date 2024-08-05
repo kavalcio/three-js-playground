@@ -27,6 +27,8 @@ const WALL_HEIGHT = 3;
 // TODO: add d10
 // TODO: normals not working for cubes, probably because it's an indexed geometry
 // TODO: each polygon triangle has its own normal. merge these for faces
+// TODO: add InstancedMeshes
+// TODO: properly dispose of things when they get removed
 
 export const init = (root) => {
   let params = {
