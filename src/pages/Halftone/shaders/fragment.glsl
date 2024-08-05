@@ -7,46 +7,7 @@ varying vec3 vModelPosition;
 
 #include ../../../shaders/lighting/ambientLight.glsl
 #include ../../../shaders/lighting/directionalLight.glsl
-
-float blendLinearBurn(float base, float blend) {
-	// Note : Same implementation as BlendSubtractf
-	return max(base+blend-1.0,0.0);
-}
-
-vec3 blendLinearBurn(vec3 base, vec3 blend) {
-	// Note : Same implementation as BlendSubtract
-	return max(base+blend-vec3(1.0),vec3(0.0));
-}
-
-vec3 blendLinearBurn(vec3 base, vec3 blend, float opacity) {
-	return (blendLinearBurn(base, blend) * opacity + base * (1.0 - opacity));
-}
-
-float blendLinearDodge(float base, float blend) {
-	// Note : Same implementation as BlendAddf
-	return min(base+blend,1.0);
-}
-
-vec3 blendLinearDodge(vec3 base, vec3 blend) {
-	// Note : Same implementation as BlendAdd
-	return min(base+blend,vec3(1.0));
-}
-
-vec3 blendLinearDodge(vec3 base, vec3 blend, float opacity) {
-	return (blendLinearDodge(base, blend) * opacity + base * (1.0 - opacity));
-}
-
-float blendLinearLight(float base, float blend) {
-	return blend<0.5?blendLinearBurn(base,(2.0*blend)):blendLinearDodge(base,(2.0*(blend-0.5)));
-}
-
-vec3 blendLinearLight(vec3 base, vec3 blend) {
-	return vec3(blendLinearLight(base.r,blend.r),blendLinearLight(base.g,blend.g),blendLinearLight(base.b,blend.b));
-}
-
-vec3 blendLinearLight(vec3 base, vec3 blend, float opacity) {
-	return (blendLinearLight(base, blend) * opacity + base * (1.0 - opacity));
-}
+#include ../../../shaders/misc/blendLinearLight.glsl
 
 void main()
 {
@@ -66,12 +27,12 @@ void main()
   // Directional light
   light += directionalLight(
     vec3(1.),           // Light position
-    viewDirection,                  // View direction
-    normal,                         // Normal
-    vec3(1.),              // Light color
-    1.3,   // Diffuse Light intensity
-    1.2,  // Specular Light intensity
-    15.       // Specular power
+    viewDirection,      // View direction
+    normal,             // Normal
+    vec3(1.),           // Light color
+    1.3,                // Diffuse Light intensity
+    1.2,                // Specular Light intensity
+    15.                 // Specular power
   );
 
   color *= light;
@@ -86,21 +47,15 @@ void main()
   float brightness = (0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b);
 
   // TODO: change step function threshold based on brightness of uModelColor
-  // float baseBrightness = (0.2126 * uModelColor.r + 0.7152 * uModelColor.g + 0.0722 * uModelColor.b);
-
-  float blendedBrightness = blendLinearLight(circlePattern, brightness);
-  float halftone = step(0.3, blendedBrightness);
-
-  float invertedBlendedBrightness = blendLinearLight(circlePattern, 1. - brightness);
-  float invertedHalftone = step(0.95, invertedBlendedBrightness);
-  
-
-  // Final color
-  // gl_FragColor = vec4(vec3(1. - halftone), 1.0);
-
   if (uInvert) {
+    float invertedBlendedBrightness = blendLinearLight(circlePattern, 1. - brightness);
+    float invertedHalftone = step(0.95, invertedBlendedBrightness);
+
     gl_FragColor = mix(vec4(color, 1.0), vec4(0.3, 0., 0.5, 1.), invertedHalftone);
   } else {
+    float blendedBrightness = blendLinearLight(circlePattern, brightness);
+    float halftone = step(0.3, blendedBrightness);
+
     gl_FragColor = mix(vec4(color, 1.0), vec4(0.3, 0., 0.5, 1.), 1. - halftone);
   }
 
