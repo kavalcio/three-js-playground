@@ -6,21 +6,22 @@ import vertexShader from './shaders/vertex.glsl';
 import fragmentShader from './shaders/fragment.glsl';
 
 const params = {
-  backgroundColor: 0x222233,
   modelColor: 0xff794d,
+  shadowColor: 0x7208aa,
 };
 
 export const init = (root) => {
   const { scene, renderer, camera, gui, stats, controls } = initializeScene({
     root,
   });
-  renderer.setClearColor(params.backgroundColor);
+  renderer.setClearColor(0x222233);
 
   camera.position.set(0, 0, 12);
 
   const material = new THREE.ShaderMaterial({
     uniforms: {
       uModelColor: { value: new THREE.Color(params.modelColor) },
+      uShadowColor: { value: new THREE.Color(params.shadowColor) },
       uResolution: {
         value: new THREE.Vector2(window.innerWidth, window.innerHeight),
       },
@@ -66,16 +67,16 @@ export const init = (root) => {
    * GUI
    */
   gui
-    .addColor(params, 'backgroundColor')
-    .name('Background color')
-    .onChange(() => {
-      renderer.setClearColor(params.backgroundColor);
-    });
-  gui
     .addColor(params, 'modelColor')
     .name('Model color')
     .onChange(() => {
       material.uniforms.uModelColor.value.set(params.modelColor);
+    });
+  gui
+    .addColor(params, 'shadowColor')
+    .name('Shadow color')
+    .onChange(() => {
+      material.uniforms.uShadowColor.value.set(params.shadowColor);
     });
   gui.add(material.uniforms.uInvert, 'value').name('Invert');
 

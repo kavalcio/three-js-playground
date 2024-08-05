@@ -1,4 +1,5 @@
 uniform vec3 uModelColor;
+uniform vec3 uShadowColor;
 uniform vec2 uResolution;
 uniform bool uInvert;
 
@@ -43,7 +44,6 @@ void main()
   uv = mod(uv * repetitions, 1.);
 
   float circlePattern = (1. - distance(vec2(0.5), uv));
-
   float brightness = (0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b);
 
   // TODO: change step function threshold based on brightness of uModelColor
@@ -51,13 +51,15 @@ void main()
     float invertedBlendedBrightness = blendLinearLight(circlePattern, 1. - brightness);
     float invertedHalftone = step(0.95, invertedBlendedBrightness);
 
-    gl_FragColor = mix(vec4(color, 1.0), vec4(0.3, 0., 0.5, 1.), invertedHalftone);
+    color = mix(color, uShadowColor, invertedHalftone);
   } else {
     float blendedBrightness = blendLinearLight(circlePattern, brightness);
     float halftone = step(0.3, blendedBrightness);
 
-    gl_FragColor = mix(vec4(color, 1.0), vec4(0.3, 0., 0.5, 1.), 1. - halftone);
+    color = mix(color, uShadowColor, 1. - halftone);
   }
+
+  gl_FragColor = vec4(color, 1.0);
 
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
