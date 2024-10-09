@@ -59,4 +59,8 @@ export const ROUTES = {
     path: '/light-shading',
     title: 'Light Shading',
   },
+  r3fDemo: {
+    path: '/r3f-demo',
+    title: 'React Three Fiber Demo',
+  },
 };

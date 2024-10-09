@@ -17,6 +17,7 @@ import {
   Hologram,
   Halftone,
   LightShading,
+  R3FDemo,
 } from '@/pages';
 import { ROUTES } from '@/constants';
 
@@ -92,6 +93,10 @@ const router = createBrowserRouter([
       {
         path: ROUTES.lightShading.path,
         element: <LightShading />,
+      },
+      {
+        path: ROUTES.r3fDemo.path,
+        element: <R3FDemo />,
       },
     ],
   },

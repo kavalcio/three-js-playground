@@ -14,6 +14,7 @@ export const Home = () => {
       }}
     >
       Demos
+      {/* TODO: split up into Three.js Journey, Shaders, Other */}
       {Object.values(ROUTES).map((route) => (
         <Link key={route.path} to={route.path}>
           {route.title}

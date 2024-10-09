@@ -14,3 +14,4 @@ export * from './Demake';
 export * from './Hologram';
 export * from './Halftone';
 export * from './LightShading';
+export * from './R3FDemo';
