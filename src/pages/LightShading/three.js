@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 
+import { TransformControls } from 'three/addons/controls/TransformControls.js';
+
 import { initializeScene } from 'src/utils/template';
 
 import vertexShader from './shaders/vertex.glsl';
 import fragmentShader from './shaders/fragment.glsl';
-
-const LPB = 5; // Light position bounds
 
 const params = {
   ambientColor: 0xffffff,
@@ -73,7 +73,7 @@ export const init = (root) => {
   scene.add(icosahedron);
 
   /**
-   * Light helpers
+   * Light helpers and transform controls
    */
   const directionalLightHelper = new THREE.Mesh(
     new THREE.PlaneGeometry(),
@@ -87,13 +87,39 @@ export const init = (root) => {
     material.uniforms.uDirectionalColor.value;
   scene.add(directionalLightHelper);
 
+  const directionalLightControl = new TransformControls(
+    camera,
+    renderer.domElement,
+  );
+  directionalLightControl.attach(directionalLightHelper);
+  directionalLightControl.addEventListener('change', () => {
+    material.uniforms.uDirectionalPosition.value.copy(
+      directionalLightHelper.position,
+    );
+    directionalLightHelper.lookAt(0, 0, 0);
+  });
+  directionalLightControl.addEventListener('dragging-changed', (event) => {
+    controls.enabled = !event.value;
+  });
+  scene.add(directionalLightControl);
+
   const pointLightHelper = new THREE.Mesh(
-    new THREE.SphereGeometry(0.1),
+    new THREE.SphereGeometry(0.2),
     new THREE.MeshBasicMaterial(),
   );
   pointLightHelper.position.copy(material.uniforms.uPointPosition.value);
   pointLightHelper.material.color = material.uniforms.uPointColor.value;
   scene.add(pointLightHelper);
+
+  const pointLightControl = new TransformControls(camera, renderer.domElement);
+  pointLightControl.attach(pointLightHelper);
+  pointLightControl.addEventListener('change', () => {
+    material.uniforms.uPointPosition.value.copy(pointLightHelper.position);
+  });
+  pointLightControl.addEventListener('dragging-changed', (event) => {
+    controls.enabled = !event.value;
+  });
+  scene.add(pointLightControl);
 
   /**
    * GUI
@@ -136,24 +162,6 @@ export const init = (root) => {
   directionalLightFolder
     .add(material.uniforms.uDirectionalSpecularPower, 'value', 1, 100, 1)
     .name('Specular Power');
-  const onDirectionalLightPositionChange = () => {
-    directionalLightHelper.position.copy(
-      material.uniforms.uDirectionalPosition.value,
-    );
-    directionalLightHelper.lookAt(0, 0, 0);
-  };
-  directionalLightFolder
-    .add(material.uniforms.uDirectionalPosition.value, 'x', -LPB, LPB, 0.1)
-    .name('Position X')
-    .onChange(onDirectionalLightPositionChange);
-  directionalLightFolder
-    .add(material.uniforms.uDirectionalPosition.value, 'y', -LPB, LPB, 0.1)
-    .name('Position Y')
-    .onChange(onDirectionalLightPositionChange);
-  directionalLightFolder
-    .add(material.uniforms.uDirectionalPosition.value, 'z', -LPB, LPB, 0.1)
-    .name('Position Z')
-    .onChange(onDirectionalLightPositionChange);
 
   // Point light
   const pointLightFolder = gui.addFolder('Point Light');
@@ -173,21 +181,6 @@ export const init = (root) => {
   pointLightFolder
     .add(material.uniforms.uPointSpecularPower, 'value', 1, 100, 1)
     .name('Specular Power');
-  const onPointLightPositionChange = () => {
-    pointLightHelper.position.copy(material.uniforms.uPointPosition.value);
-  };
-  pointLightFolder
-    .add(material.uniforms.uPointPosition.value, 'x', -LPB, LPB, 0.1)
-    .name('Position X')
-    .onChange(onPointLightPositionChange);
-  pointLightFolder
-    .add(material.uniforms.uPointPosition.value, 'y', -LPB, LPB, 0.1)
-    .name('Position Y')
-    .onChange(onPointLightPositionChange);
-  pointLightFolder
-    .add(material.uniforms.uPointPosition.value, 'z', -LPB, LPB, 0.1)
-    .name('Position Z')
-    .onChange(onPointLightPositionChange);
 
   const clock = new THREE.Clock();
 

@@ -25,10 +25,10 @@ const WALL_HEIGHT = 3;
 // TODO: add sounds
 // TODO: add up numbers on the upper face of each die after a roll
 // TODO: add d10
-// TODO: normals not working for cubes, probably because it's an indexed geometry
 // TODO: each polygon triangle has its own normal. merge these for faces
 // TODO: add InstancedMeshes
 // TODO: properly dispose of things when they get removed
+// TODO: replace face normals with a raycast to find the down face
 
 export const init = (root) => {
   let params = {
@@ -108,8 +108,7 @@ export const init = (root) => {
 
   // Create physics world
   world = new CANNON.World();
-  world.gravity.set(0, -98.1, 0);
-  // world.gravity.set(0, 0, 0);
+  world.gravity.set(0, -20, 0);
   world.allowSleep = true;
 
   // Create contact material
@@ -140,6 +139,7 @@ export const init = (root) => {
   const floorBody = new CANNON.Body({
     mass: 0,
     shape: floorShape,
+    sleepSpeedLimit: 0,
   });
   floorBody.position.set(0, 0, 0);
   floorBody.quaternion.setFromAxisAngle(
@@ -204,8 +204,8 @@ export const init = (root) => {
         Math.random() * 5,
         Math.random() * 5,
       ),
-      sleepSpeedLimit: 1.0,
-      sleepTimeLimit: 1.0,
+      sleepSpeedLimit: 1.5,
+      sleepTimeLimit: 1.5,
     });
 
     return { mesh, body };
@@ -297,7 +297,7 @@ export const init = (root) => {
 
     // Update physics world
     const deltaTime = clock.getDelta();
-    world.step(1 / 60, deltaTime, 3);
+    world.step(1 / 60, deltaTime * 2, 3);
 
     // Update objects
     objectsToUpdate.forEach((object) => {
