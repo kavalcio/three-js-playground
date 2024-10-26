@@ -1,5 +1,6 @@
 export * from './Home';
 export * from './Dice';
+export * from './DiceFiber';
 export * from './Dither';
 export * from './Galaxy';
 export * from './CoffeeSmoke';
