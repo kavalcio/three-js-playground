@@ -45,6 +45,11 @@ export const ROUTES = {
     title: 'Dice',
     group: ROUTE_GROUPS.other.key,
   },
+  diceFiber: {
+    path: '/dice-fiber',
+    title: 'Dice Fiber',
+    group: ROUTE_GROUPS.other.key,
+  },
   dither: {
     path: '/dither',
     title: 'Dither',

@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 
 import {
   Dice,
+  DiceFiber,
   Dither,
   FractalBranches,
   Galaxy,
@@ -21,6 +22,7 @@ import {
 } from '@/pages';
 import { ROUTES } from '@/constants';
 
+// TODO: add dependabot to github?
 // TODO: add proper 404 page
 // TODO: add ability to preset demo params through query params
 // TODO: canvas gets re-added to DOM when saving file instead of replacing old instance
@@ -45,6 +47,10 @@ const router = createBrowserRouter([
       {
         path: ROUTES.dice.path,
         element: <Dice />,
+      },
+      {
+        path: ROUTES.diceFiber.path,
+        element: <DiceFiber />,
       },
       {
         path: ROUTES.galaxy.path,
