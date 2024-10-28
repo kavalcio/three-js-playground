@@ -1,58 +1,64 @@
 import { useFrame } from '@react-three/fiber';
 import { Environment, OrbitControls, Stats } from '@react-three/drei';
 import { InstancedRigidBodies, Physics, RigidBody } from '@react-three/rapier';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { button, useControls } from 'leva';
 
-const COUNT = 50;
+const COUNT = 10;
+const MAX_COUNT = 200;
 
+const generateRandomDiceInstances = (count) => {
+  const instances = [];
+
+  for (let i = 0; i < count; i++) {
+    instances.push({
+      key: 'instance_' + Math.random(),
+      position: [Math.random() * 10, Math.random() * 10, Math.random() * 10],
+      rotation: [Math.random(), Math.random(), Math.random()],
+    });
+  }
+
+  return instances;
+};
+
+// TODO: frustum culling causes instances to disappear at certain camera positions and angles, fix it
 export const Scene = () => {
   const rigidBodies = useRef();
 
-  useEffect(() => {
-    if (!rigidBodies.current) {
-      return;
-    }
+  const [d6Instances, setD6Instances] = useState([]);
+  const [d20Instances, setD20Instances] = useState([]);
 
-    // // You can access individual instanced by their index
-    // rigidBodies.current[40].applyImpulse({ x: 0, y: 10, z: 0 }, true);
-    // rigidBodies.current.at(100).applyImpulse({ x: 0, y: 10, z: 0 }, true);
+  // const { d6Count, d20Count } = useControls({
+  //   d6Count: { value: COUNT, min: 1, max: 100, step: 1 },
+  //   d20Count: { value: COUNT, min: 1, max: 100, step: 1 },
+  //   // test: { value: () => console.log('test') },
+  // });
 
-    // Or update all instances
-    rigidBodies.current.forEach((api) => {
-      api.applyImpulse({ x: 0, y: 10, z: 0 }, true);
-    });
-  }, []);
+  const createDiceInstances = ({ d6Count, d20Count }) => {
+    setD6Instances(generateRandomDiceInstances(d6Count));
+    setD20Instances(generateRandomDiceInstances(d20Count));
+  };
 
-  useFrame((state, delta) => {});
-
-  const instances = useMemo(() => {
-    const instances = [];
-
-    for (let i = 0; i < COUNT; i++) {
-      instances.push({
-        key: 'instance_' + Math.random(),
-        position: [Math.random() * 10, Math.random() * 10, Math.random() * 10],
-        rotation: [Math.random(), Math.random(), Math.random()],
-      });
-    }
-
-    return instances;
-  }, []);
+  useControls({
+    d6Count: { value: COUNT, min: 1, max: 100, step: 1 },
+    d20Count: { value: COUNT, min: 1, max: 100, step: 1 },
+    generateDice: button((get) =>
+      createDiceInstances({
+        d6Count: get('d6Count'),
+        d20Count: get('d20Count'),
+      }),
+    ),
+  });
 
   return (
     <>
       <Stats />
-      <OrbitControls dampingFactor={0.18} makeDefault />
+      {/* <OrbitControls dampingFactor={0.18} makeDefault /> */}
+      <OrbitControls enableDamping={false} makeDefault />
       <Environment background preset="sunset" />
 
       <Physics debug>
-        <RigidBody colliders="hull">
-          <mesh position={[0, 2, 0]} rotation-x={0.2}>
-            <icosahedronGeometry args={[1, 0]} />
-            <meshStandardMaterial />
-          </mesh>
-        </RigidBody>
-
+        {/* Ground */}
         <RigidBody type="fixed">
           <mesh position={[0, -1.5, 0]}>
             <boxGeometry args={[30, 0.2, 30]} />
@@ -60,13 +66,30 @@ export const Scene = () => {
           </mesh>
         </RigidBody>
 
+        {/* d6 Instances */}
         <InstancedRigidBodies
           ref={rigidBodies}
-          instances={instances}
+          instances={d6Instances}
           colliders="hull"
         >
-          <instancedMesh args={[undefined, undefined, COUNT]} count={COUNT}>
+          <instancedMesh
+            args={[undefined, undefined, MAX_COUNT]}
+            count={d6Instances.length}
+            frustumCulled={false}
+          >
             <boxGeometry args={[0.5, 0.5, 0.5]} />
+            <meshStandardMaterial />
+          </instancedMesh>
+        </InstancedRigidBodies>
+
+        {/* d20 Instances */}
+        <InstancedRigidBodies instances={d20Instances} colliders="hull">
+          <instancedMesh
+            args={[undefined, undefined, MAX_COUNT]}
+            count={d20Instances.length}
+            frustumCulled={false}
+          >
+            <icosahedronGeometry args={[1, 0]} />
             <meshStandardMaterial />
           </instancedMesh>
         </InstancedRigidBodies>
