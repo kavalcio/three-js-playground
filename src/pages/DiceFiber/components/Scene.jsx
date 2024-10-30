@@ -27,14 +27,21 @@ const generateRandomDiceInstances = (count) => {
   return instances;
 };
 
-const rayOrigin = new THREE.Vector3();
+const tempVector = new THREE.Vector3();
+const tempMatrix = new THREE.Matrix4();
+const upVector = new THREE.Vector3(0, 1, 0);
 
+// TODO: sleep rigid bodies when they stop moving. wake them up when they're clicked
 export const Scene = () => {
-  const rigidBodies = useRef();
-  const instancedMeshes = useRef();
+  const rb_d6 = useRef(); // d6 rigid bodies
+  const rb_d20 = useRef(); // d20 rigid bodies
+  const im_d6 = useRef(); // d6 instanced mesh
+  const im_d20 = useRef(); // d20 instanced mesh
+
   const arrowHelper = useRef();
   const raycaster = useMemo(() => new THREE.Raycaster(), []);
 
+  const [diceRollSum, setDiceRollSum] = useState(0);
   const [d6Instances, setD6Instances] = useState([]);
   const [d20Instances, setD20Instances] = useState([]);
 
@@ -66,28 +73,38 @@ export const Scene = () => {
     ),
   });
 
-  console.log({ rigidBodies, instancedMeshes });
+  // console.log({ im_d6, im_d20 });
 
   useFrame(() => {
-    if (!instancedMeshes.current) return;
-    // Point ray at first element in the instanced mesh
-    const newmatrix = new THREE.Matrix4();
-    instancedMeshes.current.getMatrixAt(0, newmatrix);
-    rayOrigin.setFromMatrixPosition(newmatrix);
-    rayOrigin.y -= 2;
-    raycaster.set(rayOrigin, new THREE.Vector3(0, 1, 0));
-    arrowHelper.current.position.copy(raycaster.ray.origin);
-    arrowHelper.current.setDirection(raycaster.ray.direction);
+    let faceIndexSum = 0;
 
-    // TODO: do we need to do this per frame? or do we just need to do it on dice generation?
-    instancedMeshes.current.computeBoundingSphere();
+    [
+      { rigidBody: rb_d6, instancedMesh: im_d6, instances: d6Instances },
+      { rigidBody: rb_d20, instancedMesh: im_d20, instances: d20Instances },
+    ].forEach(({ rigidBody, instancedMesh, instances }) => {
+      if (!instancedMesh.current) return;
 
-    const intersection = raycaster.intersectObjects([instancedMeshes.current]);
+      instances.forEach((instance, index) => {
+        instancedMesh.current.getMatrixAt(index, tempMatrix);
+        tempVector.setFromMatrixPosition(tempMatrix);
+        tempVector.y -= 2;
+        raycaster.set(tempVector, upVector);
+        // arrowHelper.current.position.copy(raycaster.ray.origin);
+        // arrowHelper.current.setDirection(raycaster.ray.direction);
+        instancedMesh.current.computeBoundingSphere();
 
-    if (intersection.length > 0) {
-      // console.log(intersection[0].faceIndex);
-    }
+        const intersections = raycaster.intersectObject(instancedMesh.current);
+
+        if (intersections.length > 0) {
+          faceIndexSum += intersections[0].faceIndex;
+        }
+      });
+    });
+
+    if (diceRollSum !== faceIndexSum) setDiceRollSum(faceIndexSum);
   });
+
+  console.log(diceRollSum);
 
   return (
     <>
@@ -108,8 +125,13 @@ export const Scene = () => {
         </RigidBody>
 
         {/* d6 Instances */}
-        <InstancedRigidBodies instances={d6Instances} colliders="hull">
+        <InstancedRigidBodies
+          ref={rb_d6}
+          instances={d6Instances}
+          colliders="hull"
+        >
           <instancedMesh
+            ref={im_d6}
             args={[undefined, undefined, MAX_COUNT]}
             count={d6Instances.length}
             frustumCulled={false}
@@ -121,24 +143,25 @@ export const Scene = () => {
 
         {/* d20 Instances */}
         <InstancedRigidBodies
-          ref={rigidBodies}
+          ref={rb_d20}
           instances={d20Instances}
           colliders="hull"
         >
           <instancedMesh
-            ref={instancedMeshes}
+            ref={im_d20}
             args={[undefined, undefined, MAX_COUNT]}
             count={d20Instances.length}
             frustumCulled={false}
             onClick={(e) => {
               console.log('click d20', e.intersections[0].faceIndex);
-              rigidBodies.current[e.intersections[0].instanceId].applyImpulse(
+              rb_d20.current[e.intersections[0].instanceId].applyImpulse(
                 { x: 0, y: 10, z: 0 },
                 true,
               );
-              rigidBodies.current[
-                e.intersections[0].instanceId
-              ].applyTorqueImpulse({ x: 2, y: 2, z: 2 }, true);
+              rb_d20.current[e.intersections[0].instanceId].applyTorqueImpulse(
+                { x: 2, y: 2, z: 2 },
+                true,
+              );
             }}
           >
             <icosahedronGeometry args={[1, 0]} />
