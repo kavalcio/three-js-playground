@@ -1,13 +1,19 @@
 import { useFrame } from '@react-three/fiber';
 import { Environment, OrbitControls, Stats } from '@react-three/drei';
-import { InstancedRigidBodies, Physics, RigidBody } from '@react-three/rapier';
-import { useMemo, useRef, useState } from 'react';
+import {
+  CuboidCollider,
+  InstancedRigidBodies,
+  Physics,
+  RigidBody,
+} from '@react-three/rapier';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { button, useControls } from 'leva';
 import * as THREE from 'three';
 
 const COUNT = 3;
 const MAX_COUNT = 100;
-const FIELD_SIZE = 10;
+const DIE_SPAWN_AREA_WIDTH = 15;
+const STAGE_WIDTH = 50;
 
 const generateRandomDiceInstances = (count) => {
   const instances = [];
@@ -16,9 +22,9 @@ const generateRandomDiceInstances = (count) => {
     instances.push({
       key: 'instance_' + Math.random(),
       position: [
-        (Math.random() - 0.5) * FIELD_SIZE,
+        (Math.random() - 0.5) * DIE_SPAWN_AREA_WIDTH,
         5 + (Math.random() - 0.5) * 3,
-        (Math.random() - 0.5) * FIELD_SIZE,
+        (Math.random() - 0.5) * DIE_SPAWN_AREA_WIDTH,
       ],
       rotation: [Math.random(), Math.random(), Math.random()],
     });
@@ -31,7 +37,14 @@ const tempVector = new THREE.Vector3();
 const tempMatrix = new THREE.Matrix4();
 const upVector = new THREE.Vector3(0, 1, 0);
 
-// TODO: sleep rigid bodies when they stop moving. wake them up when they're clicked
+/*
+- TODO: sleep rigid bodies when they stop moving. wake them up when they're clicked
+- TODO: add restitution, friction values to rigid bodies
+- TODO: add audio on collision
+- TODO: add some ambience, music, props, lighting, env map of a tavern
+- TODO: prevent die from falling off stage
+- TODO: put die roll result on screen
+*/
 export const Scene = () => {
   const rb_d6 = useRef(); // d6 rigid bodies
   const rb_d20 = useRef(); // d20 rigid bodies
@@ -50,7 +63,7 @@ export const Scene = () => {
     setD20Instances(generateRandomDiceInstances(d20Count));
   };
 
-  useControls({
+  const { debug } = useControls({
     d6Count: {
       label: 'd6 Count',
       value: COUNT,
@@ -71,9 +84,11 @@ export const Scene = () => {
         d20Count: get('d20Count'),
       }),
     ),
+    debug: {
+      label: 'debug mode',
+      value: false,
+    },
   });
-
-  // console.log({ im_d6, im_d20 });
 
   useFrame(() => {
     let faceIndexSum = 0;
@@ -104,30 +119,57 @@ export const Scene = () => {
     if (diceRollSum !== faceIndexSum) setDiceRollSum(faceIndexSum);
   });
 
-  console.log(diceRollSum);
+  // console.log(diceRollSum);
 
   return (
     <>
       <Stats />
       {/* <OrbitControls dampingFactor={0.18} makeDefault /> */}
       <OrbitControls enableDamping={false} makeDefault />
-      <Environment background preset="sunset" />
+      <Environment preset="sunset" />
 
-      <Physics
-      // debug
-      >
-        {/* Ground */}
+      {/* Ground Mesh */}
+      <mesh position={[0, -1.5, 0]}>
+        <boxGeometry args={[STAGE_WIDTH, 0.2, STAGE_WIDTH]} />
+        <meshStandardMaterial wireframe />
+      </mesh>
+
+      <Physics debug={debug}>
+        {/* Ground Rigidbody */}
         <RigidBody type="fixed">
-          <mesh position={[0, -1.5, 0]}>
-            <boxGeometry args={[30, 0.2, 30]} />
-            <meshStandardMaterial wireframe />
-          </mesh>
+          <CuboidCollider
+            args={[STAGE_WIDTH / 2, 0.1, STAGE_WIDTH / 2]}
+            position={[0, -1.5, 0]}
+          />
+          <CuboidCollider
+            args={[0.1, 15, STAGE_WIDTH / 2]}
+            position={[STAGE_WIDTH / 2, 13, 0]}
+          />
+          <CuboidCollider
+            args={[0.1, 15, STAGE_WIDTH / 2]}
+            position={[-STAGE_WIDTH / 2, 13, 0]}
+          />
+          <CuboidCollider
+            args={[STAGE_WIDTH / 2, 15, 0.1]}
+            position={[0, 13, STAGE_WIDTH / 2]}
+          />
+          <CuboidCollider
+            args={[STAGE_WIDTH / 2, 15, 0.1]}
+            position={[0, 13, -STAGE_WIDTH / 2]}
+          />
         </RigidBody>
 
         {/* d6 Instances */}
         <InstancedRigidBodies
           ref={rb_d6}
           instances={d6Instances}
+          // TODO: randomize this on every reset, but how? doing random here causes it to update every frame
+          // linearVelocity={[
+          //   Math.random() - 0.5,
+          //   -5 * Math.random(),
+          //   Math.random() - 0.5,
+          // ]}
+          // angularVelocity={[Math.random(), Math.random(), Math.random()]}
           colliders="hull"
         >
           <instancedMesh
@@ -136,8 +178,8 @@ export const Scene = () => {
             count={d6Instances.length}
             frustumCulled={false}
           >
-            <boxGeometry args={[0.5, 0.5, 0.5]} />
-            <meshStandardMaterial wireframe />
+            <boxGeometry args={[1, 1, 1]} />
+            <meshStandardMaterial />
           </instancedMesh>
         </InstancedRigidBodies>
 
@@ -165,12 +207,12 @@ export const Scene = () => {
             }}
           >
             <icosahedronGeometry args={[1, 0]} />
-            <meshStandardMaterial wireframe />
+            <meshStandardMaterial />
           </instancedMesh>
         </InstancedRigidBodies>
 
         {/* TODO: convert arrowhelper into an instanced mesh */}
-        <arrowHelper
+        {/* <arrowHelper
           ref={arrowHelper}
           args={[
             new THREE.Vector3(0, 1, 0),
@@ -178,7 +220,7 @@ export const Scene = () => {
             2,
             0xff0000,
           ]}
-        />
+        /> */}
       </Physics>
     </>
   );
