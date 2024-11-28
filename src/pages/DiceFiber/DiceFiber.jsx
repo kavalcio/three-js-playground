@@ -15,7 +15,7 @@ export const DiceFiber = () => {
       >
         <Scene diceRollSum={diceRollSum} setDiceRollSum={setDiceRollSum} />
       </Canvas>
-      {diceRollSum && (
+      {diceRollSum !== null && (
         <Box
           sx={{
             position: 'absolute',
