@@ -1,6 +1,6 @@
 import { Canvas } from '@react-three/fiber';
 
-import { Scene } from './components';
+import { Scene } from './Scene';
 import { Box, Typography } from '@mui/material';
 import { useState } from 'react';
 
