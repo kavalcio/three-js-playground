@@ -1,4 +1,4 @@
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { Environment, OrbitControls, Stats } from '@react-three/drei';
 import {
   CuboidCollider,
@@ -9,11 +9,12 @@ import {
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { button, useControls } from 'leva';
 import * as THREE from 'three';
+import { Perf } from 'r3f-perf';
 
 const COUNT = 3;
-const MAX_COUNT = 100;
+const MAX_COUNT = 30;
 const DIE_SPAWN_AREA_WIDTH = 15;
-const STAGE_WIDTH = 50;
+const STAGE_WIDTH = 30;
 
 const generateRandomDiceInstances = (count) => {
   const instances = [];
@@ -44,23 +45,26 @@ const upVector = new THREE.Vector3(0, 1, 0);
 - TODO: add some ambience, music, props, lighting, env map of a tavern
 - TODO: prevent die from falling off stage
 - TODO: put die roll result on screen
+- TODO: raycasting is a huge hit to performance. test if the face normals method from the old dice project is faster
 */
-export const Scene = () => {
+export const Scene = ({ diceRollSum, setDiceRollSum }) => {
   const rb_d6 = useRef(); // d6 rigid bodies
   const rb_d20 = useRef(); // d20 rigid bodies
   const im_d6 = useRef(); // d6 instanced mesh
   const im_d20 = useRef(); // d20 instanced mesh
 
-  const arrowHelper = useRef();
   const raycaster = useMemo(() => new THREE.Raycaster(), []);
 
-  const [diceRollSum, setDiceRollSum] = useState(0);
-  const [d6Instances, setD6Instances] = useState([]);
-  const [d20Instances, setD20Instances] = useState([]);
+  const [diceInstances, setDiceInstances] = useState({
+    d6: [],
+    d20: [],
+  });
 
   const createDiceInstances = ({ d6Count, d20Count }) => {
-    setD6Instances(generateRandomDiceInstances(d6Count));
-    setD20Instances(generateRandomDiceInstances(d20Count));
+    setDiceInstances({
+      d6: generateRandomDiceInstances(d6Count),
+      d20: generateRandomDiceInstances(d20Count),
+    });
   };
 
   const { debug } = useControls({
@@ -78,7 +82,7 @@ export const Scene = () => {
       max: MAX_COUNT,
       step: 1,
     },
-    generateDice: button((get) =>
+    Roll: button((get) =>
       createDiceInstances({
         d6Count: get('d6Count'),
         d20Count: get('d20Count'),
@@ -94,8 +98,12 @@ export const Scene = () => {
     let faceIndexSum = 0;
 
     [
-      { rigidBody: rb_d6, instancedMesh: im_d6, instances: d6Instances },
-      { rigidBody: rb_d20, instancedMesh: im_d20, instances: d20Instances },
+      { rigidBody: rb_d6, instancedMesh: im_d6, instances: diceInstances.d6 },
+      {
+        rigidBody: rb_d20,
+        instancedMesh: im_d20,
+        instances: diceInstances.d20,
+      },
     ].forEach(({ rigidBody, instancedMesh, instances }) => {
       if (!instancedMesh.current) return;
 
@@ -123,7 +131,10 @@ export const Scene = () => {
 
   return (
     <>
-      <Stats />
+      {debug && (
+        // <Stats />
+        <Perf position="top-left" />
+      )}
       {/* <OrbitControls dampingFactor={0.18} makeDefault /> */}
       <OrbitControls enableDamping={false} makeDefault />
       <Environment preset="sunset" />
@@ -162,7 +173,7 @@ export const Scene = () => {
         {/* d6 Instances */}
         <InstancedRigidBodies
           ref={rb_d6}
-          instances={d6Instances}
+          instances={diceInstances.d6}
           // TODO: randomize this on every reset, but how? doing random here causes it to update every frame
           // linearVelocity={[
           //   Math.random() - 0.5,
@@ -175,7 +186,7 @@ export const Scene = () => {
           <instancedMesh
             ref={im_d6}
             args={[undefined, undefined, MAX_COUNT]}
-            count={d6Instances.length}
+            count={diceInstances.d6.length}
             frustumCulled={false}
           >
             <boxGeometry args={[1, 1, 1]} />
@@ -186,13 +197,13 @@ export const Scene = () => {
         {/* d20 Instances */}
         <InstancedRigidBodies
           ref={rb_d20}
-          instances={d20Instances}
+          instances={diceInstances.d20}
           colliders="hull"
         >
           <instancedMesh
             ref={im_d20}
             args={[undefined, undefined, MAX_COUNT]}
-            count={d20Instances.length}
+            count={diceInstances.d20.length}
             frustumCulled={false}
             onClick={(e) => {
               console.log('click d20', e.intersections[0].faceIndex);
