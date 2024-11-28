@@ -1,20 +1,20 @@
-import { useFrame, useThree } from '@react-three/fiber';
-import { Environment, OrbitControls, Stats } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { Environment, OrbitControls } from '@react-three/drei';
 import {
   CuboidCollider,
   InstancedRigidBodies,
   Physics,
   RigidBody,
 } from '@react-three/rapier';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { button, useControls } from 'leva';
 import * as THREE from 'three';
 import { Perf } from 'r3f-perf';
 
-const COUNT = 3;
-const MAX_COUNT = 30;
+const INITIAL_DIE_COUNT = 3;
+const MAX_DIE_COUNT = 30;
 const DIE_SPAWN_AREA_WIDTH = 15;
-const STAGE_WIDTH = 30;
+const STAGE_WIDTH = 20;
 
 const generateRandomDiceInstances = (count) => {
   const instances = [];
@@ -39,6 +39,8 @@ const tempMatrix = new THREE.Matrix4();
 const upVector = new THREE.Vector3(0, 1, 0);
 
 /*
+- TODO: stash debug mode on url hash, pick it up on page load
+- TODO: create mapping of face index to roll result for each die type
 - TODO: sleep rigid bodies when they stop moving. wake them up when they're clicked
 - TODO: add restitution, friction values to rigid bodies
 - TODO: add audio on collision
@@ -55,37 +57,30 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
 
   const raycaster = useMemo(() => new THREE.Raycaster(), []);
 
-  const [diceInstances, setDiceInstances] = useState({
-    d6: [],
-    d20: [],
+  const [diceCounts, setDiceCounts] = useState({
+    d6: INITIAL_DIE_COUNT,
+    d20: INITIAL_DIE_COUNT,
   });
-
-  const createDiceInstances = ({ d6Count, d20Count }) => {
-    setDiceInstances({
-      d6: generateRandomDiceInstances(d6Count),
-      d20: generateRandomDiceInstances(d20Count),
-    });
-  };
 
   const { debug } = useControls({
     d6Count: {
       label: 'd6 Count',
-      value: COUNT,
+      value: INITIAL_DIE_COUNT,
       min: 0,
-      max: MAX_COUNT,
+      max: MAX_DIE_COUNT,
       step: 1,
     },
     d20Count: {
       label: 'd20 Count',
-      value: COUNT,
+      value: INITIAL_DIE_COUNT,
       min: 0,
-      max: MAX_COUNT,
+      max: MAX_DIE_COUNT,
       step: 1,
     },
     Roll: button((get) =>
-      createDiceInstances({
-        d6Count: get('d6Count'),
-        d20Count: get('d20Count'),
+      setDiceCounts({
+        d6: get('d6Count'),
+        d20: get('d20Count'),
       }),
     ),
     debug: {
@@ -93,6 +88,15 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
       value: false,
     },
   });
+
+  // TODO: this runs 3 times on initial render, why?
+  const diceInstances = useMemo(
+    () => ({
+      d6: generateRandomDiceInstances(diceCounts.d6),
+      d20: generateRandomDiceInstances(diceCounts.d20),
+    }),
+    [diceCounts],
+  );
 
   useFrame(() => {
     let faceIndexSum = 0;
@@ -126,8 +130,6 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
 
     if (diceRollSum !== faceIndexSum) setDiceRollSum(faceIndexSum);
   });
-
-  // console.log(diceRollSum);
 
   return (
     <>
@@ -185,7 +187,7 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
         >
           <instancedMesh
             ref={im_d6}
-            args={[undefined, undefined, MAX_COUNT]}
+            args={[undefined, undefined, MAX_DIE_COUNT]}
             count={diceInstances.d6.length}
             frustumCulled={false}
           >
@@ -202,7 +204,7 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
         >
           <instancedMesh
             ref={im_d20}
-            args={[undefined, undefined, MAX_COUNT]}
+            args={[undefined, undefined, MAX_DIE_COUNT]}
             count={diceInstances.d20.length}
             frustumCulled={false}
             onClick={(e) => {
