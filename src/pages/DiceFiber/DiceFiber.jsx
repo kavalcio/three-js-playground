@@ -21,6 +21,8 @@ export const DiceFiber = () => {
             position: 'absolute',
             top: '20%',
             left: '50%',
+            pointerEvents: 'none',
+            userSelect: 'none',
           }}
         >
           <Typography>Result: {diceRollSum}</Typography>
