@@ -20,7 +20,10 @@ const DIE_TYPES = {
   d8: {
     geometry: <octahedronGeometry args={[DIE_SCALE, 0]} />,
   },
-  // d10
+  // d10: {
+  // Add a pentagonal trapezohedron
+  // geometry: <dodecahedronGeometry args={[DIE_SCALE, 1]} />,
+  // },
   d12: {
     geometry: <dodecahedronGeometry args={[DIE_SCALE, 0]} />,
   },
@@ -34,6 +37,12 @@ const tempMatrix = new THREE.Matrix4();
 const upVector = new THREE.Vector3(0, 1, 0);
 
 /*
+Notes:
+- the DnD Beyond digital dice roller is a good example for this
+
+TODOs:
+- TODO: update UI: Instead of sliders, add a button for each die (with the icon as the die image).
+  Left clicking button increments count, right clicking decrements count. Show current count on button.
 - TODO: all useMemos run 3 times on load, why?
 - TODO: add d10 (pentagonal trapezohedron)
 - TODO: prevent total die count from exceeding X
@@ -45,6 +54,9 @@ const upVector = new THREE.Vector3(0, 1, 0);
 - TODO: add audio on collision
 - TODO: add some ambience, music, props, lighting, env map of a tavern
 - TODO: raycasting is a huge hit to performance. test if the face normals method from the old dice project is faster
+- TODO: make all die move in generally the same direction, like they were all thrown at once
+- TODO: view a history of rolls
+- TODO: make physics a bit faster
 */
 export const Scene = ({ diceRollSum, setDiceRollSum }) => {
   const instanceRefs = useMemo(
