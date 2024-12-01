@@ -1,12 +1,18 @@
 import { InstancedRigidBodies } from '@react-three/rapier';
 import { MAX_DIE_COUNT } from '../constants';
+import { useGLTF } from '@react-three/drei';
 
+// TODO: cube gltf is too big, scale it down by 0.5x
 export const DiceRigidBodies = ({
   diceInstances,
   rigidBodyRef,
   instancedMeshRef,
   geometry,
+  modelPath,
+  debug,
 }) => {
+  const [model] = useGLTF(modelPath ? [modelPath] : []);
+
   return (
     <InstancedRigidBodies
       ref={rigidBodyRef}
@@ -38,8 +44,21 @@ export const DiceRigidBodies = ({
           // ].applyTorqueImpulse({ x: 2, y: 2, z: 2 }, true);
         }}
       >
-        {geometry}
-        <meshStandardMaterial />
+        {geometry ? (
+          <>
+            {geometry}
+            <meshStandardMaterial />
+          </>
+        ) : (
+          <>
+            <bufferGeometry attach="geometry" {...model.nodes.Die.geometry} />
+            <meshStandardMaterial
+              attach="material"
+              {...model.materials.Material}
+              wireframe={debug}
+            />
+          </>
+        )}
       </instancedMesh>
     </InstancedRigidBodies>
   );

@@ -10,12 +10,14 @@ import { DiceRigidBodies, Stage } from './components';
 import { INITIAL_DIE_COUNT, MAX_DIE_COUNT, DIE_SCALE } from './constants';
 import { generateRandomDiceInstances } from './utils';
 
+// TODO: add unique models for each die type
 const DIE_TYPES = {
   d4: {
     geometry: <tetrahedronGeometry args={[DIE_SCALE]} />,
   },
   d6: {
     geometry: <boxGeometry args={[DIE_SCALE, DIE_SCALE, DIE_SCALE]} />,
+    modelPath: 'models/d6/d6.gltf',
   },
   d8: {
     geometry: <octahedronGeometry args={[DIE_SCALE, 0]} />,
@@ -161,6 +163,8 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
             instancedMeshRef={instanceRefs[key].im}
             diceInstances={diceInstances[key]}
             geometry={DIE_TYPES[key].geometry}
+            modelPath={DIE_TYPES[key].modelPath}
+            debug={debug}
           />
         ))}
       </Physics>
