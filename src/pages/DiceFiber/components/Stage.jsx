@@ -4,9 +4,18 @@ import { STAGE_WIDTH } from '../constants';
 export const Stage = () => {
   return (
     <>
-      <mesh position={[0, -1.5, 0]}>
+      <directionalLight
+        castShadow
+        shadow-camera-top={STAGE_WIDTH / 2 + 2}
+        shadow-camera-bottom={-STAGE_WIDTH / 2 + 2}
+        shadow-camera-left={-STAGE_WIDTH / 2 + 2}
+        shadow-camera-right={STAGE_WIDTH / 2 + 2}
+        intensity={0.5}
+        position={[3, 10, 0]}
+      />
+      <mesh position={[0, -1.5, 0]} receiveShadow>
         <boxGeometry args={[STAGE_WIDTH, 0.2, STAGE_WIDTH]} />
-        <meshStandardMaterial wireframe />
+        <meshStandardMaterial wireframe={false} color={'#753b1a'} />
       </mesh>
       <RigidBody type="fixed">
         <CuboidCollider

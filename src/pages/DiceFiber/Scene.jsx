@@ -52,7 +52,6 @@ TODOs:
 - TODO: all useMemos run 3 times on load, why?
 - TODO: prevent total die count from exceeding X
 - TODO: stash debug mode on url hash, pick it up on page load
-- TODO: create mapping of face index to roll result for each die type
 - TODO: fine tune sleep thresholds
 - TODO: do an animation (maybe bounce the result text) when roll is finished (i.e. all dice are sleeping)
 - TODO: add restitution, friction values to rigid bodies
@@ -61,7 +60,7 @@ TODOs:
 - TODO: raycasting is a huge hit to performance. test if the face normals method from the old dice project is faster
 - TODO: make all die move in generally the same direction, like they were all thrown at once
 - TODO: view a history of roll results
-- TODO: make physics move a bit faster
+- TODO: implement shadows in a more performant way
 */
 export const Scene = ({ diceRollSum, setDiceRollSum }) => {
   const model = useGLTF('models/dice/dice.gltf');
@@ -118,8 +117,6 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
       }, {}),
     [diceCounts],
   );
-
-  console.log('diceInstances', diceInstances);
 
   const raycaster = useMemo(() => new THREE.Raycaster(), []);
 
