@@ -1,5 +1,5 @@
 import { useFrame } from '@react-three/fiber';
-import { Environment, OrbitControls } from '@react-three/drei';
+import { Environment, OrbitControls, useGLTF } from '@react-three/drei';
 import { Physics } from '@react-three/rapier';
 import { createRef, useMemo, useState } from 'react';
 import { button, useControls } from 'leva';
@@ -13,31 +13,24 @@ import { generateRandomDiceInstances } from './utils';
 const DIE_TYPES = {
   d4: {
     // tetrahedron
-    modelPath: 'models/dice/d4/d4.gltf',
   },
   d6: {
     // cube
-    modelPath: 'models/dice/d6/d6.gltf',
   },
   d8: {
     // octahedron
-    modelPath: 'models/dice/d8/d8.gltf',
   },
   d10: {
     // pentagonal trapezohedron
-    modelPath: 'models/dice/d10/d10.gltf',
   },
   d12: {
     // dodecahedron
-    modelPath: 'models/dice/d12/d12.gltf',
   },
   d20: {
     // icosahedron
-    modelPath: 'models/dice/d20/d20.gltf',
   },
   d100: {
     // pentagonal trapezohedron
-    modelPath: 'models/dice/d100/d100.gltf',
   },
 };
 
@@ -68,6 +61,8 @@ TODOs:
 - TODO: add correct scale to each die model
 */
 export const Scene = ({ diceRollSum, setDiceRollSum }) => {
+  const model = useGLTF('models/dice/dice.gltf');
+
   const instanceRefs = useMemo(
     () =>
       Object.keys(DIE_TYPES).reduce((acc, key) => {
@@ -121,6 +116,8 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
     [diceCounts],
   );
 
+  console.log('diceInstances', diceInstances);
+
   const raycaster = useMemo(() => new THREE.Raycaster(), []);
 
   useFrame(() => {
@@ -170,7 +167,7 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
             rigidBodyRef={instanceRefs[key].rb}
             instancedMeshRef={instanceRefs[key].im}
             diceInstances={diceInstances[key]}
-            modelPath={DIE_TYPES[key].modelPath}
+            diceModels={model}
             debug={debug}
           />
         ))}

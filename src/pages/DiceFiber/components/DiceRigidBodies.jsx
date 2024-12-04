@@ -1,7 +1,7 @@
 import { InstancedRigidBodies } from '@react-three/rapier';
-import { MAX_DIE_COUNT } from '../constants';
-import { useGLTF } from '@react-three/drei';
 import { useMemo } from 'react';
+
+import { MAX_DIE_COUNT } from '../constants';
 
 // TODO: cube gltf is too big, scale it down by 0.5x
 export const DiceRigidBodies = ({
@@ -9,17 +9,14 @@ export const DiceRigidBodies = ({
   diceInstances,
   rigidBodyRef,
   instancedMeshRef,
-  modelPath,
+  diceModels,
   debug,
 }) => {
-  const [model] = useGLTF(modelPath ? [modelPath] : []);
-  console.log(model);
-
   const mesh = useMemo(() => {
-    const m = model.nodes[dieType];
-    // geo.scale.set(0.2, 0.2, 0.2);
+    const m = diceModels.nodes[dieType];
+    // m.geometry.scale = new THREE.Vector3(0.2, 0.2, 0.2);
     return m;
-  }, [model, dieType]);
+  }, [diceModels, dieType]);
 
   return (
     <InstancedRigidBodies
@@ -32,6 +29,7 @@ export const DiceRigidBodies = ({
       //   Math.random() - 0.5,
       // ]}
       // angularVelocity={[Math.random(), Math.random(), Math.random()]}
+      gravityScale={2}
       colliders="hull"
     >
       <instancedMesh
@@ -43,6 +41,7 @@ export const DiceRigidBodies = ({
         onClick={(e) => {
           // TODO: scale impulse based on mass
           // TODO: randomize impulses
+          // TODO: this sometimes causes dice that haven't been clicked to also get an impulse
           console.log('click', e.intersections[0].faceIndex);
           rigidBodyRef.current[e.intersections[0].instanceId].applyImpulse(
             { x: 0, y: 10, z: 0 },
