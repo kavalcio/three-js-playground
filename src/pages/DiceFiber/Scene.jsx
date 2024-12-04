@@ -9,34 +9,11 @@ import * as THREE from 'three';
 import { DiceRigidBodies, Stage } from './components';
 import {
   DICE_FACE_INDEX_TO_RESULT,
+  DIE_TYPES,
   INITIAL_DIE_COUNT,
   MAX_DIE_COUNT,
 } from './constants';
 import { generateRandomDiceInstances } from './utils';
-
-const DIE_TYPES = {
-  d4: {
-    // tetrahedron
-  },
-  d6: {
-    // cube
-  },
-  d8: {
-    // octahedron
-  },
-  d10: {
-    // pentagonal trapezohedron
-  },
-  d12: {
-    // dodecahedron
-  },
-  d20: {
-    // icosahedron
-  },
-  // d100: {
-  //   // pentagonal trapezohedron
-  // },
-};
 
 const tempVector = new THREE.Vector3();
 const tempMatrix = new THREE.Matrix4();
@@ -61,13 +38,14 @@ TODOs:
 - TODO: make all die move in generally the same direction, like they were all thrown at once
 - TODO: view a history of roll results
 - TODO: implement shadows in a more performant way
+- TODO: add normal maps to dice
 */
 export const Scene = ({ diceRollSum, setDiceRollSum }) => {
   const model = useGLTF('models/dice/dice.gltf');
 
   const instanceRefs = useMemo(
     () =>
-      Object.keys(DIE_TYPES).reduce((acc, key) => {
+      DIE_TYPES.reduce((acc, key) => {
         acc[key] = {
           rb: createRef(), // rigid bodies ref
           im: createRef(), // instanced mesh ref
@@ -78,14 +56,14 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
   );
 
   const [diceCounts, setDiceCounts] = useState(() =>
-    Object.keys(DIE_TYPES).reduce((acc, key) => {
+    DIE_TYPES.reduce((acc, key) => {
       acc[key] = INITIAL_DIE_COUNT;
       return acc;
     }, {}),
   );
 
   const { debug } = useControls({
-    ...Object.keys(DIE_TYPES).reduce((acc, key) => {
+    ...DIE_TYPES.reduce((acc, key) => {
       acc[key] = {
         label: key + ' Count',
         value: INITIAL_DIE_COUNT,
@@ -97,7 +75,7 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
     }, {}),
     Roll: button((get) =>
       setDiceCounts(
-        Object.keys(DIE_TYPES).reduce((acc, key) => {
+        DIE_TYPES.reduce((acc, key) => {
           acc[key] = get(key);
           return acc;
         }, {}),
@@ -111,7 +89,7 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
 
   const diceInstances = useMemo(
     () =>
-      Object.keys(DIE_TYPES).reduce((acc, key) => {
+      DIE_TYPES.reduce((acc, key) => {
         acc[key] = generateRandomDiceInstances(diceCounts[key]);
         return acc;
       }, {}),
@@ -123,7 +101,7 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
   useFrame(() => {
     let faceIndexSum = 0;
 
-    Object.keys(DIE_TYPES).forEach((key) => {
+    DIE_TYPES.forEach((key) => {
       const instancedMesh = instanceRefs[key].im;
       const instances = diceInstances[key];
 
@@ -161,7 +139,7 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
       <Environment preset="sunset" />
       <Physics debug={debug}>
         <Stage />
-        {Object.keys(DIE_TYPES).map((key) => (
+        {DIE_TYPES.map((key) => (
           <DiceRigidBodies
             key={key}
             dieType={key}
@@ -172,16 +150,6 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
             debug={debug}
           />
         ))}
-        {/* <TransformControls mode="rotate">
-          <mesh ref={testRef}>
-            <bufferGeometry attach="geometry" {...model.nodes.d20.geometry} />
-            <meshStandardMaterial
-              attach="material"
-              {...model.nodes.d20.material}
-              wireframe={debug}
-            />
-          </mesh>
-        </TransformControls> */}
       </Physics>
     </>
   );

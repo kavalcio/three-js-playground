@@ -4,6 +4,15 @@ export const DIE_SCALE = 1;
 export const DIE_SPAWN_AREA_WIDTH = 15;
 export const STAGE_WIDTH = 20;
 
+export const DIE_TYPES = [
+  'd4', // tetrahedron
+  'd6', // cube
+  'd8', // octahedron
+  'd10', // pentagonal trapezohedron
+  'd12', // dodecahedron
+  'd20', // icosahedron
+];
+
 export const DICE_FACE_INDEX_TO_RESULT = {
   d4: {
     0: 4,

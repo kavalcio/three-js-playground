@@ -1,4 +1,5 @@
 import { CuboidCollider, RigidBody } from '@react-three/rapier';
+
 import { STAGE_WIDTH } from '../constants';
 
 export const Stage = () => {
