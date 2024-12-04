@@ -7,7 +7,11 @@ import * as THREE from 'three';
 import { Perf } from 'r3f-perf';
 
 import { DiceRigidBodies, Stage } from './components';
-import { INITIAL_DIE_COUNT, MAX_DIE_COUNT } from './constants';
+import {
+  DICE_FACE_INDEX_TO_RESULT,
+  INITIAL_DIE_COUNT,
+  MAX_DIE_COUNT,
+} from './constants';
 import { generateRandomDiceInstances } from './utils';
 
 const DIE_TYPES = {
@@ -29,9 +33,9 @@ const DIE_TYPES = {
   d20: {
     // icosahedron
   },
-  d100: {
-    // pentagonal trapezohedron
-  },
+  // d100: {
+  //   // pentagonal trapezohedron
+  // },
 };
 
 const tempVector = new THREE.Vector3();
@@ -58,7 +62,6 @@ TODOs:
 - TODO: make all die move in generally the same direction, like they were all thrown at once
 - TODO: view a history of roll results
 - TODO: make physics move a bit faster
-- TODO: add correct scale to each die model
 */
 export const Scene = ({ diceRollSum, setDiceRollSum }) => {
   const model = useGLTF('models/dice/dice.gltf');
@@ -132,7 +135,7 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
       instances.forEach((instance, index) => {
         instancedMesh.current.getMatrixAt(index, tempMatrix);
         tempVector.setFromMatrixPosition(tempMatrix);
-        tempVector.y -= 2;
+        tempVector.y -= 5;
         raycaster.set(tempVector, upVector);
         // arrowHelper.current.position.copy(raycaster.ray.origin);
         // arrowHelper.current.setDirection(raycaster.ray.direction);
@@ -141,7 +144,8 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
         const intersections = raycaster.intersectObject(instancedMesh.current);
 
         if (intersections.length > 0) {
-          faceIndexSum += intersections[0].faceIndex;
+          faceIndexSum +=
+            DICE_FACE_INDEX_TO_RESULT[key][intersections[0].faceIndex];
         }
       });
     });
@@ -171,6 +175,16 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
             debug={debug}
           />
         ))}
+        {/* <TransformControls mode="rotate">
+          <mesh ref={testRef}>
+            <bufferGeometry attach="geometry" {...model.nodes.d20.geometry} />
+            <meshStandardMaterial
+              attach="material"
+              {...model.nodes.d20.material}
+              wireframe={debug}
+            />
+          </mesh>
+        </TransformControls> */}
       </Physics>
     </>
   );
