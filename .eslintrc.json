@@ -15,7 +15,9 @@
   "plugins": [
     "react",
     "prettier",
-    "react-hooks"
+    "react-hooks",
+    "import",
+    "simple-import-sort"
   ],
   "rules": {
     "prettier/prettier": [
@@ -30,6 +32,11 @@
     "react/prop-types": "off",
     "react-hooks/rules-of-hooks": "warn",
     "react-hooks/exhaustive-deps": "warn",
-    "react/no-unknown-property": "off"
+    "react/no-unknown-property": "off",
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "import/first": "error",
+    "import/newline-after-import": "error",
+    "import/no-duplicates": "error"
   }
 }

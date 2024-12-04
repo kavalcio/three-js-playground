@@ -1,10 +1,10 @@
-import { useFrame } from '@react-three/fiber';
 import { Environment, OrbitControls, useGLTF } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
-import { createRef, useMemo, useState } from 'react';
 import { button, useControls } from 'leva';
-import * as THREE from 'three';
 import { Perf } from 'r3f-perf';
+import { createRef, useMemo, useState } from 'react';
+import * as THREE from 'three';
 
 import { DiceRigidBodies, Stage } from './components';
 import {
