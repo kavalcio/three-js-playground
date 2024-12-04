@@ -1,5 +1,7 @@
 import { Box, Typography } from '@mui/material';
 
+import { Button } from '.';
+
 export const DiceCountButton = ({ dieType, diceCounts, setDiceCounts }) => {
   return (
     <Box sx={{ position: 'relative' }}>
@@ -19,6 +21,7 @@ export const DiceCountButton = ({ dieType, diceCounts, setDiceCounts }) => {
             alignItems: 'center',
             justifyContent: 'center',
             '&:hover': { backgroundColor: 'green' },
+            '&:active': { backgroundColor: 'firebrick' },
           }}
           onClick={() =>
             setDiceCounts({
@@ -30,18 +33,11 @@ export const DiceCountButton = ({ dieType, diceCounts, setDiceCounts }) => {
           <Typography sx={{ fontSize: 12 }}>{diceCounts[dieType]}</Typography>
         </Box>
       )}
-      <Box
+      <Button
         sx={{
-          backgroundColor: 'maroon',
           height: 60,
           width: 60,
           borderRadius: '50%',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          textAlign: 'center',
-          '&:hover': { backgroundColor: 'darkred' },
         }}
         onClick={() =>
           setDiceCounts({ ...diceCounts, [dieType]: diceCounts[dieType] + 1 })
@@ -57,7 +53,7 @@ export const DiceCountButton = ({ dieType, diceCounts, setDiceCounts }) => {
         <Typography sx={{ pointerEvents: 'none', userSelect: 'none' }}>
           {dieType}
         </Typography>
-      </Box>
+      </Button>
     </Box>
   );
 };

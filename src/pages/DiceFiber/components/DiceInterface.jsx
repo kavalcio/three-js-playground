@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import { useState } from 'react';
 
 import { DIE_TYPES } from '../constants';
-import { DiceCountButton } from './';
+import { Button, DiceCountButton } from './';
 
 export const DiceInterface = ({ applyDiceCounts, diceRollSum }) => {
   const [pendingDiceCounts, setPendingDiceCounts] = useState(() =>
@@ -32,26 +32,14 @@ export const DiceInterface = ({ applyDiceCounts, diceRollSum }) => {
             setDiceCounts={setPendingDiceCounts}
           />
         ))}
-        <Box
-          sx={{
-            backgroundColor: 'maroon',
-            height: 60,
-            width: 100,
-            borderRadius: 4,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            textAlign: 'center',
-            ml: 2,
-            '&:hover': { backgroundColor: 'darkred' },
-          }}
+        <Button
+          sx={{ height: 60, width: 100 }}
           onClick={() => applyDiceCounts({ ...pendingDiceCounts })}
         >
           <Typography sx={{ pointerEvents: 'none', userSelect: 'none' }}>
             Roll
           </Typography>
-        </Box>
+        </Button>
       </Box>
       {!!diceRollSum && (
         <Box

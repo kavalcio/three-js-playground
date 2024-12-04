@@ -30,19 +30,6 @@ export const DiceRigidBodies = ({
         count={diceInstances.length}
         frustumCulled={false}
         castShadow
-        onClick={(e) => {
-          // TODO: scale impulse based on mass
-          // TODO: randomize impulses
-          // TODO: this sometimes causes dice that haven't been clicked to also get an impulse
-          console.log('click', e.intersections[0].faceIndex);
-          rigidBodyRef.current[e.intersections[0].instanceId].applyImpulse(
-            { x: 0, y: 10, z: 0 },
-            true,
-          );
-          // instanceRefs[key].rb.current[
-          //   e.intersections[0].instanceId
-          // ].applyTorqueImpulse({ x: 2, y: 2, z: 2 }, true);
-        }}
       >
         <bufferGeometry
           attach="geometry"

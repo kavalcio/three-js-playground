@@ -19,6 +19,7 @@ Notes:
 - the DnD Beyond digital dice roller is a good example for this
 
 TODOs:
+- TODO: add a loading screen
 - TODO: update UI: Instead of sliders, add a button for each die (with the icon as the die image).
   Left clicking button increments count, right clicking decrements count. Show current count on button.
 - TODO: all useMemos run 3 times on load, why?
@@ -34,6 +35,7 @@ TODOs:
 - TODO: view a history of roll results
 - TODO: implement shadows in a more performant way
 - TODO: add normal maps to dice
+- TODO: make ui button vertical stack on mobile, also make it collapsible
 */
 export const Scene = ({ diceCounts, diceRollSum, setDiceRollSum }) => {
   const location = useLocation();
