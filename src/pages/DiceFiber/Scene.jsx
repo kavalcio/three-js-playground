@@ -7,30 +7,37 @@ import * as THREE from 'three';
 import { Perf } from 'r3f-perf';
 
 import { DiceRigidBodies, Stage } from './components';
-import { INITIAL_DIE_COUNT, MAX_DIE_COUNT, DIE_SCALE } from './constants';
+import { INITIAL_DIE_COUNT, MAX_DIE_COUNT } from './constants';
 import { generateRandomDiceInstances } from './utils';
 
-// TODO: add unique models for each die type
 const DIE_TYPES = {
   d4: {
-    geometry: <tetrahedronGeometry args={[DIE_SCALE]} />,
+    // tetrahedron
+    modelPath: 'models/dice/d4/d4.gltf',
   },
   d6: {
-    geometry: <boxGeometry args={[DIE_SCALE, DIE_SCALE, DIE_SCALE]} />,
-    modelPath: 'models/d6/d6.gltf',
+    // cube
+    modelPath: 'models/dice/d6/d6.gltf',
   },
   d8: {
-    geometry: <octahedronGeometry args={[DIE_SCALE, 0]} />,
+    // octahedron
+    modelPath: 'models/dice/d8/d8.gltf',
   },
-  // d10: {
-  // Add a pentagonal trapezohedron
-  // geometry: <dodecahedronGeometry args={[DIE_SCALE, 1]} />,
-  // },
+  d10: {
+    // pentagonal trapezohedron
+    modelPath: 'models/dice/d10/d10.gltf',
+  },
   d12: {
-    geometry: <dodecahedronGeometry args={[DIE_SCALE, 0]} />,
+    // dodecahedron
+    modelPath: 'models/dice/d12/d12.gltf',
   },
   d20: {
-    geometry: <icosahedronGeometry args={[DIE_SCALE, 0]} />,
+    // icosahedron
+    modelPath: 'models/dice/d20/d20.gltf',
+  },
+  d100: {
+    // pentagonal trapezohedron
+    modelPath: 'models/dice/d100/d100.gltf',
   },
 };
 
@@ -46,7 +53,6 @@ TODOs:
 - TODO: update UI: Instead of sliders, add a button for each die (with the icon as the die image).
   Left clicking button increments count, right clicking decrements count. Show current count on button.
 - TODO: all useMemos run 3 times on load, why?
-- TODO: add d10 (pentagonal trapezohedron)
 - TODO: prevent total die count from exceeding X
 - TODO: stash debug mode on url hash, pick it up on page load
 - TODO: create mapping of face index to roll result for each die type
@@ -57,8 +63,9 @@ TODOs:
 - TODO: add some ambience, music, props, lighting, env map of a tavern
 - TODO: raycasting is a huge hit to performance. test if the face normals method from the old dice project is faster
 - TODO: make all die move in generally the same direction, like they were all thrown at once
-- TODO: view a history of rolls
-- TODO: make physics a bit faster
+- TODO: view a history of roll results
+- TODO: make physics move a bit faster
+- TODO: add correct scale to each die model
 */
 export const Scene = ({ diceRollSum, setDiceRollSum }) => {
   const instanceRefs = useMemo(
@@ -101,7 +108,7 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
     ),
     debug: {
       label: 'debug mode',
-      value: false,
+      value: true,
     },
   });
 
@@ -159,10 +166,10 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
         {Object.keys(DIE_TYPES).map((key) => (
           <DiceRigidBodies
             key={key}
+            dieType={key}
             rigidBodyRef={instanceRefs[key].rb}
             instancedMeshRef={instanceRefs[key].im}
             diceInstances={diceInstances[key]}
-            geometry={DIE_TYPES[key].geometry}
             modelPath={DIE_TYPES[key].modelPath}
             debug={debug}
           />
