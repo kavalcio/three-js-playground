@@ -1,18 +1,13 @@
 import { Environment, OrbitControls, useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
-import { button, useControls } from 'leva';
 import { Perf } from 'r3f-perf';
-import { createRef, useMemo, useState } from 'react';
+import { createRef, useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import * as THREE from 'three';
 
 import { DiceRigidBodies, Stage } from './components';
-import {
-  DICE_FACE_INDEX_TO_RESULT,
-  DIE_TYPES,
-  INITIAL_DIE_COUNT,
-  MAX_DIE_COUNT,
-} from './constants';
+import { DICE_FACE_INDEX_TO_RESULT, DIE_TYPES } from './constants';
 import { generateRandomDiceInstances } from './utils';
 
 const tempVector = new THREE.Vector3();
@@ -40,8 +35,16 @@ TODOs:
 - TODO: implement shadows in a more performant way
 - TODO: add normal maps to dice
 */
-export const Scene = ({ diceRollSum, setDiceRollSum }) => {
+export const Scene = ({ diceCounts, diceRollSum, setDiceRollSum }) => {
+  const location = useLocation();
+
   const model = useGLTF('models/dice/dice.gltf');
+
+  const [isDebug, setDebug] = useState(false);
+
+  useEffect(() => {
+    if (location.hash === '#debug') setDebug(true);
+  }, [location]);
 
   const instanceRefs = useMemo(
     () =>
@@ -54,38 +57,6 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
       }, {}),
     [],
   );
-
-  const [diceCounts, setDiceCounts] = useState(() =>
-    DIE_TYPES.reduce((acc, key) => {
-      acc[key] = INITIAL_DIE_COUNT;
-      return acc;
-    }, {}),
-  );
-
-  const { debug } = useControls({
-    ...DIE_TYPES.reduce((acc, key) => {
-      acc[key] = {
-        label: key + ' Count',
-        value: INITIAL_DIE_COUNT,
-        min: 0,
-        max: MAX_DIE_COUNT,
-        step: 1,
-      };
-      return acc;
-    }, {}),
-    Roll: button((get) =>
-      setDiceCounts(
-        DIE_TYPES.reduce((acc, key) => {
-          acc[key] = get(key);
-          return acc;
-        }, {}),
-      ),
-    ),
-    debug: {
-      label: 'debug mode',
-      value: true,
-    },
-  });
 
   const diceInstances = useMemo(
     () =>
@@ -130,14 +101,14 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
 
   return (
     <>
-      {debug && <Perf position="top-left" />}
+      {isDebug && <Perf position="top-left" />}
       <OrbitControls
         // dampingFactor={0.18}
         enableDamping={false}
         makeDefault
       />
       <Environment preset="sunset" />
-      <Physics debug={debug}>
+      <Physics debug={isDebug}>
         <Stage />
         {DIE_TYPES.map((key) => (
           <DiceRigidBodies
@@ -147,7 +118,7 @@ export const Scene = ({ diceRollSum, setDiceRollSum }) => {
             instancedMeshRef={instanceRefs[key].im}
             diceInstances={diceInstances[key]}
             diceModels={model}
-            debug={debug}
+            debug={isDebug}
           />
         ))}
       </Physics>

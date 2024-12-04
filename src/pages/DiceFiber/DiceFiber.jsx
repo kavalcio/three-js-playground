@@ -1,8 +1,7 @@
-import { Box, Typography } from '@mui/material';
 import { Canvas } from '@react-three/fiber';
 import { useState } from 'react';
 
-import { DiceCountButton } from './components';
+import { DiceInterface } from './components';
 import { DIE_TYPES } from './constants';
 import { Scene } from './Scene';
 
@@ -23,40 +22,16 @@ export const DiceFiber = () => {
         camera={{ fov: 25, position: [25, 45, 35] }}
         style={{ height: '100vh', width: '100vw' }}
       >
-        <Scene diceRollSum={diceRollSum} setDiceRollSum={setDiceRollSum} />
+        <Scene
+          diceCounts={diceCounts}
+          diceRollSum={diceRollSum}
+          setDiceRollSum={setDiceRollSum}
+        />
       </Canvas>
-      {diceRollSum !== null && (
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '20%',
-            left: '50%',
-            pointerEvents: 'none',
-            userSelect: 'none',
-          }}
-        >
-          <Typography>Result: {diceRollSum}</Typography>
-        </Box>
-      )}
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: '10%',
-          right: '10%',
-          display: 'flex',
-          flexDirection: 'row',
-          gap: 2,
-        }}
-      >
-        {DIE_TYPES.map((dieType) => (
-          <DiceCountButton
-            key={dieType}
-            dieType={dieType}
-            diceCounts={diceCounts}
-            setDiceCounts={setDiceCounts}
-          />
-        ))}
-      </Box>
+      <DiceInterface
+        applyDiceCounts={setDiceCounts}
+        diceRollSum={diceRollSum}
+      />
     </>
   );
 };
