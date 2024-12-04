@@ -1,9 +1,7 @@
 import { InstancedRigidBodies } from '@react-three/rapier';
-import { useMemo } from 'react';
 
 import { MAX_DIE_COUNT } from '../constants';
 
-// TODO: cube gltf is too big, scale it down by 0.5x
 export const DiceRigidBodies = ({
   dieType,
   diceInstances,
@@ -12,12 +10,6 @@ export const DiceRigidBodies = ({
   diceModels,
   debug,
 }) => {
-  const mesh = useMemo(() => {
-    const m = diceModels.nodes[dieType];
-    // m.geometry.scale = new THREE.Vector3(0.2, 0.2, 0.2);
-    return m;
-  }, [diceModels, dieType]);
-
   return (
     <InstancedRigidBodies
       ref={rigidBodyRef}
@@ -29,7 +21,7 @@ export const DiceRigidBodies = ({
       //   Math.random() - 0.5,
       // ]}
       // angularVelocity={[Math.random(), Math.random(), Math.random()]}
-      gravityScale={2}
+      gravityScale={3}
       colliders="hull"
     >
       <instancedMesh
@@ -38,7 +30,6 @@ export const DiceRigidBodies = ({
         count={diceInstances.length}
         frustumCulled={false}
         castShadow
-        // scale={[0.2, 0.2, 0.2]}
         onClick={(e) => {
           // TODO: scale impulse based on mass
           // TODO: randomize impulses
@@ -53,10 +44,13 @@ export const DiceRigidBodies = ({
           // ].applyTorqueImpulse({ x: 2, y: 2, z: 2 }, true);
         }}
       >
-        <bufferGeometry attach="geometry" {...mesh.geometry} />
+        <bufferGeometry
+          attach="geometry"
+          {...diceModels.nodes[dieType].geometry}
+        />
         <meshStandardMaterial
           attach="material"
-          {...mesh.material}
+          {...diceModels.nodes[dieType].material}
           wireframe={debug}
         />
       </instancedMesh>
