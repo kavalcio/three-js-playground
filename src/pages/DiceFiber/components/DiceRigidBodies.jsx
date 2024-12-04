@@ -37,6 +37,7 @@ export const DiceRigidBodies = ({
         args={[undefined, undefined, MAX_DIE_COUNT]}
         count={diceInstances.length}
         frustumCulled={false}
+        castShadow
         // scale={[0.2, 0.2, 0.2]}
         onClick={(e) => {
           // TODO: scale impulse based on mass
