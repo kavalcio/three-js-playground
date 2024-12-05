@@ -1,9 +1,8 @@
 import { Canvas } from '@react-three/fiber';
 import { useState } from 'react';
 
-import { DiceInterface } from './components';
+import { DiceInterface, Scene } from './components';
 import { DIE_TYPES } from './constants';
-import { Scene } from './Scene';
 
 export const DiceFiber = () => {
   const [diceRollSum, setDiceRollSum] = useState(null);

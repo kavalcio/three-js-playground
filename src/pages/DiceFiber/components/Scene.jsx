@@ -6,9 +6,9 @@ import { createRef, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import * as THREE from 'three';
 
-import { DiceRigidBodies, Stage } from './components';
-import { DICE_FACE_INDEX_TO_RESULT, DIE_TYPES } from './constants';
-import { generateRandomDiceInstances } from './utils';
+import { DICE_FACE_INDEX_TO_RESULT, DIE_TYPES } from '../constants';
+import { generateRandomDiceInstances } from '../utils';
+import { DiceRigidBodies, Stage } from '.';
 
 const tempVector = new THREE.Vector3();
 const tempMatrix = new THREE.Matrix4();
@@ -24,8 +24,6 @@ TODOs:
   Left clicking button increments count, right clicking decrements count. Show current count on button.
 - TODO: all useMemos run 3 times on load, why?
 - TODO: prevent total die count from exceeding X
-- TODO: stash debug mode on url hash, pick it up on page load
-- TODO: fine tune sleep thresholds
 - TODO: do an animation (maybe bounce the result text) when roll is finished (i.e. all dice are sleeping)
 - TODO: add restitution, friction values to rigid bodies
 - TODO: add audio on collision
@@ -34,7 +32,7 @@ TODOs:
 - TODO: make all die move in generally the same direction, like they were all thrown at once
 - TODO: view a history of roll results
 - TODO: implement shadows in a more performant way
-- TODO: add normal maps to dice
+- TODO: add normal maps to dice to add texture
 - TODO: make ui button vertical stack on mobile, also make it collapsible
 */
 export const Scene = ({ diceCounts, diceRollSum, setDiceRollSum }) => {
