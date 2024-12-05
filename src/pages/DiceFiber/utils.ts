@@ -1,33 +1,56 @@
-import { DIE_SPAWN_AREA_WIDTH } from './constants';
+import { DIE_SPAWN_AREA_WIDTH, INITIAL_SPEED } from './constants';
 
-/*
-TODO: Concerns with the current starting position/velocity logic:
-- Each die type group does its own thing. They group within themselves and have the same velocity within the group, but this is not consistent across groups.
-- Within each group, the starting velocity is identical. There should be some variation.
-- The velocity direction is random. Maybe it should be towards the center of the spawn area.
-- Maybe the starting positions should be less random. E.g. they could be picked from a circle at a certain radius from the center.
-*/
-export const generateRandomDiceInstances = (count: number) => {
+export const generateRandomDiceInstances = ({
+  diceCount,
+  baseLinearVelocity,
+  baseStartingPosition,
+}: {
+  diceCount: number;
+  baseLinearVelocity: number[];
+  baseStartingPosition: number[];
+}) => {
   const instances = [];
 
-  // const randomOrigin = [
-  //   (Math.random() - 0.5) * DIE_SPAWN_AREA_WIDTH / 1.5,
-  //   (Math.random() - 0.5) * DIE_SPAWN_AREA_WIDTH / 1.5,
-  // ];
-
-  for (let i = 0; i < count; i++) {
+  for (let i = 0; i < diceCount; i++) {
     instances.push({
       key: 'instance_' + Math.random(),
       position: [
-        (Math.random() - 0.5) * DIE_SPAWN_AREA_WIDTH,
-        5 + (Math.random() - 0.5) * 3,
-        (Math.random() - 0.5) * DIE_SPAWN_AREA_WIDTH,
-
-        // Math.max(Math.min(randomOrigin[0] + (Math.random() - 0.5) * DIE_SPAWN_AREA_WIDTH / 3, DIE_SPAWN_AREA_WIDTH), -DIE_SPAWN_AREA_WIDTH),
-        // 3 + (Math.random() - 0.5) * 3,
-        // Math.max(Math.min(randomOrigin[1] + (Math.random() - 0.5) * DIE_SPAWN_AREA_WIDTH / 3, DIE_SPAWN_AREA_WIDTH), -DIE_SPAWN_AREA_WIDTH),
+        Math.max(
+          Math.min(
+            baseStartingPosition[0] +
+              ((Math.random() - 0.5) * DIE_SPAWN_AREA_WIDTH) / 2,
+            DIE_SPAWN_AREA_WIDTH / 2 - 1,
+          ),
+          -DIE_SPAWN_AREA_WIDTH / 2 + 1,
+        ),
+        Math.max(
+          Math.min(
+            baseStartingPosition[1] +
+              ((Math.random() - 0.5) * DIE_SPAWN_AREA_WIDTH) / 2,
+            DIE_SPAWN_AREA_WIDTH / 2 - 1,
+          ),
+          -DIE_SPAWN_AREA_WIDTH / 2 + 1,
+        ),
+        Math.max(
+          Math.min(
+            baseStartingPosition[2] +
+              ((Math.random() - 0.5) * DIE_SPAWN_AREA_WIDTH) / 2,
+            DIE_SPAWN_AREA_WIDTH / 2 - 1,
+          ),
+          -DIE_SPAWN_AREA_WIDTH / 2 + 1,
+        ),
       ],
       rotation: [Math.random(), Math.random(), Math.random()],
+      linearVelocity: [
+        baseLinearVelocity[0] + (Math.random() - 0.5) * INITIAL_SPEED,
+        baseLinearVelocity[1] + ((Math.random() - 0.5) * INITIAL_SPEED) / 2,
+        baseLinearVelocity[2] + (Math.random() - 0.5) * INITIAL_SPEED,
+      ],
+      angularVelocity: [
+        (Math.random() - 0.5) * 10,
+        (Math.random() - 0.5) * 10,
+        (Math.random() - 0.5) * 10,
+      ],
     });
   }
 

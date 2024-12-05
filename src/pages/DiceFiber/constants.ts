@@ -1,8 +1,9 @@
 export const INITIAL_DIE_COUNT = 1;
 export const MAX_DIE_COUNT = 30;
 export const DIE_SCALE = 1;
-export const DIE_SPAWN_AREA_WIDTH = 15;
+export const DIE_SPAWN_AREA_WIDTH = 20;
 export const STAGE_WIDTH = 20;
+export const INITIAL_SPEED = 12;
 
 export const DIE_TYPES = [
   'd4', // tetrahedron

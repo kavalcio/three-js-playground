@@ -6,7 +6,12 @@ import { createRef, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import * as THREE from 'three';
 
-import { DICE_FACE_INDEX_TO_RESULT, DIE_TYPES } from '../constants';
+import {
+  DICE_FACE_INDEX_TO_RESULT,
+  DIE_SPAWN_AREA_WIDTH,
+  DIE_TYPES,
+  INITIAL_SPEED,
+} from '../constants';
 import { generateRandomDiceInstances } from '../utils';
 import { DiceRigidBodies, Stage } from '.';
 
@@ -18,22 +23,23 @@ const upVector = new THREE.Vector3(0, 1, 0);
 Notes:
 - the DnD Beyond digital dice roller is a good example for this
 
-TODOs:
+Features:
 - TODO: add a loading screen
-- TODO: update UI: Instead of sliders, add a button for each die (with the icon as the die image).
-  Left clicking button increments count, right clicking decrements count. Show current count on button.
-- TODO: all useMemos run 3 times on load, why?
+- TODO: add die icons to buttons instead of text
 - TODO: prevent total die count from exceeding X
 - TODO: do an animation (maybe bounce the result text) when roll is finished (i.e. all dice are sleeping)
 - TODO: add restitution, friction values to rigid bodies
 - TODO: add audio on collision
 - TODO: add some ambience, music, props, lighting, env map of a tavern
-- TODO: raycasting is a huge hit to performance. test if the face normals method from the old dice project is faster
-- TODO: make all die move in generally the same direction, like they were all thrown at once
 - TODO: view a history of roll results
-- TODO: implement shadows in a more performant way
 - TODO: add normal maps to dice to add texture
 - TODO: make ui button vertical stack on mobile, also make it collapsible
+- TODO: create an easier way to roll a lot of dice. maybe ability to type in the count, or click and drag to increase count?
+
+Issues:
+- TODO: all useMemos run 3 times on load, why?
+- TODO: raycasting is a huge hit to performance. test if the face normals method from the old dice project is faster
+- TODO: implement shadows in a more performant way
 */
 export const Scene = ({ diceCounts, diceRollSum, setDiceRollSum }) => {
   const location = useLocation();
@@ -58,14 +64,30 @@ export const Scene = ({ diceCounts, diceRollSum, setDiceRollSum }) => {
     [],
   );
 
-  const diceInstances = useMemo(
-    () =>
-      DIE_TYPES.reduce((acc, key) => {
-        acc[key] = generateRandomDiceInstances(diceCounts[key]);
-        return acc;
-      }, {}),
-    [diceCounts],
-  );
+  const diceInstances = useMemo(() => {
+    const baseStartingPosition = [
+      (Math.random() - 0.5) * DIE_SPAWN_AREA_WIDTH,
+      6 + (Math.random() - 0.5) * 3,
+      (Math.random() - 0.5) * DIE_SPAWN_AREA_WIDTH,
+    ];
+    // Aim starting velocity toward center of spawn area
+    const angle =
+      Math.atan2(baseStartingPosition[2], baseStartingPosition[0]) + Math.PI;
+    const baseLinearVelocity = [
+      Math.cos(angle) * INITIAL_SPEED,
+      -5,
+      Math.sin(angle) * INITIAL_SPEED,
+    ];
+
+    return DIE_TYPES.reduce((acc, key) => {
+      acc[key] = generateRandomDiceInstances({
+        diceCount: diceCounts[key],
+        baseLinearVelocity,
+        baseStartingPosition,
+      });
+      return acc;
+    }, {});
+  }, [diceCounts]);
 
   const raycaster = useMemo(() => new THREE.Raycaster(), []);
 
@@ -112,7 +134,7 @@ export const Scene = ({ diceCounts, diceRollSum, setDiceRollSum }) => {
             instancedMeshRef={instanceRefs[key].im}
             diceInstances={diceInstances[key]}
             diceModels={model}
-            debug={isDebug}
+            isDebug={isDebug}
           />
         ))}
       </Physics>

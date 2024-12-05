@@ -1,5 +1,4 @@
 import { InstancedRigidBodies } from '@react-three/rapier';
-import { useMemo } from 'react';
 
 import { MAX_DIE_COUNT } from '../constants';
 
@@ -9,20 +8,12 @@ export const DiceRigidBodies = ({
   rigidBodyRef,
   instancedMeshRef,
   diceModels,
-  debug,
+  isDebug,
 }) => {
-  // const randomLinearVelocity = useMemo(() => {
-  //   const angle = Math.random() * Math.PI * 2;
-  //   const speed = 10;
-  //   return [Math.cos(angle) * speed, -5, Math.sin(angle) * speed];
-  // }, [diceInstances]);
-
   return (
     <InstancedRigidBodies
       ref={rigidBodyRef}
       instances={diceInstances}
-      // linearVelocity={randomLinearVelocity}
-      // angularVelocity={[Math.random(), Math.random(), Math.random()]}
       gravityScale={3}
       colliders="hull"
     >
@@ -40,7 +31,7 @@ export const DiceRigidBodies = ({
         <meshStandardMaterial
           attach="material"
           {...diceModels.nodes[dieType].material}
-          wireframe={debug}
+          wireframe={isDebug}
         />
       </instancedMesh>
     </InstancedRigidBodies>

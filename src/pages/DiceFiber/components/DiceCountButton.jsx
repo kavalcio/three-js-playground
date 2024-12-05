@@ -21,7 +21,6 @@ export const DiceCountButton = ({ dieType, diceCounts, setDiceCounts }) => {
             alignItems: 'center',
             justifyContent: 'center',
             '&:hover': { backgroundColor: 'green' },
-            '&:active': { backgroundColor: 'firebrick' },
           }}
           onClick={() =>
             setDiceCounts({
