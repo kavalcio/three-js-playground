@@ -13,6 +13,12 @@ export const DIE_TYPES = [
   'd20', // icosahedron
 ];
 
+/*
+  These values are manually determined by looking at what number is drawn
+  on each face of the dice textures, and what face index corresponds to that face.
+  Some dice have more values than the polyhedron face count. That's because some
+  of the shapes have non-triangular sides which consist of multiple polygons.
+*/
 export const DICE_FACE_INDEX_TO_RESULT = {
   d4: {
     0: 4,

@@ -7,11 +7,11 @@ export const Stage = () => {
     <>
       <directionalLight
         castShadow
-        shadow-camera-top={STAGE_WIDTH / 2 + 2}
-        shadow-camera-bottom={-STAGE_WIDTH / 2 + 2}
-        shadow-camera-left={-STAGE_WIDTH / 2 + 2}
-        shadow-camera-right={STAGE_WIDTH / 2 + 2}
-        intensity={0.5}
+        shadow-camera-top={STAGE_WIDTH / 1.5}
+        shadow-camera-bottom={-STAGE_WIDTH / 1.5}
+        shadow-camera-left={-STAGE_WIDTH / 1.5}
+        shadow-camera-right={STAGE_WIDTH / 1.5}
+        intensity={0.7}
         position={[3, 10, 0]}
       />
       <mesh position={[0, -1.5, 0]} receiveShadow>

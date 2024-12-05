@@ -33,7 +33,7 @@ export const DiceInterface = ({ applyDiceCounts, diceRollSum }) => {
           />
         ))}
         <Button
-          sx={{ height: 60, width: 100 }}
+          sx={{ height: 60, width: 100, ml: 2 }}
           onClick={() => applyDiceCounts({ ...pendingDiceCounts })}
         >
           <Typography sx={{ pointerEvents: 'none', userSelect: 'none' }}>

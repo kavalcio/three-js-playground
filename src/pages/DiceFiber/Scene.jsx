@@ -85,8 +85,6 @@ export const Scene = ({ diceCounts, diceRollSum, setDiceRollSum }) => {
         tempVector.setFromMatrixPosition(tempMatrix);
         tempVector.y -= 5;
         raycaster.set(tempVector, upVector);
-        // arrowHelper.current.position.copy(raycaster.ray.origin);
-        // arrowHelper.current.setDirection(raycaster.ray.direction);
         instancedMesh.current.computeBoundingSphere();
 
         const intersections = raycaster.intersectObject(instancedMesh.current);
@@ -104,11 +102,7 @@ export const Scene = ({ diceCounts, diceRollSum, setDiceRollSum }) => {
   return (
     <>
       {isDebug && <Perf position="top-left" />}
-      <OrbitControls
-        // dampingFactor={0.18}
-        enableDamping={false}
-        makeDefault
-      />
+      <OrbitControls dampingFactor={0.18} makeDefault />
       <Environment preset="sunset" />
       <Physics debug={isDebug}>
         <Stage />

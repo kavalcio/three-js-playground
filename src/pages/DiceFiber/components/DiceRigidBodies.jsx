@@ -1,4 +1,5 @@
 import { InstancedRigidBodies } from '@react-three/rapier';
+import { useMemo } from 'react';
 
 import { MAX_DIE_COUNT } from '../constants';
 
@@ -10,16 +11,17 @@ export const DiceRigidBodies = ({
   diceModels,
   debug,
 }) => {
+  // const randomLinearVelocity = useMemo(() => {
+  //   const angle = Math.random() * Math.PI * 2;
+  //   const speed = 10;
+  //   return [Math.cos(angle) * speed, -5, Math.sin(angle) * speed];
+  // }, [diceInstances]);
+
   return (
     <InstancedRigidBodies
       ref={rigidBodyRef}
       instances={diceInstances}
-      // TODO: randomize this on every reset, but how? doing random here causes it to update every frame
-      // linearVelocity={[
-      //   Math.random() - 0.5,
-      //   -5 * Math.random(),
-      //   Math.random() - 0.5,
-      // ]}
+      // linearVelocity={randomLinearVelocity}
       // angularVelocity={[Math.random(), Math.random(), Math.random()]}
       gravityScale={3}
       colliders="hull"
