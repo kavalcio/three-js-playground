@@ -8,6 +8,7 @@ export const DiceRigidBodies = ({
   rigidBodyRef,
   instancedMeshRef,
   diceModels,
+  incrementSleepingDiceCount,
   isDebug,
 }) => {
   return (
@@ -16,6 +17,7 @@ export const DiceRigidBodies = ({
       instances={diceInstances}
       gravityScale={3}
       colliders="hull"
+      onSleep={incrementSleepingDiceCount}
     >
       <instancedMesh
         ref={instancedMeshRef}
@@ -31,6 +33,7 @@ export const DiceRigidBodies = ({
         <meshStandardMaterial
           attach="material"
           {...diceModels.nodes[dieType].material}
+          // normalMap={diceModels.nodes[dieType].material.map}
           wireframe={isDebug}
         />
       </instancedMesh>

@@ -6,13 +6,22 @@ import { DIE_TYPES } from './constants';
 
 export const DiceFiber = () => {
   const [diceRollSum, setDiceRollSum] = useState(null);
-
   const [diceCounts, setDiceCounts] = useState(() =>
     DIE_TYPES.reduce((acc, key) => {
       acc[key] = 0;
       return acc;
     }, {}),
   );
+  const [sleepingDiceCount, setSleepingDiceCount] = useState(0);
+
+  const rollDice = ({ diceCounts }) => {
+    setDiceCounts(diceCounts);
+    setSleepingDiceCount(0);
+  };
+
+  const areAllDiceSleeping =
+    sleepingDiceCount ===
+    Object.values(diceCounts).reduce((acc, count) => acc + count, 0);
 
   return (
     <>
@@ -25,11 +34,15 @@ export const DiceFiber = () => {
           diceCounts={diceCounts}
           diceRollSum={diceRollSum}
           setDiceRollSum={setDiceRollSum}
+          incrementSleepingDiceCount={() =>
+            setSleepingDiceCount((prev) => prev + 1)
+          }
         />
       </Canvas>
       <DiceInterface
-        applyDiceCounts={setDiceCounts}
+        rollDice={rollDice}
         diceRollSum={diceRollSum}
+        areAllDiceSleeping={areAllDiceSleeping}
       />
     </>
   );

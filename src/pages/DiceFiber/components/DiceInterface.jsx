@@ -4,7 +4,11 @@ import { useState } from 'react';
 import { DIE_TYPES } from '../constants';
 import { Button, DiceCountButton } from './';
 
-export const DiceInterface = ({ applyDiceCounts, diceRollSum }) => {
+export const DiceInterface = ({
+  rollDice,
+  diceRollSum,
+  areAllDiceSleeping,
+}) => {
   const [pendingDiceCounts, setPendingDiceCounts] = useState(() =>
     DIE_TYPES.reduce((acc, key) => {
       acc[key] = 0;
@@ -34,7 +38,7 @@ export const DiceInterface = ({ applyDiceCounts, diceRollSum }) => {
         ))}
         <Button
           sx={{ height: 60, width: 100, ml: 2 }}
-          onClick={() => applyDiceCounts({ ...pendingDiceCounts })}
+          onClick={() => rollDice({ diceCounts: { ...pendingDiceCounts } })}
         >
           <Typography sx={{ pointerEvents: 'none', userSelect: 'none' }}>
             Roll
@@ -49,6 +53,7 @@ export const DiceInterface = ({ applyDiceCounts, diceRollSum }) => {
             left: '50%',
             pointerEvents: 'none',
             userSelect: 'none',
+            color: areAllDiceSleeping ? 'green' : 'white',
           }}
         >
           <Typography>Result: {diceRollSum}</Typography>

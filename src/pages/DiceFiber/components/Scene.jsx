@@ -32,16 +32,26 @@ Features:
 - TODO: add audio on collision
 - TODO: add some ambience, music, props, lighting, env map of a tavern
 - TODO: view a history of roll results
-- TODO: add normal maps to dice to add texture
+- TODO: add normal maps to dice to add texture. https://blender.stackexchange.com/questions/105858/how-can-i-bake-a-normal-map-with-smooth-beveled-edges-when-the-low-poly-has-s
 - TODO: make ui button vertical stack on mobile, also make it collapsible
 - TODO: create an easier way to roll a lot of dice. maybe ability to type in the count, or click and drag to increase count?
+- TODO: convert components to tsx
 
 Issues:
-- TODO: all useMemos run 3 times on load, why?
-- TODO: raycasting is a huge hit to performance. test if the face normals method from the old dice project is faster
+- TODO: raycasting is a big hit to performance. test if the face normals method from the old dice project is faster.
+  Also this would allow us to use geometry with more faces
 - TODO: implement shadows in a more performant way
+- TODO: all useMemos run 3 times on load, why?
 */
-export const Scene = ({ diceCounts, diceRollSum, setDiceRollSum }) => {
+
+// useGLTF.preload('models/dice/dice.gltf');
+
+export const Scene = ({
+  diceCounts,
+  diceRollSum,
+  setDiceRollSum,
+  incrementSleepingDiceCount,
+}) => {
   const location = useLocation();
 
   const model = useGLTF('models/dice/dice.gltf');
@@ -134,6 +144,7 @@ export const Scene = ({ diceCounts, diceRollSum, setDiceRollSum }) => {
             instancedMeshRef={instanceRefs[key].im}
             diceInstances={diceInstances[key]}
             diceModels={model}
+            incrementSleepingDiceCount={incrementSleepingDiceCount}
             isDebug={isDebug}
           />
         ))}
