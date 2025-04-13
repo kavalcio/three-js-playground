@@ -1,19 +1,76 @@
+import { useLayoutEffect, useRef } from 'react';
 import { getRandomInt } from 'src/utils';
+import * as THREE from 'three';
 
 import {
   BUILDING_DIMENSIONS,
   COLUMN_WIDTH,
   ROW_HEIGHT,
   SPAWN_AREA_SIZE,
+  WALLS,
 } from '../constants';
-import { Window } from './Window';
 
-const WALLS = [
-  { axis: 'x', offset: 1, rotation: 0 }, // top
-  { axis: 'z', offset: 1, rotation: Math.PI / 2 }, // right
-  { axis: 'x', offset: -1, rotation: Math.PI }, // bottom
-  { axis: 'z', offset: -1, rotation: -Math.PI / 2 }, // left
-] as const;
+export const Building = () => {
+  const ref = useRef<THREE.InstancedMesh>(null!);
+  const rowColumnCounts = {
+    x: getRandomInt(BUILDING_DIMENSIONS.x.min, BUILDING_DIMENSIONS.x.max),
+    y: getRandomInt(BUILDING_DIMENSIONS.y.min, BUILDING_DIMENSIONS.y.max),
+    z: getRandomInt(BUILDING_DIMENSIONS.z.min, BUILDING_DIMENSIONS.z.max),
+  };
+  const buildingDimensions = {
+    x: rowColumnCounts.x * COLUMN_WIDTH,
+    y: rowColumnCounts.y * ROW_HEIGHT,
+    z: rowColumnCounts.z * COLUMN_WIDTH,
+  };
+
+  const windows = getWindowDimensions(rowColumnCounts);
+
+  useLayoutEffect(() => {
+    const matrixPosition = new THREE.Matrix4();
+    const matrixRotation = new THREE.Matrix4();
+    if (ref.current) {
+      windows.forEach((window, i) => {
+        matrixPosition.makeTranslation(...window.position);
+        matrixPosition.multiply(
+          matrixRotation.makeRotationFromEuler(
+            new THREE.Euler(...window.rotation),
+          ),
+        );
+        ref.current.setMatrixAt(i, matrixPosition);
+      });
+      ref.current.instanceMatrix.needsUpdate = true;
+    }
+  }, [windows]);
+
+  return (
+    <group
+      position={[
+        Math.random() * SPAWN_AREA_SIZE - SPAWN_AREA_SIZE / 2,
+        0,
+        Math.random() * SPAWN_AREA_SIZE - SPAWN_AREA_SIZE / 2,
+      ]}
+    >
+      <mesh position-y={buildingDimensions.y / 2}>
+        <boxGeometry
+          args={[
+            buildingDimensions.x,
+            buildingDimensions.y + 0.01,
+            buildingDimensions.z,
+          ]}
+        />
+        <meshStandardMaterial color="orange" />
+      </mesh>
+      <instancedMesh
+        ref={ref}
+        args={[undefined, undefined, windows.length]}
+        count={windows.length}
+      >
+        <planeGeometry args={[0.2, 0.3]} />
+        <meshStandardMaterial color="black" />
+      </instancedMesh>
+    </group>
+  );
+};
 
 const getWindowDimensions = (rowColumnCounts: {
   x: number;
@@ -51,47 +108,4 @@ const getWindowDimensions = (rowColumnCounts: {
     }
   });
   return arr;
-};
-
-export const Building = () => {
-  const rowColumnCounts = {
-    x: getRandomInt(BUILDING_DIMENSIONS.x.min, BUILDING_DIMENSIONS.x.max),
-    y: getRandomInt(BUILDING_DIMENSIONS.y.min, BUILDING_DIMENSIONS.y.max),
-    z: getRandomInt(BUILDING_DIMENSIONS.z.min, BUILDING_DIMENSIONS.z.max),
-  };
-  const buildingDimensions = {
-    x: rowColumnCounts.x * COLUMN_WIDTH,
-    y: rowColumnCounts.y * ROW_HEIGHT,
-    z: rowColumnCounts.z * COLUMN_WIDTH,
-  };
-
-  const windows = getWindowDimensions(rowColumnCounts);
-
-  return (
-    <group
-      position={[
-        Math.random() * SPAWN_AREA_SIZE - SPAWN_AREA_SIZE / 2,
-        0,
-        Math.random() * SPAWN_AREA_SIZE - SPAWN_AREA_SIZE / 2,
-      ]}
-    >
-      <mesh position-y={buildingDimensions.y / 2}>
-        <boxGeometry
-          args={[
-            buildingDimensions.x,
-            buildingDimensions.y + 0.01,
-            buildingDimensions.z,
-          ]}
-        />
-        <meshStandardMaterial color="orange" />
-      </mesh>
-      {windows.map((window, i) => (
-        <Window
-          key={`window-${i}`}
-          position={window.position}
-          rotation={window.rotation}
-        />
-      ))}
-    </group>
-  );
 };
