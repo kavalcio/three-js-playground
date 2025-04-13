@@ -10,6 +10,9 @@ import {
   WALLS,
 } from '../constants';
 
+const BUILDING_MARGIN = 0.5;
+const Z_FIX = 0.01; // to prevent z-fighting
+
 export const Building = () => {
   const ref = useRef<THREE.InstancedMesh>(null!);
   const rowColumnCounts = {
@@ -46,7 +49,7 @@ export const Building = () => {
     <group
       position={[
         Math.random() * SPAWN_AREA_SIZE - SPAWN_AREA_SIZE / 2,
-        0,
+        BUILDING_MARGIN / 2,
         Math.random() * SPAWN_AREA_SIZE - SPAWN_AREA_SIZE / 2,
       ]}
     >
@@ -54,7 +57,7 @@ export const Building = () => {
         <boxGeometry
           args={[
             buildingDimensions.x,
-            buildingDimensions.y + 0.01,
+            buildingDimensions.y + BUILDING_MARGIN + Z_FIX,
             buildingDimensions.z,
           ]}
         />
@@ -65,7 +68,7 @@ export const Building = () => {
         args={[undefined, undefined, windows.length]}
         count={windows.length}
       >
-        <planeGeometry args={[0.2, 0.3]} />
+        <planeGeometry args={[0.2, 0.4]} />
         <meshStandardMaterial color="black" />
       </instancedMesh>
     </group>
@@ -90,14 +93,14 @@ const getWindowDimensions = (rowColumnCounts: {
             position: [
               (j + 0.5) * COLUMN_WIDTH - (rowColumnCounts.x * COLUMN_WIDTH) / 2,
               yPos,
-              ((rowColumnCounts.z * COLUMN_WIDTH) / 2 + 0.01) * wall.offset,
+              ((rowColumnCounts.z * COLUMN_WIDTH) / 2 + Z_FIX) * wall.offset,
             ],
             rotation: [0, wall.rotation, 0],
           });
         } else if (wall.axis === 'z') {
           arr.push({
             position: [
-              ((rowColumnCounts.x * COLUMN_WIDTH) / 2 + 0.01) * wall.offset,
+              ((rowColumnCounts.x * COLUMN_WIDTH) / 2 + Z_FIX) * wall.offset,
               yPos,
               (j + 0.5) * COLUMN_WIDTH - (rowColumnCounts.z * COLUMN_WIDTH) / 2,
             ],

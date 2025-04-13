@@ -8,12 +8,10 @@ import { Building } from './Building';
 /*
 TODOs:
 - Skybox
-- Windows
 - Balconies
 - Allow setting and saving seeds
 - Prevent buildings from overlapping
 - Set a balance between building height and width
-- Use instanced meshes
 - Bloom
 */
 export const Scene = () => {
