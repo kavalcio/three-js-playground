@@ -1,26 +1,27 @@
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 
+import { ROUTES } from '@/constants';
 import {
+  CoffeeSmoke,
+  Demake,
   Dice,
   DiceFiber,
   Dither,
   FractalBranches,
   Galaxy,
+  Halftone,
+  Hologram,
   Home,
   Inkblot,
-  Demake,
+  LightShading,
   Postprocessing,
+  R3FDemo,
   RagingSea,
   Refraction,
+  Skyline,
   SolarSystem,
   VertexSnapping,
-  CoffeeSmoke,
-  Hologram,
-  Halftone,
-  LightShading,
-  R3FDemo,
 } from '@/pages';
-import { ROUTES } from '@/constants';
 
 // TODO: add dependabot to github?
 // TODO: add proper 404 page
@@ -103,6 +104,10 @@ const router = createBrowserRouter([
       {
         path: ROUTES.r3fDemo.path,
         element: <R3FDemo />,
+      },
+      {
+        path: ROUTES.skyline.path,
+        element: <Skyline />,
       },
     ],
   },

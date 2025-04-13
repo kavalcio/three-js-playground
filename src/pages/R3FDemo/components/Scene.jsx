@@ -1,9 +1,9 @@
-import { useFrame } from '@react-three/fiber';
-import { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
 import { OrbitControls, Stats, TransformControls } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
 import { useControls } from 'leva';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import * as THREE from 'three';
 
 // TODO: add r3f-perf
 // TODO: try tweakpane. it doesn't work with react out of the box, but it's possible to make it work

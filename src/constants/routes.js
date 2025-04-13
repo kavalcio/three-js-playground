@@ -105,4 +105,9 @@ export const ROUTES = {
     title: 'R3F Demo',
     group: ROUTE_GROUPS.other.key,
   },
+  skyline: {
+    path: '/skyline',
+    title: 'Skyline',
+    group: ROUTE_GROUPS.other.key,
+  },
 };
