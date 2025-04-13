@@ -1,6 +1,6 @@
-import * as THREE from 'three';
 import GUI from 'lil-gui';
 import Stats from 'stats.js';
+import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 export const initializeScene = ({ root, antialias = true } = {}) => {
