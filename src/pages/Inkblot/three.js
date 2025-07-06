@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { smootherstep } from 'three/src/math/MathUtils';
 
-import { initializeScene } from 'src/utils/template';
+import { initializeScene } from '@/utils';
 
-import vertexShader from './shaders/vertex.glsl';
 import fragmentShader from './shaders/fragment.glsl';
+import vertexShader from './shaders/vertex.glsl';
 
 // TODO: make the plane rectangular?
 // TODO: when we set speed to 0, we always get the same inkblot. can we randomize it?

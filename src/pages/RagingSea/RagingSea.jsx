@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { init } from './three';
 import { InfoModal } from '@/components';
+
+import { init } from './three';
 
 export const RagingSea = () => {
   const rootRef = useRef(null);

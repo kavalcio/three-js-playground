@@ -1,6 +1,7 @@
-import { Link } from 'react-router-dom';
-import { ROUTES, ROUTE_GROUPS, ORDERED_GROUPS } from '@/constants';
 import { Box, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
+
+import { ORDERED_GROUPS, ROUTE_GROUPS, ROUTES } from '@/constants';
 
 export const Home = () => {
   const groupedRoutes = Object.values(ROUTES).reduce((acc, route) => {

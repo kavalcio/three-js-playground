@@ -7,22 +7,20 @@ https://thebookofshaders.com/00/
 https://www.mia.uni-saarland.de/Research/IP_Halftoning.shtml
 */
 
-import * as THREE from 'three';
-
-import vertexShader from 'src/shaders/dither/vertex.glsl';
-import bayerFragmentShader from 'src/shaders/dither/fragment-bayer.glsl';
-import blueFragmentShader from 'src/shaders/dither/fragment-blue.glsl';
-import fixedFragmentShader from 'src/shaders/dither/fragment-fixed.glsl';
-import randomFragmentShader from 'src/shaders/dither/fragment-random.glsl';
-import originalFragmentShader from 'src/shaders/dither/fragment-original.glsl';
-import bayerColorFragmentShader from 'src/shaders/dither/fragment-color.glsl';
-import bgImage from 'src/assets/xp_background.jpg';
-
 /* Blue noise mask downloaded from: http://momentsingraphics.de/BlueNoise.html */
 import blueNoiseImage from 'src/assets/blue_noise_128_128_1.png';
-
-import { initializeScene } from 'src/utils/template';
+import bgImage from 'src/assets/xp_background.jpg';
+import bayerFragmentShader from 'src/shaders/dither/fragment-bayer.glsl';
+import blueFragmentShader from 'src/shaders/dither/fragment-blue.glsl';
+import bayerColorFragmentShader from 'src/shaders/dither/fragment-color.glsl';
+import fixedFragmentShader from 'src/shaders/dither/fragment-fixed.glsl';
+import originalFragmentShader from 'src/shaders/dither/fragment-original.glsl';
+import randomFragmentShader from 'src/shaders/dither/fragment-random.glsl';
+import vertexShader from 'src/shaders/dither/vertex.glsl';
 import { getNormalizedBayerMatrix } from 'src/utils/misc';
+import * as THREE from 'three';
+
+import { initializeScene } from '@/utils';
 
 /* TODOS:
 - Allow setting url hash to specify which dithering algorithm to use

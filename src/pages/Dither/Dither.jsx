@@ -1,5 +1,5 @@
-import * as THREE from 'three';
 import { useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
 
 import { init } from './three';
 

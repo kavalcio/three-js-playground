@@ -1,11 +1,10 @@
 import * as THREE from 'three';
-
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 
-import { initializeScene } from 'src/utils/template';
+import { initializeScene } from '@/utils';
 
-import vertexShader from './shaders/vertex.glsl';
 import fragmentShader from './shaders/fragment.glsl';
+import vertexShader from './shaders/vertex.glsl';
 
 const params = {
   ambientColor: 0xffffff,

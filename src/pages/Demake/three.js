@@ -1,3 +1,9 @@
+import bayerColorFragmentShader from 'src/shaders/dither/fragment-color.glsl';
+import vertexShader from 'src/shaders/dither/vertex.glsl';
+import chromaticAberrationFragmentShader from 'src/shaders/postprocessing/fragment-chromatic-aberration.glsl';
+import pixellationFragmentShader from 'src/shaders/postprocessing/fragment-pixellation.glsl';
+import vertexSnappingShader from 'src/shaders/vertex-snapping/vertex.glsl';
+import { getNormalizedBayerMatrix } from 'src/utils/misc';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -5,14 +11,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 
-import vertexShader from 'src/shaders/dither/vertex.glsl';
-import pixellationFragmentShader from 'src/shaders/postprocessing/fragment-pixellation.glsl';
-import bayerColorFragmentShader from 'src/shaders/dither/fragment-color.glsl';
-import vertexSnappingShader from 'src/shaders/vertex-snapping/vertex.glsl';
-import chromaticAberrationFragmentShader from 'src/shaders/postprocessing/fragment-chromatic-aberration.glsl';
-
-import { getNormalizedBayerMatrix } from 'src/utils/misc';
-import { initializeScene } from 'src/utils/template';
+import { initializeScene } from '@/utils';
 
 // TODO: enable gzip compression for 3d files (.glb, .gltf, etc.)
 export const init = (root) => {

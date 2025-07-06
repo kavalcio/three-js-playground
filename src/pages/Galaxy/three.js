@@ -1,8 +1,8 @@
+import starImage from 'src/assets/star.png';
+import { getRandomPolarCoordinate } from 'src/utils/misc';
 import * as THREE from 'three';
 
-import { initializeScene } from 'src/utils/template';
-import { getRandomPolarCoordinate } from 'src/utils/misc';
-import starImage from 'src/assets/star.png';
+import { initializeScene } from '@/utils';
 
 export const init = (root) => {
   const params = {

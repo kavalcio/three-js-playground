@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 
-import { initializeScene } from 'src/utils/template';
+import { initializeScene } from '@/utils';
 
-import vertexShader from './shaders/vertex.glsl';
 import fragmentShader from './shaders/fragment.glsl';
+import vertexShader from './shaders/vertex.glsl';
 
 // TODO: make plane large and add fog so that you can't see the edges?
 

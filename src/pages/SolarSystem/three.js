@@ -1,18 +1,19 @@
 import * as THREE from 'three';
 
-import { initializeScene } from 'src/utils/template';
+import { initializeScene } from '@/utils';
+
 import {
-  createSelectiveUnrealBloomComposer,
-  checkObjectNonBloomed,
-  restoreNonBloomedObjectMaterial,
   BLOOM_LAYER_ID,
+  checkObjectNonBloomed,
+  createSelectiveUnrealBloomComposer,
+  restoreNonBloomedObjectMaterial,
 } from './utils';
 
 // TODO: try out tonemapping
 // TODO: get outer wilds assets using AssetStudio
 
 export const init = (root) => {
-  const { scene, renderer, camera, gui, stats, controls } = initializeScene({
+  const { scene, renderer, camera, stats, controls } = initializeScene({
     root,
   });
 

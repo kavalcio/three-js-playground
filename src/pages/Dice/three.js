@@ -1,11 +1,12 @@
-import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
+import * as THREE from 'three';
 
-import { initializeScene } from 'src/utils/template';
+import { initializeScene } from '@/utils';
+
 import {
+  findDownFacingNormalIndex,
   getPolyhedronShape,
   updateFaceNormals,
-  findDownFacingNormalIndex,
 } from './utils';
 
 const DIE_TYPES = {

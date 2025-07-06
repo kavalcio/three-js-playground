@@ -1,19 +1,17 @@
 // Noise generators: https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
 
+import bayerFragmentShader from 'src/shaders/dither/fragment-bayer.glsl';
+import vertexShader from 'src/shaders/dither/vertex.glsl';
+import chromaticAberrationFragmentShader from 'src/shaders/postprocessing/fragment-chromatic-aberration.glsl';
+import filmGrainFragmentShader from 'src/shaders/postprocessing/fragment-film-grain.glsl';
+import pixellationFragmentShader from 'src/shaders/postprocessing/fragment-pixellation.glsl';
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js';
 
-import vertexShader from 'src/shaders/dither/vertex.glsl';
-import chromaticAberrationFragmentShader from 'src/shaders/postprocessing/fragment-chromatic-aberration.glsl';
-import filmGrainFragmentShader from 'src/shaders/postprocessing/fragment-film-grain.glsl';
-import bayerFragmentShader from 'src/shaders/dither/fragment-bayer.glsl';
-import pixellationFragmentShader from 'src/shaders/postprocessing/fragment-pixellation.glsl';
-
-import { getNormalizedBayerMatrix } from 'src/utils/misc';
-import { initializeScene } from 'src/utils/template';
+import { getNormalizedBayerMatrix, initializeScene } from '@/utils';
 
 // TODO: for film grain, create a different random value for each color channel?
 // TODO: add the ability to manually shift shader pass order in gui. is that possible?

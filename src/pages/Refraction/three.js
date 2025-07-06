@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
-import bgImage from 'src/assets/xp_background.jpg';
-import { initializeScene } from 'src/utils/template';
+import bgImage from '@/assets/xp_background.jpg';
+import { initializeScene } from '@/utils';
 
 const DISTANCE = -30;
 

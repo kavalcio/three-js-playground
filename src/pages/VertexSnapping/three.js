@@ -1,8 +1,8 @@
+import vertexSnappingShader from 'src/shaders/vertex-snapping/vertex.glsl';
 import * as THREE from 'three';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 
-import vertexSnappingShader from 'src/shaders/vertex-snapping/vertex.glsl';
-import { initializeScene } from 'src/utils/template';
+import { initializeScene } from '@/utils';
 
 export const init = (root) => {
   const { scene, renderer, camera, gui, stats, controls } = initializeScene({

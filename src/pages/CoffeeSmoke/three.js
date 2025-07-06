@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-import { initializeScene } from 'src/utils/template';
+import { initializeScene } from '@/utils';
 
-import vertexShader from './shaders/vertex.glsl';
 import fragmentShader from './shaders/fragment.glsl';
+import vertexShader from './shaders/vertex.glsl';
 
 export const init = (root) => {
-  const { scene, renderer, camera, gui, stats, controls } = initializeScene({
+  const { scene, renderer, camera, stats, controls } = initializeScene({
     root,
   });
 

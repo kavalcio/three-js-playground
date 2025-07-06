@@ -1,7 +1,7 @@
-import * as THREE from 'three';
-import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 import * as CANNON from 'cannon-es';
 import { findIndexOfMaxValue } from 'src/utils/misc';
+import * as THREE from 'three';
+import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 
 export const getPolyhedronShape = (mesh) => {
   let geometry = new THREE.BufferGeometry();
