@@ -101,7 +101,7 @@ export const init = (root) => {
   directionalLightControl.addEventListener('dragging-changed', (event) => {
     controls.enabled = !event.value;
   });
-  scene.add(directionalLightControl);
+  scene.add(directionalLightControl.getHelper());
 
   const pointLightHelper = new THREE.Mesh(
     new THREE.SphereGeometry(0.2),
@@ -119,7 +119,7 @@ export const init = (root) => {
   pointLightControl.addEventListener('dragging-changed', (event) => {
     controls.enabled = !event.value;
   });
-  scene.add(pointLightControl);
+  scene.add(pointLightControl.getHelper());
 
   /**
    * GUI
