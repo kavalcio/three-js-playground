@@ -6,9 +6,10 @@ import fragmentShader from './shaders/fragment.glsl';
 import vertexShader from './shaders/vertex.glsl';
 
 export const init = (root) => {
-  const { scene, renderer, camera, stats, controls } = initializeScene({
-    root,
-  });
+  const { scene, renderer, camera, stats, controls, clearScene } =
+    initializeScene({
+      root,
+    });
   renderer.setClearColor(0x222233);
 
   camera.position.set(7, 7, 7);
@@ -67,5 +68,5 @@ export const init = (root) => {
 
   tick();
 
-  return renderer;
+  return clearScene;
 };

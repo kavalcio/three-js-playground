@@ -5,9 +5,10 @@ import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { initializeScene } from '@/utils';
 
 export const init = (root) => {
-  const { scene, renderer, camera, gui, stats, controls } = initializeScene({
-    root,
-  });
+  const { scene, renderer, camera, gui, stats, controls, clearScene } =
+    initializeScene({
+      root,
+    });
 
   // https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
 
@@ -97,4 +98,6 @@ export const init = (root) => {
   };
 
   tick();
+
+  return clearScene;
 };

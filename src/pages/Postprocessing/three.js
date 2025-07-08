@@ -68,10 +68,11 @@ export const init = (root) => {
     fragmentShader: filmGrainFragmentShader,
   };
 
-  const { scene, renderer, camera, gui, stats, controls } = initializeScene({
-    root,
-    antialias: false,
-  });
+  const { scene, renderer, camera, gui, stats, controls, clearScene } =
+    initializeScene({
+      root,
+      antialias: false,
+    });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
   camera.position.set(58, 55, 130);
@@ -225,4 +226,6 @@ export const init = (root) => {
   }
 
   animate();
+
+  return clearScene;
 };

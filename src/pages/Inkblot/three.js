@@ -12,9 +12,10 @@ import vertexShader from './shaders/vertex.glsl';
 export const init = (root) => {
   const params = { stepSize: 3 };
 
-  const { scene, renderer, camera, gui, stats, controls } = initializeScene({
-    root,
-  });
+  const { scene, renderer, camera, gui, stats, controls, clearScene } =
+    initializeScene({
+      root,
+    });
 
   renderer.setClearColor(0x333333, 1);
 
@@ -75,4 +76,6 @@ export const init = (root) => {
   };
 
   tick();
+
+  return clearScene;
 };

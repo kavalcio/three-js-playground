@@ -50,5 +50,11 @@ export const initializeScene = ({ root, antialias = true } = {}) => {
     controls,
     gui,
     stats,
+    clearScene: () => {
+      console.log('clearing scene');
+      renderer.domElement.remove();
+      stats.domElement.remove();
+      gui.destroy();
+    },
   };
 };

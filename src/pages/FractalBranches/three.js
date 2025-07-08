@@ -37,9 +37,10 @@ export const init = (root) => {
       (key) => (params[key] = paramsToApply[key]),
     );
 
-  const { scene, renderer, camera, gui, stats, controls } = initializeScene({
-    root,
-  });
+  const { scene, renderer, camera, gui, stats, controls, clearScene } =
+    initializeScene({
+      root,
+    });
 
   camera.position.z = 200;
 
@@ -215,4 +216,6 @@ export const init = (root) => {
   }
 
   animate();
+
+  return clearScene;
 };

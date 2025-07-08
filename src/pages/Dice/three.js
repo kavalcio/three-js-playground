@@ -67,9 +67,10 @@ export const init = (root) => {
     wireframe: true,
   });
 
-  const { scene, renderer, camera, gui, stats, controls } = initializeScene({
-    root,
-  });
+  const { scene, renderer, camera, gui, stats, controls, clearScene } =
+    initializeScene({
+      root,
+    });
 
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -319,4 +320,6 @@ export const init = (root) => {
   }
 
   animate();
+
+  return clearScene;
 };

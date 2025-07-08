@@ -13,9 +13,10 @@ import {
 // TODO: get outer wilds assets using AssetStudio
 
 export const init = (root) => {
-  const { scene, renderer, camera, stats, controls } = initializeScene({
-    root,
-  });
+  const { scene, renderer, camera, stats, controls, clearScene } =
+    initializeScene({
+      root,
+    });
 
   camera.position.set(0, 0, 30);
   controls.update();
@@ -66,4 +67,6 @@ export const init = (root) => {
   };
 
   tick();
+
+  return clearScene;
 };

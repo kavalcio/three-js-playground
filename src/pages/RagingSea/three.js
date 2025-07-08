@@ -13,9 +13,10 @@ export const init = ({ root, onModalOpen }) => {
     valleyColor: 0x184650,
   };
 
-  const { scene, renderer, camera, gui, stats, controls } = initializeScene({
-    root,
-  });
+  const { scene, renderer, camera, gui, stats, controls, clearScene } =
+    initializeScene({
+      root,
+    });
 
   camera.position.set(-10, 15, 20);
   camera.lookAt(scene.position);
@@ -160,4 +161,6 @@ export const init = ({ root, onModalOpen }) => {
   };
 
   tick();
+
+  return clearScene;
 };

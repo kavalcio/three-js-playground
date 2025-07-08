@@ -10,9 +10,10 @@ export const init = (root) => {
     distance: DISTANCE,
   };
 
-  const { scene, renderer, camera, gui, stats, controls } = initializeScene({
-    root,
-  });
+  const { scene, renderer, camera, gui, stats, controls, clearScene } =
+    initializeScene({
+      root,
+    });
 
   scene.background = new THREE.Color(0x222222);
 
@@ -75,4 +76,6 @@ export const init = (root) => {
   }
 
   animate();
+
+  return clearScene;
 };

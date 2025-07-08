@@ -6,7 +6,10 @@ export const Halftone = () => {
   const rootRef = useRef(null);
 
   useEffect(() => {
-    init(rootRef.current);
+    const clearScene = init(rootRef.current);
+    return () => {
+      if (clearScene) clearScene();
+    };
   }, []);
 
   return <div ref={rootRef} />;

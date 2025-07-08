@@ -6,7 +6,10 @@ export const Dice = () => {
   const rootRef = useRef(null);
 
   useEffect(() => {
-    init(rootRef.current);
+    const clearScene = init(rootRef.current);
+    return () => {
+      if (clearScene) clearScene();
+    };
   }, []);
 
   return <div ref={rootRef} />;

@@ -9,7 +9,13 @@ export const RagingSea = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    init({ root: rootRef.current, onModalOpen: () => setIsModalOpen(true) });
+    const clearScene = init({
+      root: rootRef.current,
+      onModalOpen: () => setIsModalOpen(true),
+    });
+    return () => {
+      if (clearScene) clearScene();
+    };
   }, []);
 
   return (

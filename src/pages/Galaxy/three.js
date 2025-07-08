@@ -16,9 +16,10 @@ export const init = (root) => {
     outerColor: '#a668ff',
   };
 
-  const { scene, renderer, camera, gui, stats, controls } = initializeScene({
-    root,
-  });
+  const { scene, renderer, camera, gui, stats, controls, clearScene } =
+    initializeScene({
+      root,
+    });
 
   camera.position.set(7, 4, 7);
   controls.update();
@@ -117,4 +118,6 @@ export const init = (root) => {
   };
 
   tick();
+
+  return clearScene;
 };

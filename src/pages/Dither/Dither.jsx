@@ -9,9 +9,17 @@ export const Dither = () => {
   const [mesh, setMesh] = useState();
 
   useEffect(() => {
-    const { material: ditherMaterial, mesh } = init({ root: rootRef.current });
+    const {
+      material: ditherMaterial,
+      mesh,
+      clearScene,
+    } = init({ root: rootRef.current });
     setMaterial(ditherMaterial);
     setMesh(mesh);
+
+    return () => {
+      if (clearScene) clearScene();
+    };
   }, []);
 
   const onImageSelect = (event) => {

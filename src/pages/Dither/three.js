@@ -29,9 +29,10 @@ import { initializeScene } from '@/utils';
 */
 
 export const init = ({ root }) => {
-  const { scene, renderer, camera, gui, stats, controls } = initializeScene({
-    root,
-  });
+  const { scene, renderer, camera, gui, stats, controls, clearScene } =
+    initializeScene({
+      root,
+    });
 
   camera.position.z = 100;
   camera.fov = 35;
@@ -155,5 +156,5 @@ export const init = ({ root }) => {
 
   animate();
 
-  return { material: ditherMaterial, mesh: planeObj };
+  return { material: ditherMaterial, mesh: planeObj, clearScene };
 };

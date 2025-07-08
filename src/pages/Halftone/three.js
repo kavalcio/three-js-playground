@@ -11,9 +11,10 @@ const params = {
 };
 
 export const init = (root) => {
-  const { scene, renderer, camera, gui, stats, controls } = initializeScene({
-    root,
-  });
+  const { scene, renderer, camera, gui, stats, controls, clearScene } =
+    initializeScene({
+      root,
+    });
   renderer.setClearColor(0x222233);
 
   camera.position.set(0, 0, 12);
@@ -105,5 +106,5 @@ export const init = (root) => {
 
   tick();
 
-  return renderer;
+  return clearScene;
 };

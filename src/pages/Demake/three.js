@@ -50,10 +50,11 @@ export const init = (root) => {
     fragmentShader: chromaticAberrationFragmentShader,
   };
 
-  const { scene, renderer, camera, gui, stats, controls } = initializeScene({
-    root,
-    antialias: false,
-  });
+  const { scene, renderer, camera, gui, stats, controls, clearScene } =
+    initializeScene({
+      root,
+      antialias: false,
+    });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
   const customUniforms = {
@@ -199,4 +200,6 @@ export const init = (root) => {
   }
 
   animate();
+
+  return clearScene;
 };
