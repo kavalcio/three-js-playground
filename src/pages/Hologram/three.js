@@ -5,8 +5,12 @@ import { initializeScene } from '@/utils';
 import fragmentShader from './shaders/fragment.glsl';
 import vertexShader from './shaders/vertex.glsl';
 
+const params = {
+  color: 0x7ff27d,
+};
+
 export const init = (root) => {
-  const { scene, renderer, camera, stats, controls, clearScene } =
+  const { scene, renderer, camera, stats, controls, gui, clearScene } =
     initializeScene({
       root,
     });
@@ -23,6 +27,7 @@ export const init = (root) => {
     // wireframe: true,
     uniforms: {
       uTime: { value: 0 },
+      uColor: { value: new THREE.Color(params.color) },
     },
     vertexShader,
     fragmentShader,
@@ -44,6 +49,11 @@ export const init = (root) => {
   const sphere = new THREE.Mesh(new THREE.SphereGeometry(), material);
   sphere.position.x = -1.5;
   scene.add(sphere);
+
+  // GUI
+  gui.addColor(params, 'color').onChange((color) => {
+    material.uniforms.uColor.value.set(color);
+  });
 
   const clock = new THREE.Clock();
 
