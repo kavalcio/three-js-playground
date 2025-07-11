@@ -33,6 +33,8 @@ export const DiceRigidBodies = ({
         <meshStandardMaterial
           attach="material"
           {...diceModels.nodes[dieType].material}
+          metalness={0.2}
+          roughness={0.2}
           // normalMap={diceModels.nodes[dieType].material.map}
           wireframe={isDebug}
         />

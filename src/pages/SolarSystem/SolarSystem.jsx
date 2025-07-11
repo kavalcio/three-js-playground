@@ -1,16 +1,15 @@
-import { useEffect, useRef } from 'react';
+import { Canvas } from '@react-three/fiber';
 
-import { init } from './three';
+import { Scene } from './components';
 
 export const SolarSystem = () => {
-  const rootRef = useRef(null);
-
-  useEffect(() => {
-    const clearScene = init(rootRef.current);
-    return () => {
-      if (clearScene) clearScene();
-    };
-  }, []);
-
-  return <div ref={rootRef} />;
+  return (
+    <Canvas
+      shadows
+      style={{ height: '100vh', width: '100vw' }}
+      camera={{ fov: 35, position: [0, 0, 10] }}
+    >
+      <Scene />
+    </Canvas>
+  );
 };

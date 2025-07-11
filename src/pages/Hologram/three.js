@@ -1,9 +1,8 @@
+import fragmentShader from 'src/shaders/hologram/fragment.glsl';
+import vertexShader from 'src/shaders/hologram/vertex.glsl';
 import * as THREE from 'three';
 
 import { initializeScene } from '@/utils';
-
-import fragmentShader from './shaders/fragment.glsl';
-import vertexShader from './shaders/vertex.glsl';
 
 const params = {
   color: 0x7ff27d,
