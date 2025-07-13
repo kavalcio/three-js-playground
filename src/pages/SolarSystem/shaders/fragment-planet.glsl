@@ -7,7 +7,7 @@ uniform float uTime;
 uniform vec3 uLightDirection;
 uniform sampler2D uDayMap;
 uniform sampler2D uNightMap;
-uniform sampler2D uNormalMap;
+// uniform sampler2D uNormalMap;
 
 void main()
 {
