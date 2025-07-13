@@ -11,6 +11,7 @@ import planetVertexShader from '../shaders/vertex-planet.glsl';
 // TODO: add bloom to sun
 
 const sunSpherical = new THREE.Spherical(1, Math.PI / 2, Math.PI / 2);
+const sunDirection = new THREE.Vector3();
 
 export const Scene = () => {
   const sphereRef = useRef();
@@ -31,7 +32,6 @@ export const Scene = () => {
   textures.earthNight.colorSpace = THREE.SRGBColorSpace;
 
   const [{ rotate, lightPhi, lightTheta }] = useControls(() => ({
-    // TODO: these phi and theta values stop working when Rotate is turned on
     rotate: { value: false, label: 'Rotate' },
     lightPhi: {
       value: sunSpherical.phi,
@@ -59,8 +59,6 @@ export const Scene = () => {
     },
   }));
 
-  console.log('rerender', lightPhi, lightTheta);
-
   return (
     <>
       <Stats />
@@ -76,9 +74,7 @@ export const Scene = () => {
           fragmentShader={planetFragmentShader}
           uniforms={{
             uTime: { value: 0 },
-            uLightDirection: {
-              value: new THREE.Vector3().setFromSpherical(sunSpherical),
-            },
+            uLightDirection: { value: sunDirection },
             uDayMap: { value: textures.earthDay },
             uNightMap: { value: textures.earthNight },
             uNormalMap: { value: textures.earthNormal },
