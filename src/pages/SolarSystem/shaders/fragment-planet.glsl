@@ -13,7 +13,10 @@ uniform vec3 uAtmosphereTwilightColor;
 uniform sampler2D uDayMap;
 uniform sampler2D uNightMap;
 uniform sampler2D uCloudsMap;
+uniform sampler2D uSpecularMap;
 // uniform sampler2D uNormalMap;
+
+#include ../../../shaders/lighting/directionalLight.glsl
 
 void main()
 {
@@ -43,6 +46,20 @@ void main()
   vec3 atmosphereColor = mix(uAtmosphereTwilightColor, uAtmosphereDayColor, atmosphereDayFactor);
   float fresnel = 1. + dot(viewDirection, normal);
   color = mix(color, atmosphereColor, pow(fresnel, 3.) * atmosphereDayFactor);
+
+  // Add specular light
+  vec3 specularColor = mix(vec3(1.), atmosphereColor, fresnel);
+  float specularIntensity = .6 * texture(uSpecularMap, vUv).r;
+  vec3 light = directionalLight(
+    -uLightDirection,               // Light position
+    viewDirection,                  // View direction
+    normal,                         // Normal
+    specularColor,                  // Light color
+    0.,                             // Diffuse Light intensity
+    specularIntensity,              // Specular Light intensity
+    32.                             // Specular power
+  );
+  color += light;
 
   gl_FragColor = vec4(color, 1.0);
   

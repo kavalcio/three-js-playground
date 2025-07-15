@@ -32,7 +32,7 @@ export const Scene = () => {
     earthDay: '/solar/earth_day.jpg',
     earthNight: '/solar/earth_night.jpg',
     // earthNormal: '/solar/earth_normal.png',
-    // earthSpecular: '/solar/earth_specular.png',
+    earthSpecular: '/solar/earth_specular.png',
     earthClouds: '/solar/earth_clouds.jpg',
   });
 
@@ -120,6 +120,7 @@ export const Scene = () => {
       uLightDirection: { value: sunDirectionCartesian },
       uDayMap: { value: textures.earthDay },
       uNightMap: { value: textures.earthNight },
+      uSpecularMap: { value: textures.earthSpecular },
       uCloudsMap: { value: textures.earthClouds },
       uCloudDensity: { value: 0.8, type: 'f' },
       uCloudIntensity: { value: 0.5, type: 'f' },
@@ -132,6 +133,7 @@ export const Scene = () => {
   }, [
     textures.earthDay,
     textures.earthNight,
+    textures.earthSpecular,
     textures.earthClouds,
     atmosphereDayColor,
     atmosphereTwilightColor,
