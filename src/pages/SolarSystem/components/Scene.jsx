@@ -24,7 +24,7 @@ export const Scene = () => {
   const { gl: renderer } = useThree();
 
   useFrame((state, delta) => {
-    if (rotate) earthRef.current.rotation.y += delta / 2;
+    if (rotate) earthRef.current.rotation.y += delta / 4;
     earthRef.current.material.uniforms.uTime.value += delta;
   });
 
@@ -58,50 +58,63 @@ export const Scene = () => {
     sunRef.current.position.copy(sunPosition);
   };
 
-  const [{ rotate }] = useControls(() => ({
-    rotate: { value: false, label: 'Rotate' },
-    cloudDensity: {
-      value: 0.8,
-      min: 0,
-      max: 1,
-      label: 'Cloud Density',
-      onChange: (value) => {
-        earthRef.current.material.uniforms.uCloudDensity.value = value;
+  const [{ rotate, atmosphereDayColor, atmosphereTwilightColor }] = useControls(
+    () => ({
+      rotate: { value: false, label: 'Rotate' },
+      cloudDensity: {
+        value: 0.8,
+        min: 0,
+        max: 1,
+        label: 'Cloud Density',
+        onChange: (value) => {
+          earthRef.current.material.uniforms.uCloudDensity.value = value;
+        },
       },
-    },
-    cloudIntensity: {
-      value: 0.5,
-      min: 0,
-      max: 1,
-      label: 'Cloud Intensity',
-      onChange: (value) => {
-        earthRef.current.material.uniforms.uCloudIntensity.value = value;
+      cloudIntensity: {
+        value: 0.5,
+        min: 0,
+        max: 1,
+        label: 'Cloud Intensity',
+        onChange: (value) => {
+          earthRef.current.material.uniforms.uCloudIntensity.value = value;
+        },
       },
-    },
-    lightPhi: {
-      value: sunDirectionSpherical.phi,
-      min: 0,
-      max: Math.PI,
-      label: 'Light Phi',
-      onChange: (value) => updateSunPosition(value, 'phi'),
-    },
-    lightTheta: {
-      value: sunDirectionSpherical.theta,
-      min: 0,
-      max: Math.PI * 2,
-      label: 'Light Theta',
-      onChange: (value) => updateSunPosition(value, 'theta'),
-    },
-  }));
+      lightPhi: {
+        value: sunDirectionSpherical.phi,
+        min: 0,
+        max: Math.PI,
+        label: 'Light Phi',
+        onChange: (value) => updateSunPosition(value, 'phi'),
+      },
+      lightTheta: {
+        value: sunDirectionSpherical.theta,
+        min: 0,
+        max: Math.PI * 2,
+        label: 'Light Theta',
+        onChange: (value) => updateSunPosition(value, 'theta'),
+      },
+      atmosphereDayColor: {
+        value: '#55aaff',
+        label: 'Atmosphere Day Color',
+        onChange: (value) => {
+          earthRef.current.material.uniforms.uAtmosphereDayColor.value.set(
+            value,
+          );
+        },
+      },
+      atmosphereTwilightColor: {
+        value: '#ff4500',
+        label: 'Atmosphere Twilight Color',
+        onChange: (value) => {
+          earthRef.current.material.uniforms.uAtmosphereTwilightColor.value.set(
+            value,
+          );
+        },
+      },
+    }),
+  );
 
   const uniforms = useMemo(() => {
-    // sunDirectionSpherical.set(
-    //   sunDirectionSpherical.radius,
-    //   lightPhi,
-    //   lightTheta,
-    // );
-    // sunDirectionCartesian.setFromSpherical(sunDirectionSpherical);
-
     return {
       uTime: { value: 0 },
       uLightDirection: { value: sunDirectionCartesian },
@@ -110,16 +123,18 @@ export const Scene = () => {
       uCloudsMap: { value: textures.earthClouds },
       uCloudDensity: { value: 0.8, type: 'f' },
       uCloudIntensity: { value: 0.5, type: 'f' },
+      uAtmosphereDayColor: { value: new THREE.Color(atmosphereDayColor) },
+      uAtmosphereTwilightColor: {
+        value: new THREE.Color(atmosphereTwilightColor),
+      },
       // uNormalMap: { value: textures.earthNormal },
     };
   }, [
     textures.earthDay,
     textures.earthNight,
     textures.earthClouds,
-    // lightPhi,
-    // lightTheta,
-    // cloudDensity,
-    // cloudIntensity,
+    atmosphereDayColor,
+    atmosphereTwilightColor,
   ]);
 
   console.log('uniforms', uniforms);
