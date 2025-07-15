@@ -4,12 +4,15 @@ import { useControls } from 'leva';
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
+import atmosphereFragmentShader from '../shaders/fragment-atmosphere.glsl';
 import planetFragmentShader from '../shaders/fragment-planet.glsl';
 import planetVertexShader from '../shaders/vertex-planet.glsl';
 
-// TODO: dont forget to normalize light direction
 // TODO: add bloom to sun
 // TODO: add buttons to focus camera on different bodies
+// TODO: add skybox
+// TODO: animate clouds (rotate, also fade parts using perlin noise). maybe even create cloud dynamically
+// TODO: add lens flare to sun
 
 const SUN_DISTANCE = 5;
 
@@ -154,6 +157,16 @@ export const Scene = () => {
         <shaderMaterial
           vertexShader={planetVertexShader}
           fragmentShader={planetFragmentShader}
+          uniforms={uniforms}
+        />
+      </mesh>
+      <mesh position={[0, 0, 0]}>
+        <sphereGeometry args={[1.56, 64, 64]} />
+        <shaderMaterial
+          vertexShader={planetVertexShader}
+          fragmentShader={atmosphereFragmentShader}
+          transparent
+          side={THREE.BackSide}
           uniforms={uniforms}
         />
       </mesh>
