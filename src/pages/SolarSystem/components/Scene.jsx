@@ -1,7 +1,7 @@
 import { OrbitControls, Stats, useTexture } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { useControls } from 'leva';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
 import planetFragmentShader from '../shaders/fragment-planet.glsl';
@@ -21,6 +21,8 @@ export const Scene = () => {
   const earthRef = useRef();
   const sunRef = useRef();
 
+  const { gl: renderer } = useThree();
+
   useFrame((state, delta) => {
     if (rotate) earthRef.current.rotation.y += delta / 2;
     earthRef.current.material.uniforms.uTime.value += delta;
@@ -31,10 +33,15 @@ export const Scene = () => {
     earthNight: '/solar/earth_night.jpg',
     // earthNormal: '/solar/earth_normal.png',
     // earthSpecular: '/solar/earth_specular.png',
+    earthClouds: '/solar/earth_clouds.jpg',
   });
 
+  const anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 8);
   textures.earthDay.colorSpace = THREE.SRGBColorSpace;
   textures.earthNight.colorSpace = THREE.SRGBColorSpace;
+  textures.earthDay.anisotropy = anisotropy;
+  textures.earthNight.anisotropy = anisotropy;
+  textures.earthClouds.anisotropy = anisotropy;
 
   const updateSunPosition = (value, axis) => {
     sunDirectionSpherical.set(
@@ -53,6 +60,24 @@ export const Scene = () => {
 
   const [{ rotate }] = useControls(() => ({
     rotate: { value: false, label: 'Rotate' },
+    cloudDensity: {
+      value: 0.8,
+      min: 0,
+      max: 1,
+      label: 'Cloud Density',
+      onChange: (value) => {
+        earthRef.current.material.uniforms.uCloudDensity.value = value;
+      },
+    },
+    cloudIntensity: {
+      value: 0.5,
+      min: 0,
+      max: 1,
+      label: 'Cloud Intensity',
+      onChange: (value) => {
+        earthRef.current.material.uniforms.uCloudIntensity.value = value;
+      },
+    },
     lightPhi: {
       value: sunDirectionSpherical.phi,
       min: 0,
@@ -69,6 +94,36 @@ export const Scene = () => {
     },
   }));
 
+  const uniforms = useMemo(() => {
+    // sunDirectionSpherical.set(
+    //   sunDirectionSpherical.radius,
+    //   lightPhi,
+    //   lightTheta,
+    // );
+    // sunDirectionCartesian.setFromSpherical(sunDirectionSpherical);
+
+    return {
+      uTime: { value: 0 },
+      uLightDirection: { value: sunDirectionCartesian },
+      uDayMap: { value: textures.earthDay },
+      uNightMap: { value: textures.earthNight },
+      uCloudsMap: { value: textures.earthClouds },
+      uCloudDensity: { value: 0.8, type: 'f' },
+      uCloudIntensity: { value: 0.5, type: 'f' },
+      // uNormalMap: { value: textures.earthNormal },
+    };
+  }, [
+    textures.earthDay,
+    textures.earthNight,
+    textures.earthClouds,
+    // lightPhi,
+    // lightTheta,
+    // cloudDensity,
+    // cloudIntensity,
+  ]);
+
+  console.log('uniforms', uniforms);
+
   return (
     <>
       <Stats />
@@ -82,13 +137,7 @@ export const Scene = () => {
         <shaderMaterial
           vertexShader={planetVertexShader}
           fragmentShader={planetFragmentShader}
-          uniforms={{
-            uTime: { value: 0 },
-            uLightDirection: { value: sunDirectionCartesian },
-            uDayMap: { value: textures.earthDay },
-            uNightMap: { value: textures.earthNight },
-            // uNormalMap: { value: textures.earthNormal },
-          }}
+          uniforms={uniforms}
         />
       </mesh>
       <mesh ref={sunRef} position={sunPosition}>
