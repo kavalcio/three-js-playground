@@ -55,6 +55,11 @@ export const ROUTES = {
     title: 'Dither',
     group: ROUTE_GROUPS.shaders.key,
   },
+  warp: {
+    path: '/warp',
+    title: 'Warp',
+    group: ROUTE_GROUPS.shaders.key,
+  },
   galaxy: {
     path: '/galaxy',
     title: 'Galaxy',

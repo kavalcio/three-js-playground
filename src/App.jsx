@@ -21,6 +21,7 @@ import {
   Skyline,
   SolarSystem,
   VertexSnapping,
+  Warp,
 } from '@/pages';
 
 // TODO: add dependabot to github?
@@ -107,6 +108,10 @@ const router = createBrowserRouter([
       {
         path: ROUTES.skyline.path,
         element: <Skyline />,
+      },
+      {
+        path: ROUTES.warp.path,
+        element: <Warp />,
       },
     ],
   },
