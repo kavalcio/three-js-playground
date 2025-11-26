@@ -6,6 +6,10 @@ import * as THREE from 'three';
 
 import { initializeScene } from '@/utils';
 
+const params = {
+  animationSpeed: 1.0,
+};
+
 export const init = ({ root }) => {
   const { scene, renderer, camera, gui, stats, controls, clearScene } =
     initializeScene({
@@ -18,7 +22,7 @@ export const init = ({ root }) => {
   camera.updateProjectionMatrix();
   // controls.disconnect();
   // controls.panSpeed = 0;
-  // controls.rotateSpeed = 0;
+  controls.rotateSpeed = 0;
 
   let planeObj;
 
@@ -37,9 +41,6 @@ export const init = ({ root }) => {
       uTime: { value: 0 },
       uMap1: { type: 't', value: imageTexture1 },
       uMap2: { type: 't', value: imageTexture2 },
-      uResolution: {
-        value: new THREE.Vector2(window.innerWidth, window.innerHeight),
-      },
     },
   });
 
@@ -54,12 +55,23 @@ export const init = ({ root }) => {
     .add(
       {
         loadFile: () => {
-          document.getElementById('fileInput').click();
+          document.getElementById('fileInput1').click();
         },
       },
       'loadFile',
     )
-    .name('Upload Image');
+    .name('Upload Image 1');
+  gui
+    .add(
+      {
+        loadFile: () => {
+          document.getElementById('fileInput2').click();
+        },
+      },
+      'loadFile',
+    )
+    .name('Upload Image 2');
+  gui.add(params, 'animationSpeed', 0, 5, 0.1).name('Animation Speed');
 
   function animate() {
     requestAnimationFrame(animate);
@@ -67,8 +79,7 @@ export const init = ({ root }) => {
 
     controls.update();
 
-    const elapsedTime = clock.getElapsedTime();
-    material.uniforms.uTime.value = elapsedTime;
+    material.uniforms.uTime.value += clock.getDelta() * params.animationSpeed;
 
     stats.end();
     renderer.render(scene, camera);
