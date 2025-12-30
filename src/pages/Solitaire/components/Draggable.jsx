@@ -1,9 +1,9 @@
 import { useDraggable } from '@dnd-kit/core';
 
 // TODO: You'll likely want to alter the z-index of your Draggable component to ensure it appears on top of other elements.
-export const Draggable = (props) => {
+export const Draggable = ({ id, children }) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: 'draggable',
+    id,
   });
   const style = transform
     ? {
@@ -13,7 +13,7 @@ export const Draggable = (props) => {
 
   return (
     <button ref={setNodeRef} style={style} {...listeners} {...attributes}>
-      {props.children}
+      {children}
     </button>
   );
 };
