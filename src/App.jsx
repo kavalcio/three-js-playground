@@ -20,6 +20,7 @@ import {
   Refraction,
   Skyline,
   SolarSystem,
+  Solitaire,
   VertexSnapping,
   Warp,
 } from '@/pages';
@@ -108,6 +109,10 @@ const router = createBrowserRouter([
       {
         path: ROUTES.skyline.path,
         element: <Skyline />,
+      },
+      {
+        path: ROUTES.solitaire.path,
+        element: <Solitaire />,
       },
       {
         path: ROUTES.warp.path,

@@ -13,6 +13,8 @@ import planetVertexShader from '../shaders/vertex-planet.glsl';
 // TODO: add skybox
 // TODO: animate clouds (rotate, also fade parts using perlin noise). maybe even create cloud dynamically
 // TODO: add lens flare to sun
+// TODO: add earth normal map
+// TODO: make gui wider, text cuts off
 
 const SUN_DISTANCE = 5;
 
@@ -34,7 +36,6 @@ export const Scene = () => {
   const textures = useTexture({
     earthDay: '/solar/earth_day.jpg',
     earthNight: '/solar/earth_night.jpg',
-    // earthNormal: '/solar/earth_normal.png',
     earthSpecular: '/solar/earth_specular.png',
     earthClouds: '/solar/earth_clouds.jpg',
   });
@@ -131,7 +132,6 @@ export const Scene = () => {
       uAtmosphereTwilightColor: {
         value: new THREE.Color(atmosphereTwilightColor),
       },
-      // uNormalMap: { value: textures.earthNormal },
     };
   }, [
     textures.earthDay,
@@ -141,8 +141,6 @@ export const Scene = () => {
     atmosphereDayColor,
     atmosphereTwilightColor,
   ]);
-
-  console.log('uniforms', uniforms);
 
   return (
     <>
