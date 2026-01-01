@@ -10,16 +10,19 @@ export const Droppable = ({ id, children }) => {
     <Box
       ref={setNodeRef}
       sx={{
-        padding: '20px',
-        margin: '20px',
+        position: 'relative',
+        padding: 1,
+        margin: 1,
         borderWidth: '2px',
         borderStyle: 'solid',
         borderColor: isOver ? 'green' : 'white',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        justifyContent: 'center',
         gap: 1,
-        width: 200,
+        width: 100,
+        height: 100,
       }}
     >
       {children}

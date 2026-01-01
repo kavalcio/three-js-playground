@@ -49,18 +49,6 @@ export const Scene = () => {
     <DndContext onDragEnd={handleDragEnd}>
       <Box
         sx={{
-          position: 'relative',
-        }}
-      >
-        {deck.map(
-          (card, index) =>
-            !deck.stack && (
-              <Draggable key={card.id} cardId={card.id} index={index} />
-            ),
-        )}
-      </Box>
-      <Box
-        sx={{
           display: 'flex',
           flexDirection: 'row',
           gap: 2,
@@ -78,6 +66,18 @@ export const Scene = () => {
             ))}
           </Droppable>
         ))}
+      </Box>
+      <Box
+        sx={{
+          position: 'relative',
+        }}
+      >
+        {deck.map(
+          (card, index) =>
+            !deck.stack && (
+              <Draggable key={card.id} cardId={card.id} index={index} />
+            ),
+        )}
       </Box>
     </DndContext>
   );
