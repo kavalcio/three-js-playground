@@ -1,36 +1,84 @@
 import { DndContext } from '@dnd-kit/core';
+import { Box } from '@mui/material';
 import { useState } from 'react';
+
+import { CARDS, STACKS } from '@/constants';
 
 import { Draggable } from './Draggable';
 import { Droppable } from './Droppable';
 
 export const Scene = () => {
-  const containers = ['A', 'B', 'C'];
-  const [parent, setParent] = useState(null);
-  const draggableMarkup = <Draggable id="draggable">Drag me</Draggable>;
+  const [deck, setDeck] = useState(Object.values(CARDS));
+  const [stacks, setStacks] = useState(Object.values(STACKS));
 
   const handleDragEnd = (event) => {
     const { over } = event;
-    console.log('over', event, over);
+    if (!over) return;
 
-    // If the item is dropped over a container, set it as the parent
-    // otherwise reset the parent to `null`
-    setParent(over ? over.id : null);
+    const droppedStackId = over.id;
+    const draggedCardId = event.active.id;
+
+    // TODO: If the dragged card is already in the target stack, do nothing
+    // if (draggedCard.stack === overId) return;
+
+    // Remove card from previous stack (if any) and add it to the new stack
+    const newStacks = stacks
+      .map((stack) => ({
+        ...stack,
+        cards: stack.cards.filter((cardId) => cardId !== draggedCardId),
+      }))
+      .map((stack) =>
+        stack.id === droppedStackId
+          ? { ...stack, cards: [...stack.cards, draggedCardId] }
+          : stack,
+      );
+
+    console.log('over', { event, over, draggedCardId, newStacks });
+    setStacks(newStacks);
+
+    // Remove the card from the deck
+    setDeck((prevDeck) => prevDeck.filter((card) => card.id !== draggedCardId));
   };
 
-  console.log('parent', parent);
+  console.log({
+    stacks,
+    deck,
+  });
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      {parent === null ? draggableMarkup : null}
-
-      {containers.map((id) => (
-        // We updated the Droppable component so it would accept an `id`
-        // prop and pass it to `useDroppable`
-        <Droppable key={id} id={id}>
-          {parent === id ? draggableMarkup : 'Drop here'}
-        </Droppable>
-      ))}
+      <Box
+        sx={{
+          position: 'relative',
+        }}
+      >
+        {deck.map(
+          (card, index) =>
+            !deck.stack && (
+              <Draggable key={card.id} cardId={card.id} index={index} />
+            ),
+        )}
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          gap: 2,
+        }}
+      >
+        {stacks.map((stack) => (
+          <Droppable
+            key={stack.id}
+            id={stack.id}
+            setDeck={setDeck}
+            setStacks={setStacks}
+          >
+            {stack.cards.map((cardId, index) => (
+              <Draggable key={cardId} cardId={cardId} index={index} />
+            ))}
+          </Droppable>
+        ))}
+      </Box>
     </DndContext>
   );
 };

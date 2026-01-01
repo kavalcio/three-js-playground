@@ -37,7 +37,8 @@
     "stats.js": "^0.17.0",
     "three": "^0.178.0",
     "vite-plugin-glsl": "^1.5.1",
-    "vite-plugin-glslify": "^2.2.1"
+    "vite-plugin-glslify": "^2.2.1",
+    "vite-tsconfig-paths": "^6.0.3"
   },
   "devDependencies": {
     "@types/react": "^19.1.8",
