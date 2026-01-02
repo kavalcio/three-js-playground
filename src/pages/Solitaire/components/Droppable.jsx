@@ -21,7 +21,7 @@ export const Droppable = ({ id, children }) => {
         alignItems: 'center',
         justifyContent: 'center',
         gap: 1,
-        width: 100,
+        width: 60,
         height: 100,
       }}
     >

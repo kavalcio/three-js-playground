@@ -13,33 +13,17 @@ const TILE_WIDTH = 42;
 const TILE_HEIGHT = 60;
 const TILE_SCALE = 1.5;
 
-// TODO: You'll likely want to alter the z-index of your Draggable component to ensure it appears on top of other elements.
-export const Draggable = ({ index, cardId }) => {
+export const Draggable = ({ index, cardId, stackId }) => {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: cardId,
+      data: { currentStackId: stackId },
     });
 
-  if (isDragging) console.log(cardId);
-
   return (
-    // <button
-    //   ref={setNodeRef}
-    //   style={{
-    //     color: 'white',
-    //     transform: transform
-    //       ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
-    //       : 'none',
-    //   }}
-    //   {...listeners}
-    //   {...attributes}
-    // >
-    //   {children}
-    // </button>
     <Box
       ref={setNodeRef}
       sx={{
-        color: 'white',
         width: TILE_WIDTH * TILE_SCALE,
         height: TILE_HEIGHT * TILE_SCALE,
         transform: transform
@@ -47,9 +31,7 @@ export const Draggable = ({ index, cardId }) => {
           : 'none',
         zIndex: 10 + index + (isDragging ? 200 : 0),
         position: 'absolute',
-        top: index * 15,
-        // left: index,
-        mb: 1,
+        top: index * 15 * TILE_SCALE,
         backgroundImage: `url(${cardsTilemap})`,
         imageRendering: 'pixelated',
         backgroundPositionX:
