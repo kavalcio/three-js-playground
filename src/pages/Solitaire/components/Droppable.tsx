@@ -21,7 +21,7 @@ export const Droppable = ({
         margin: 1,
         borderWidth: '2px',
         borderStyle: 'solid',
-        borderColor: isOver ? 'green' : 'white',
+        borderColor: isOver ? 'blue' : 'white',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

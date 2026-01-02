@@ -7,6 +7,7 @@ export const CARDS = {
     spriteCoords: { row: 2, col: 0 },
     child: null,
     parent: null,
+    hidden: false,
   },
   clb_2: {
     id: 'clb_2',
@@ -14,6 +15,7 @@ export const CARDS = {
     spriteCoords: { row: 2, col: 1 },
     child: null,
     parent: null,
+    hidden: false,
   },
   clb_3: {
     id: 'clb_3',
@@ -21,6 +23,7 @@ export const CARDS = {
     spriteCoords: { row: 2, col: 2 },
     child: null,
     parent: null,
+    hidden: false,
   },
   clb_4: {
     id: 'clb_4',
@@ -28,6 +31,7 @@ export const CARDS = {
     spriteCoords: { row: 2, col: 3 },
     child: null,
     parent: null,
+    hidden: false,
   },
   clb_5: {
     id: 'clb_5',
@@ -35,6 +39,7 @@ export const CARDS = {
     spriteCoords: { row: 2, col: 4 },
     child: null,
     parent: null,
+    hidden: false,
   },
   clb_6: {
     id: 'clb_6',
@@ -42,6 +47,7 @@ export const CARDS = {
     spriteCoords: { row: 2, col: 5 },
     child: null,
     parent: null,
+    hidden: false,
   },
   clb_7: {
     id: 'clb_7',
@@ -49,6 +55,7 @@ export const CARDS = {
     spriteCoords: { row: 2, col: 6 },
     child: null,
     parent: null,
+    hidden: false,
   },
   clb_8: {
     id: 'clb_8',
@@ -56,6 +63,7 @@ export const CARDS = {
     spriteCoords: { row: 2, col: 7 },
     child: null,
     parent: null,
+    hidden: false,
   },
   clb_9: {
     id: 'clb_9',
@@ -63,6 +71,7 @@ export const CARDS = {
     spriteCoords: { row: 2, col: 8 },
     child: null,
     parent: null,
+    hidden: false,
   },
   clb_10: {
     id: 'clb_10',
@@ -70,6 +79,7 @@ export const CARDS = {
     spriteCoords: { row: 2, col: 9 },
     child: null,
     parent: null,
+    hidden: false,
   },
   clb_jack: {
     id: 'clb_jack',
@@ -77,6 +87,7 @@ export const CARDS = {
     spriteCoords: { row: 2, col: 10 },
     child: null,
     parent: null,
+    hidden: false,
   },
   clb_queen: {
     id: 'clb_queen',
@@ -84,6 +95,7 @@ export const CARDS = {
     spriteCoords: { row: 2, col: 11 },
     child: null,
     parent: null,
+    hidden: false,
   },
   clb_king: {
     id: 'clb_king',
@@ -91,6 +103,7 @@ export const CARDS = {
     spriteCoords: { row: 2, col: 12 },
     child: null,
     parent: null,
+    hidden: false,
   },
   dmd_1: {
     id: 'dmd_1',
@@ -98,6 +111,7 @@ export const CARDS = {
     spriteCoords: { row: 1, col: 0 },
     child: null,
     parent: null,
+    hidden: false,
   },
   dmd_2: {
     id: 'dmd_2',
@@ -105,6 +119,7 @@ export const CARDS = {
     spriteCoords: { row: 1, col: 1 },
     child: null,
     parent: null,
+    hidden: false,
   },
   dmd_3: {
     id: 'dmd_3',
@@ -112,6 +127,7 @@ export const CARDS = {
     spriteCoords: { row: 1, col: 2 },
     child: null,
     parent: null,
+    hidden: false,
   },
   dmd_4: {
     id: 'dmd_4',
@@ -119,6 +135,7 @@ export const CARDS = {
     spriteCoords: { row: 1, col: 3 },
     child: null,
     parent: null,
+    hidden: false,
   },
   dmd_5: {
     id: 'dmd_5',
@@ -126,6 +143,7 @@ export const CARDS = {
     spriteCoords: { row: 1, col: 4 },
     child: null,
     parent: null,
+    hidden: false,
   },
   dmd_6: {
     id: 'dmd_6',
@@ -133,6 +151,7 @@ export const CARDS = {
     spriteCoords: { row: 1, col: 5 },
     child: null,
     parent: null,
+    hidden: false,
   },
   dmd_7: {
     id: 'dmd_7',
@@ -140,6 +159,7 @@ export const CARDS = {
     spriteCoords: { row: 1, col: 6 },
     child: null,
     parent: null,
+    hidden: false,
   },
   dmd_8: {
     id: 'dmd_8',
@@ -147,6 +167,7 @@ export const CARDS = {
     spriteCoords: { row: 1, col: 7 },
     child: null,
     parent: null,
+    hidden: false,
   },
   dmd_9: {
     id: 'dmd_9',
@@ -154,6 +175,7 @@ export const CARDS = {
     spriteCoords: { row: 1, col: 8 },
     child: null,
     parent: null,
+    hidden: false,
   },
   dmd_10: {
     id: 'dmd_10',
@@ -161,6 +183,7 @@ export const CARDS = {
     spriteCoords: { row: 1, col: 9 },
     child: null,
     parent: null,
+    hidden: false,
   },
   dmd_jack: {
     id: 'dmd_jack',
@@ -168,6 +191,7 @@ export const CARDS = {
     spriteCoords: { row: 1, col: 10 },
     child: null,
     parent: null,
+    hidden: false,
   },
   dmd_queen: {
     id: 'dmd_queen',
@@ -175,6 +199,7 @@ export const CARDS = {
     spriteCoords: { row: 1, col: 11 },
     child: null,
     parent: null,
+    hidden: false,
   },
   dmd_king: {
     id: 'dmd_king',
@@ -182,6 +207,7 @@ export const CARDS = {
     spriteCoords: { row: 1, col: 12 },
     child: null,
     parent: null,
+    hidden: false,
   },
   hrt_1: {
     id: 'hrt_1',
@@ -189,6 +215,7 @@ export const CARDS = {
     spriteCoords: { row: 0, col: 0 },
     child: null,
     parent: null,
+    hidden: false,
   },
   hrt_2: {
     id: 'hrt_2',
@@ -196,6 +223,7 @@ export const CARDS = {
     spriteCoords: { row: 0, col: 1 },
     child: null,
     parent: null,
+    hidden: false,
   },
   hrt_3: {
     id: 'hrt_3',
@@ -203,6 +231,7 @@ export const CARDS = {
     spriteCoords: { row: 0, col: 2 },
     child: null,
     parent: null,
+    hidden: false,
   },
   hrt_4: {
     id: 'hrt_4',
@@ -210,6 +239,7 @@ export const CARDS = {
     spriteCoords: { row: 0, col: 3 },
     child: null,
     parent: null,
+    hidden: false,
   },
   hrt_5: {
     id: 'hrt_5',
@@ -217,6 +247,7 @@ export const CARDS = {
     spriteCoords: { row: 0, col: 4 },
     child: null,
     parent: null,
+    hidden: false,
   },
   hrt_6: {
     id: 'hrt_6',
@@ -224,6 +255,7 @@ export const CARDS = {
     spriteCoords: { row: 0, col: 5 },
     child: null,
     parent: null,
+    hidden: false,
   },
   hrt_7: {
     id: 'hrt_7',
@@ -231,6 +263,7 @@ export const CARDS = {
     spriteCoords: { row: 0, col: 6 },
     child: null,
     parent: null,
+    hidden: false,
   },
   hrt_8: {
     id: 'hrt_8',
@@ -238,6 +271,7 @@ export const CARDS = {
     spriteCoords: { row: 0, col: 7 },
     child: null,
     parent: null,
+    hidden: false,
   },
   hrt_9: {
     id: 'hrt_9',
@@ -245,6 +279,7 @@ export const CARDS = {
     spriteCoords: { row: 0, col: 8 },
     child: null,
     parent: null,
+    hidden: false,
   },
   hrt_10: {
     id: 'hrt_10',
@@ -252,6 +287,7 @@ export const CARDS = {
     spriteCoords: { row: 0, col: 9 },
     child: null,
     parent: null,
+    hidden: false,
   },
   hrt_jack: {
     id: 'hrt_jack',
@@ -259,6 +295,7 @@ export const CARDS = {
     spriteCoords: { row: 0, col: 10 },
     child: null,
     parent: null,
+    hidden: false,
   },
   hrt_queen: {
     id: 'hrt_queen',
@@ -266,6 +303,7 @@ export const CARDS = {
     spriteCoords: { row: 0, col: 11 },
     child: null,
     parent: null,
+    hidden: false,
   },
   hrt_king: {
     id: 'hrt_king',
@@ -273,6 +311,7 @@ export const CARDS = {
     spriteCoords: { row: 0, col: 12 },
     child: null,
     parent: null,
+    hidden: false,
   },
   spd_1: {
     id: 'spd_1',
@@ -280,6 +319,7 @@ export const CARDS = {
     spriteCoords: { row: 3, col: 0 },
     child: null,
     parent: null,
+    hidden: false,
   },
   spd_2: {
     id: 'spd_2',
@@ -287,6 +327,7 @@ export const CARDS = {
     spriteCoords: { row: 3, col: 1 },
     child: null,
     parent: null,
+    hidden: false,
   },
   spd_3: {
     id: 'spd_3',
@@ -294,6 +335,7 @@ export const CARDS = {
     spriteCoords: { row: 3, col: 2 },
     child: null,
     parent: null,
+    hidden: false,
   },
   spd_4: {
     id: 'spd_4',
@@ -301,6 +343,7 @@ export const CARDS = {
     spriteCoords: { row: 3, col: 3 },
     child: null,
     parent: null,
+    hidden: false,
   },
   spd_5: {
     id: 'spd_5',
@@ -308,6 +351,7 @@ export const CARDS = {
     spriteCoords: { row: 3, col: 4 },
     child: null,
     parent: null,
+    hidden: false,
   },
   spd_6: {
     id: 'spd_6',
@@ -315,6 +359,7 @@ export const CARDS = {
     spriteCoords: { row: 3, col: 5 },
     child: null,
     parent: null,
+    hidden: false,
   },
   spd_7: {
     id: 'spd_7',
@@ -322,6 +367,7 @@ export const CARDS = {
     spriteCoords: { row: 3, col: 6 },
     child: null,
     parent: null,
+    hidden: false,
   },
   spd_8: {
     id: 'spd_8',
@@ -329,6 +375,7 @@ export const CARDS = {
     spriteCoords: { row: 3, col: 7 },
     child: null,
     parent: null,
+    hidden: false,
   },
   spd_9: {
     id: 'spd_9',
@@ -336,6 +383,7 @@ export const CARDS = {
     spriteCoords: { row: 3, col: 8 },
     child: null,
     parent: null,
+    hidden: false,
   },
   spd_10: {
     id: 'spd_10',
@@ -343,6 +391,7 @@ export const CARDS = {
     spriteCoords: { row: 3, col: 9 },
     child: null,
     parent: null,
+    hidden: false,
   },
   spd_jack: {
     id: 'spd_jack',
@@ -350,6 +399,7 @@ export const CARDS = {
     spriteCoords: { row: 3, col: 10 },
     child: null,
     parent: null,
+    hidden: false,
   },
   spd_queen: {
     id: 'spd_queen',
@@ -357,6 +407,7 @@ export const CARDS = {
     spriteCoords: { row: 3, col: 11 },
     child: null,
     parent: null,
+    hidden: false,
   },
   spd_king: {
     id: 'spd_king',
@@ -364,6 +415,7 @@ export const CARDS = {
     spriteCoords: { row: 3, col: 12 },
     child: null,
     parent: null,
+    hidden: false,
   },
 } as Record<string, Card>;
 

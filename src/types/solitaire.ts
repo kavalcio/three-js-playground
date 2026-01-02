@@ -7,6 +7,7 @@ export type Card = {
   };
   child: string | null;
   parent: string | null;
+  hidden: boolean;
 };
 
 export type Stack = {

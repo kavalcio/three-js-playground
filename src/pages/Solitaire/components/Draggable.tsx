@@ -13,6 +13,8 @@ const TILE_WIDTH = 42;
 const TILE_HEIGHT = 60;
 const TILE_SCALE = 1.5;
 
+const CARD_BACK_COORDS = { row: 1, col: 13 };
+
 export const Draggable = ({
   index,
   cardId,
@@ -22,12 +24,16 @@ export const Draggable = ({
   cardId: string;
   cards: Record<string, Card>;
 }) => {
+  const card = cards[cardId];
+
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: cardId,
+      disabled: card.hidden,
     });
 
-  const card = cards[cardId];
+  const spriteCol = card.hidden ? CARD_BACK_COORDS.col : card.spriteCoords.col;
+  const spriteRow = card.hidden ? CARD_BACK_COORDS.row : card.spriteCoords.row;
 
   return (
     <Box
@@ -45,9 +51,9 @@ export const Draggable = ({
         backgroundImage: `url(${cardsTilemap})`,
         imageRendering: 'pixelated',
         backgroundPositionX:
-          (-TILESET_HZ_MARGIN - TILE_STEP * card.spriteCoords.col) * TILE_SCALE,
+          (-TILESET_HZ_MARGIN - TILE_STEP * spriteCol) * TILE_SCALE,
         backgroundPositionY:
-          (-TILESET_VT_MARGIN - TILE_STEP * card.spriteCoords.row) * TILE_SCALE,
+          (-TILESET_VT_MARGIN - TILE_STEP * spriteRow) * TILE_SCALE,
         backgroundSize: `${TILESET_WIDTH * TILE_SCALE}px ${TILESET_HEIGHT * TILE_SCALE}px`,
       }}
       {...listeners}
