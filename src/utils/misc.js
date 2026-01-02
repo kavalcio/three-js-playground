@@ -19,7 +19,7 @@ export const findIndexOfMaxValue = (a) =>
 /* Based on formula by Arnauld: https://codegolf.stackexchange.com/a/259638 */
 export const getNormalizedBayerMatrix = (n) => {
   let g;
-  let t = n + 1;
+  const t = n + 1;
   const matrix = [...Array(1 << t)].map((_, y, a) =>
     a.map(
       (g = (k = t, x) =>

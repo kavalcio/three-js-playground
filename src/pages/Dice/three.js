@@ -32,7 +32,7 @@ const WALL_HEIGHT = 3;
 // TODO: replace face normals with a raycast to find the down face
 
 export const init = (root) => {
-  let params = {
+  const params = {
     d4Count: 1,
     d6Count: 0,
     d8Count: 0,

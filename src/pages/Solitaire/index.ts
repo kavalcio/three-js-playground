@@ -1,1 +1,1 @@
-export * from './Solitaire'
+export * from './Solitaire';
