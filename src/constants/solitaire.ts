@@ -1,3 +1,5 @@
+import { Card, Stack } from '@/types';
+
 export const CARDS = {
   clb_1: {
     id: 'clb_1',
@@ -259,7 +261,7 @@ export const CARDS = {
     name: 'King of Spades',
     spriteCoords: { row: 3, col: 12 },
   },
-};
+} as Record<string, Card>;
 
 export const STACKS = {
   stk_1: { id: 'stk_1', cards: [] },
@@ -269,4 +271,4 @@ export const STACKS = {
   stk_5: { id: 'stk_5', cards: [] },
   stk_6: { id: 'stk_6', cards: [] },
   stk_7: { id: 'stk_7', cards: [] },
-};
+} as Record<string, Stack>;

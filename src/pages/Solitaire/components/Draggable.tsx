@@ -13,7 +13,15 @@ const TILE_WIDTH = 42;
 const TILE_HEIGHT = 60;
 const TILE_SCALE = 1.5;
 
-export const Draggable = ({ index, cardId, stackId }) => {
+export const Draggable = ({
+  index,
+  cardId,
+  stackId,
+}: {
+  index: number;
+  cardId: string;
+  stackId?: string;
+}) => {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: cardId,

@@ -1,7 +1,13 @@
 import { useDroppable } from '@dnd-kit/core';
 import { Box } from '@mui/material';
 
-export const Droppable = ({ id, children }) => {
+export const Droppable = ({
+  id,
+  children,
+}: {
+  id: string;
+  children?: React.ReactNode;
+}) => {
   const { isOver, setNodeRef } = useDroppable({
     id,
   });

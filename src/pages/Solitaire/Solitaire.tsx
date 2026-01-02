@@ -1,22 +1,23 @@
-import { DndContext } from '@dnd-kit/core';
+import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { Box } from '@mui/material';
 import { useState } from 'react';
 
 import { CARDS, STACKS } from '@/constants';
+import { Card, Stack } from '@/types';
 import { checkCardInsertAllowed } from '@/utils';
 
 import { Draggable, Droppable } from './components';
 
 // TODO: do easy and hard mode where you either draw 1 or 3 cards at a time
 export const Solitaire = () => {
-  const [deck, setDeck] = useState(Object.values(CARDS));
-  const [stacks, setStacks] = useState(Object.values(STACKS));
+  const [deck, setDeck] = useState<Card[]>(Object.values(CARDS));
+  const [stacks, setStacks] = useState<Stack[]>(Object.values(STACKS));
 
-  const handleDragEnd = (event) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { over } = event;
     if (!over) return;
 
-    const draggedCardId = event.active.id;
+    const draggedCardId = event.active.id as string;
     const droppedStackId = over.id;
     const startingStackId = event.active.data?.current?.currentStackId;
 
@@ -24,7 +25,8 @@ export const Solitaire = () => {
     if (startingStackId === droppedStackId) return;
 
     // Check if target move is allowed
-    const cardsInNewStack = stacks.find((s) => s.id === droppedStackId).cards;
+    const cardsInNewStack =
+      stacks.find((s) => s.id === droppedStackId)?.cards ?? [];
     const previousCardInStack = cardsInNewStack[cardsInNewStack.length - 1];
     const allowed = checkCardInsertAllowed(draggedCardId, previousCardInStack);
     if (!allowed) return;
@@ -66,8 +68,8 @@ export const Solitaire = () => {
           <Droppable
             key={stack.id}
             id={stack.id}
-            setDeck={setDeck}
-            setStacks={setStacks}
+            // setDeck={setDeck}
+            // setStacks={setStacks}
           >
             {stack.cards.map((cardId, index) => (
               <Draggable
@@ -85,12 +87,9 @@ export const Solitaire = () => {
           position: 'relative',
         }}
       >
-        {deck.map(
-          (card, index) =>
-            !deck.stack && (
-              <Draggable key={card.id} cardId={card.id} index={index} />
-            ),
-        )}
+        {deck.map((card, index) => (
+          <Draggable key={card.id} cardId={card.id} index={index} />
+        ))}
       </Box>
     </DndContext>
   );
