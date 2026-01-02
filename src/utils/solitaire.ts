@@ -1,6 +1,6 @@
 export const checkCardInsertAllowed = (
   newCard: string,
-  previousCard?: string,
+  previousCard: string | null,
 ) => {
   if (!previousCard) {
     return newCard.slice(4, 10) === 'king'; // Only allow king if no previous card exists

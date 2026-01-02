@@ -2,7 +2,7 @@ import { useDraggable } from '@dnd-kit/core';
 import { Box } from '@mui/material';
 
 import cardsTilemap from '/cards_tilemap.png';
-import { CARDS } from '@/constants';
+import { Card } from '@/types';
 
 const TILESET_WIDTH = 909;
 const TILESET_HEIGHT = 259;
@@ -16,17 +16,18 @@ const TILE_SCALE = 1.5;
 export const Draggable = ({
   index,
   cardId,
-  stackId,
+  cards,
 }: {
   index: number;
   cardId: string;
-  stackId?: string;
+  cards: Record<string, Card>;
 }) => {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: cardId,
-      data: { currentStackId: stackId },
     });
+
+  const card = cards[cardId];
 
   return (
     <Box
@@ -39,21 +40,27 @@ export const Draggable = ({
           : 'none',
         zIndex: 10 + index + (isDragging ? 200 : 0),
         position: 'absolute',
-        top: index * 15 * TILE_SCALE,
+        top: index === 0 ? 0 : 15 * TILE_SCALE,
+        // top: index * 15 * TILE_SCALE,
         backgroundImage: `url(${cardsTilemap})`,
         imageRendering: 'pixelated',
         backgroundPositionX:
-          (-TILESET_HZ_MARGIN - TILE_STEP * CARDS[cardId].spriteCoords.col) *
-          TILE_SCALE,
+          (-TILESET_HZ_MARGIN - TILE_STEP * card.spriteCoords.col) * TILE_SCALE,
         backgroundPositionY:
-          (-TILESET_VT_MARGIN - TILE_STEP * CARDS[cardId].spriteCoords.row) *
-          TILE_SCALE,
+          (-TILESET_VT_MARGIN - TILE_STEP * card.spriteCoords.row) * TILE_SCALE,
         backgroundSize: `${TILESET_WIDTH * TILE_SCALE}px ${TILESET_HEIGHT * TILE_SCALE}px`,
       }}
       {...listeners}
       {...attributes}
     >
-      {/* {CARDS[cardId].name} */}
+      {!!card.child && (
+        <Draggable
+          key={card.child}
+          index={index + 1}
+          cardId={card.child}
+          cards={cards}
+        />
+      )}
     </Box>
   );
 };

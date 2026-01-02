@@ -5,9 +5,11 @@ export type Card = {
     row: number;
     col: number;
   };
+  child: string | null;
+  parent: string | null;
 };
 
 export type Stack = {
   id: string;
-  cards: string[];
+  child: string | null;
 };
