@@ -2,19 +2,20 @@ import { useDraggable } from '@dnd-kit/core';
 import { Box } from '@mui/material';
 
 import cardsTilemap from '/cards_tilemap.png';
+import {
+  CARD_BACK_COORDS,
+  TILE_HEIGHT,
+  TILE_SCALE,
+  TILE_STEP,
+  TILE_WIDTH,
+  TILESET_HEIGHT,
+  TILESET_HZ_MARGIN,
+  TILESET_VT_MARGIN,
+  TILESET_WIDTH,
+} from '@/constants';
 import { Card } from '@/types';
 
-const TILESET_WIDTH = 909;
-const TILESET_HEIGHT = 259;
-const TILESET_HZ_MARGIN = 11;
-const TILESET_VT_MARGIN = 2;
-const TILE_STEP = 65;
-const TILE_WIDTH = 42;
-const TILE_HEIGHT = 60;
-const TILE_SCALE = 1.5;
-
-const CARD_BACK_COORDS = { row: 1, col: 13 };
-
+// TODO: z index of the grabbed item doesnt go over everything else, fix it. i think because its the child of somethign else
 export const Draggable = ({
   index,
   cardId,
@@ -39,15 +40,14 @@ export const Draggable = ({
     <Box
       ref={setNodeRef}
       sx={{
+        cursor: card.hidden ? 'default' : 'grab',
+        position: 'relative',
         width: TILE_WIDTH * TILE_SCALE,
         height: TILE_HEIGHT * TILE_SCALE,
         transform: transform
           ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
           : 'none',
         zIndex: 10 + index + (isDragging ? 200 : 0),
-        position: 'absolute',
-        top: index === 0 ? 0 : 15 * TILE_SCALE,
-        // top: index * 15 * TILE_SCALE,
         backgroundImage: `url(${cardsTilemap})`,
         imageRendering: 'pixelated',
         backgroundPositionX:
@@ -60,12 +60,19 @@ export const Draggable = ({
       {...attributes}
     >
       {!!card.child && (
-        <Draggable
-          key={card.child}
-          index={index + 1}
-          cardId={card.child}
-          cards={cards}
-        />
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 15 * TILE_SCALE,
+          }}
+        >
+          <Draggable
+            key={card.child}
+            index={index + 1}
+            cardId={card.child}
+            cards={cards}
+          />
+        </Box>
       )}
     </Box>
   );

@@ -428,3 +428,14 @@ export const STACKS = {
   stk_6: { id: 'stk_6', child: null },
   stk_7: { id: 'stk_7', child: null },
 } as Record<string, Stack>;
+
+export const TILESET_WIDTH = 909;
+export const TILESET_HEIGHT = 259;
+export const TILESET_HZ_MARGIN = 11;
+export const TILESET_VT_MARGIN = 2;
+export const TILE_STEP = 65;
+export const TILE_WIDTH = 42;
+export const TILE_HEIGHT = 60;
+export const TILE_SCALE = 1.5;
+
+export const CARD_BACK_COORDS = { row: 1, col: 13 };

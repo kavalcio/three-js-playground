@@ -10,21 +10,23 @@ import {
   initializeSolitaireBoard,
 } from '@/utils';
 
-import { Draggable, Droppable } from './components';
+import { CardPlaceholder, Draggable, Droppable } from './components';
 
 // TODO: do easy and hard mode where you either draw 1 or 3 cards at a time
 export const Solitaire = () => {
   const [state, setState] = useState<{
     cards: Record<string, Card>;
     stacks: Record<string, Stack>;
-    deck: string[];
+    stock: string[];
+    waste: string[];
   }>({
     cards: structuredClone(CARDS),
     stacks: structuredClone(STACKS),
-    deck: Object.keys(CARDS),
+    stock: [],
+    waste: [],
   });
 
-  const { cards, stacks, deck } = state;
+  const { cards, stacks, stock, waste } = state;
 
   const handleDragEnd = (event: DragEndEvent) => {
     console.log('e', event);
@@ -86,26 +88,64 @@ export const Solitaire = () => {
       };
     }
 
-    // Remove the card from the deck
-    const newDeck = deck.filter((card) => card !== draggedCardId);
+    // Remove the card from the waste deck
+    const newWaste = waste.filter((card) => card !== draggedCardId);
 
     setState({
+      stock: state.stock,
       cards: newCards,
       stacks: newStacks,
-      deck: newDeck,
+      waste: newWaste,
     });
   };
 
   console.log('aaa', {
     cards,
     stacks,
-    deck,
+    waste,
+    stock,
     flat: flattenStacks(stacks, cards),
   });
 
   const sortedStackIds = useMemo(() => {
     return Object.keys(stacks).sort((a, b) => a.localeCompare(b));
   }, [stacks]);
+
+  const onDrawCard = () => {
+    if (stock.length === 0) {
+      // Reset waste into stock when finished
+      const newWaste: string[] = [];
+      const newStock: string[] = [...waste].reverse(); // Reverse to maintain order
+      const newCards = { ...cards };
+      newStock.forEach((cardId) => {
+        newCards[cardId] = {
+          ...newCards[cardId],
+          hidden: true, // Hide the card when added back to stock
+        };
+      });
+      setState({
+        ...state,
+        stock: newStock,
+        waste: newWaste,
+        cards: newCards,
+      });
+      return;
+    }
+    // Draw a card from the stock
+    const newWaste = [...waste, stock[stock.length - 1]];
+    const newStock = stock.slice(0, stock.length - 1);
+    const newCards = { ...cards };
+    newCards[stock[stock.length - 1]] = {
+      ...cards[stock[stock.length - 1]],
+      hidden: false, // Reveal the card when drawn
+    };
+    setState({
+      ...state,
+      stock: newStock,
+      waste: newWaste,
+      cards: newCards,
+    });
+  };
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
@@ -116,15 +156,43 @@ export const Solitaire = () => {
           width: '100vw',
         }}
       >
-        <button
-          style={{ color: 'lightgray' }}
-          onClick={() => {
-            const output = initializeSolitaireBoard();
-            setState(output);
-          }}
-        >
-          Reset
-        </button>
+        <Box sx={{ height: 150, p: 3, display: 'flex', gap: 2 }}>
+          {/* TODO: render all cards in the stock with a 1px offset from the last, so that the deck's thickness shows how many cards are left in the pile */}
+          <Box
+            onClick={onDrawCard}
+            sx={{
+              position: 'relative',
+              border: '1px solid white',
+              cursor: 'pointer',
+              width: 'fit-content',
+            }}
+          >
+            {/* {stock.map((cardId, index) => (
+              <Box key={cardId} sx={{ position: 'absolute', top: 0, left: 0 }}>
+                <Draggable cardId={cardId} index={index} cards={cards} />
+              </Box>
+            ))} */}
+            <Box sx={{ visibility: stock.length > 0 ? 'visible' : 'hidden' }}>
+              <CardPlaceholder />
+            </Box>
+          </Box>
+          <Box sx={{ position: 'relative', height: 150, width: 100 }}>
+            {waste.map((cardId, index) => (
+              <Box key={cardId} sx={{ position: 'absolute', top: 0, left: 0 }}>
+                <Draggable cardId={cardId} index={index} cards={cards} />
+              </Box>
+            ))}
+          </Box>
+          <button
+            style={{ color: 'lightgray' }}
+            onClick={() => {
+              const output = initializeSolitaireBoard();
+              setState(output);
+            }}
+          >
+            Reset
+          </button>
+        </Box>
         <Box
           sx={{
             display: 'flex',
@@ -143,20 +211,6 @@ export const Solitaire = () => {
                 />
               )}
             </Droppable>
-          ))}
-        </Box>
-        <Box
-          sx={{
-            position: 'relative',
-          }}
-        >
-          {deck.map((cardId, index) => (
-            <Draggable
-              key={cardId}
-              cardId={cardId}
-              index={index}
-              cards={cards}
-            />
           ))}
         </Box>
       </Box>

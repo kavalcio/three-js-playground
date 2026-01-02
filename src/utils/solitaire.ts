@@ -42,10 +42,14 @@ export const initializeSolitaireBoard = () => {
       });
     });
 
-  // Add remaining cards to the deck
-  const deck = cardIds;
-  console.log('r', { cards, stacks, deck });
-  return { cards, stacks, deck };
+  // Add remaining cards to the stock deck
+  const stock = cardIds;
+  stock.forEach((cardId) => {
+    cards[cardId].hidden = true;
+  });
+
+  console.log('r', { cards, stacks, stock });
+  return { cards, stacks, stock, waste: [] };
 };
 
 export const flattenStacks = (

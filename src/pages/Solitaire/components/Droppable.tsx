@@ -25,10 +25,11 @@ export const Droppable = ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         gap: 1,
         width: 60,
-        height: 100,
+        minHeight: 100,
+        // height: 'fit-content',
       }}
     >
       {children}
