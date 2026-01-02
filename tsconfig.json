@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
     "target": "es6",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
@@ -14,11 +17,16 @@
     "jsx": "react-jsx",
     "baseUrl": "./",
     "paths": {
+      "@/assets": ["src/assets/assets/index.ts"],
       "@/components": ["src/components/index.ts"],
+      "@/components/*": ["src/components/*"],
       "@/config": ["src/config/index.ts"],
       "@/constants": ["src/constants/index.ts"],
       "@/pages": ["src/pages/index.ts"],
+      "@/pages/*": ["src/pages/*"],
+      "@/types": ["src/types/index.ts"],
       "@/utils": ["src/utils/index.ts"],
+      "@/utils/*": ["src/utils/*"],
     },
     "types": ["vite/client", "three"]
   },
@@ -27,9 +35,7 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.js",
-    "**/*.jsx",
+    "**/*.jsx"
   ],
-  "exclude": [
-    "node_modules",
-  ]
+  "exclude": ["node_modules"]
 }

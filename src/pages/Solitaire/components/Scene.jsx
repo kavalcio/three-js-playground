@@ -8,6 +8,7 @@ import { checkCardInsertAllowed } from '@/utils';
 import { Draggable } from './Draggable';
 import { Droppable } from './Droppable';
 
+// TODO: do easy and hard mode where you either draw 1 or 3 cards at a time
 export const Scene = () => {
   const [deck, setDeck] = useState(Object.values(CARDS));
   const [stacks, setStacks] = useState(Object.values(STACKS));
