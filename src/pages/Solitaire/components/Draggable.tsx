@@ -20,17 +20,19 @@ export const Draggable = ({
   index,
   cardId,
   cards,
+  disabled,
 }: {
   index: number;
   cardId: string;
   cards: Record<string, Card>;
+  disabled?: boolean;
 }) => {
   const card = cards[cardId];
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: cardId,
-      disabled: card.hidden,
+      disabled: card.hidden || disabled,
     });
 
   const spriteCol = card.hidden ? CARD_BACK_COORDS.col : card.spriteCoords.col;
@@ -40,7 +42,7 @@ export const Draggable = ({
     <Box
       ref={setNodeRef}
       sx={{
-        cursor: card.hidden ? 'default' : 'grab',
+        cursor: card.hidden || disabled ? 'default' : 'grab',
         position: 'relative',
         width: TILE_WIDTH * TILE_SCALE,
         height: TILE_HEIGHT * TILE_SCALE,

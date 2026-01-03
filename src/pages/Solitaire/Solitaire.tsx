@@ -14,6 +14,9 @@ import {
 
 import { CardPlaceholder, Draggable, Droppable } from './components';
 
+// TODO: add animations so that cards dont just snap to positions
+// TODO: add win condition when all cards are in foundation
+// TODO: add ability to undo move? could just persist the last X versions of state
 // TODO: do easy and hard mode where you either draw 1 or 3 cards at a time
 export const Solitaire = () => {
   const [state, setState] = useState<{
@@ -153,7 +156,16 @@ export const Solitaire = () => {
                 <Box
                   key={suit}
                   sx={{ width: 50, height: 50, border: '1px solid red' }}
-                ></Box>
+                >
+                  {foundation[suit].length > 0 && (
+                    <Draggable
+                      cardId={foundation[suit][foundation[suit].length - 1]}
+                      index={0}
+                      cards={cards}
+                      disabled
+                    />
+                  )}
+                </Box>
               ))}
             </Box>
           </Droppable>
