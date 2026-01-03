@@ -2,12 +2,14 @@ import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { Box } from '@mui/material';
 import { useMemo, useState } from 'react';
 
-import { CARDS, STACKS } from '@/constants';
+import { CARDS, FOUNDATION_DROPPABLE_ID, STACKS, SUITS } from '@/constants';
 import { Card, Stack } from '@/types';
 import {
-  checkCardInsertAllowed,
   flattenStacks,
+  generateSuitArray,
   initializeSolitaireBoard,
+  insertCardFoundation,
+  insertCardTableau,
 } from '@/utils';
 
 import { CardPlaceholder, Draggable, Droppable } from './components';
@@ -19,14 +21,16 @@ export const Solitaire = () => {
     stacks: Record<string, Stack>;
     stock: string[];
     waste: string[];
+    foundation: Record<string, string[]>;
   }>({
     cards: structuredClone(CARDS),
     stacks: structuredClone(STACKS),
     stock: [],
     waste: [],
+    foundation: generateSuitArray(),
   });
 
-  const { cards, stacks, stock, waste } = state;
+  const { cards, stacks, stock, waste, foundation } = state;
 
   const handleDragEnd = (event: DragEndEvent) => {
     console.log('e', event);
@@ -34,68 +38,27 @@ export const Solitaire = () => {
     const draggedCardId = event.active.id as string;
     const droppedStackId = event.over.id as string;
 
-    // TODO: early return if the dragged card is already in the stack?
-
-    const stack = stacks[droppedStackId];
-    let lastCardInStack: string | null = null;
-    if (stack.child) {
-      let node: Stack | Card = stack;
-      while (node.child) {
-        node = cards[node.child];
-      }
-      lastCardInStack = node.id;
-    }
-
-    // Check if target move is allowed
-    const allowed = checkCardInsertAllowed(draggedCardId, lastCardInStack);
-    if (!allowed) return;
-
-    const newStacks = { ...stacks };
-    const newCards = { ...cards };
-
-    if (newCards[draggedCardId].parent) {
-      if (newCards[draggedCardId].parent.includes('stk_')) {
-        // If parent is a stack, set its child to null
-        newStacks[newCards[draggedCardId].parent] = {
-          ...newStacks[newCards[draggedCardId].parent],
-          child: null,
-        };
-      } else {
-        // If parent is a card, set its child to null and reveal it (if hidden)
-        newCards[newCards[draggedCardId].parent] = {
-          ...newCards[newCards[draggedCardId].parent],
-          child: null,
-          hidden: false, // Reveal the parent card
-        };
-      }
-    }
-    // Update parent of new card to last node
-    newCards[draggedCardId] = {
-      ...newCards[draggedCardId],
-      parent: lastCardInStack ?? droppedStackId,
-    };
-    // Update child of last node to new card
-    if (lastCardInStack) {
-      newCards[lastCardInStack] = {
-        ...newCards[lastCardInStack],
-        child: draggedCardId,
-      };
+    let newState;
+    if (droppedStackId === FOUNDATION_DROPPABLE_ID) {
+      newState = insertCardFoundation({
+        stacks,
+        cards,
+        waste,
+        foundation,
+        draggedCardId,
+      });
     } else {
-      // If no last card, it means we're adding to an empty stack
-      newStacks[droppedStackId] = {
-        ...newStacks[droppedStackId],
-        child: draggedCardId,
-      };
+      newState = insertCardTableau({
+        stacks,
+        cards,
+        waste,
+        draggedCardId,
+        droppedStackId,
+      });
     }
-
-    // Remove the card from the waste deck
-    const newWaste = waste.filter((card) => card !== draggedCardId);
-
     setState({
-      stock: state.stock,
-      cards: newCards,
-      stacks: newStacks,
-      waste: newWaste,
+      ...state,
+      ...newState,
     });
   };
 
@@ -104,6 +67,7 @@ export const Solitaire = () => {
     stacks,
     waste,
     stock,
+    foundation,
     flat: flattenStacks(stacks, cards),
   });
 
@@ -183,6 +147,16 @@ export const Solitaire = () => {
               </Box>
             ))}
           </Box>
+          <Droppable id={FOUNDATION_DROPPABLE_ID}>
+            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+              {SUITS.map((suit) => (
+                <Box
+                  key={suit}
+                  sx={{ width: 50, height: 50, border: '1px solid red' }}
+                ></Box>
+              ))}
+            </Box>
+          </Droppable>
           <button
             style={{ color: 'lightgray' }}
             onClick={() => {

@@ -438,4 +438,8 @@ export const TILE_WIDTH = 42;
 export const TILE_HEIGHT = 60;
 export const TILE_SCALE = 1.5;
 
-export const CARD_BACK_COORDS = { row: 1, col: 13 };
+export const CARD_BACK_COORDS = { row: 1, col: 13 } as const;
+
+export const FOUNDATION_DROPPABLE_ID = 'foundation';
+
+export const SUITS = ['clb', 'dmd', 'hrt', 'spd'] as const;
