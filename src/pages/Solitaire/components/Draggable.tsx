@@ -1,13 +1,15 @@
 import { useDraggable } from '@dnd-kit/core';
 import { Box } from '@mui/material';
 
-import cardsTilemap from '/cards_tilemap.png';
 import {
   CARD_BACK_COORDS,
+  CARD_BACKS_TILEMAP,
   CARD_PADDING,
+  CARDS_TILEMAP,
   TILE_HEIGHT,
   TILE_SCALE,
-  TILE_STEP,
+  TILE_STEP_HZ,
+  TILE_STEP_VT,
   TILE_WIDTH,
   TILESET_HEIGHT,
   TILESET_HZ_MARGIN,
@@ -51,12 +53,12 @@ export const Draggable = ({
           ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
           : 'none',
         zIndex: 10 + index + (isDragging ? 200 : 0),
-        backgroundImage: `url(${cardsTilemap})`,
+        backgroundImage: `url(${card.hidden ? CARD_BACKS_TILEMAP : CARDS_TILEMAP})`,
         imageRendering: 'pixelated',
         backgroundPositionX:
-          (-TILESET_HZ_MARGIN - TILE_STEP * spriteCol) * TILE_SCALE,
+          (-TILESET_HZ_MARGIN - TILE_STEP_HZ * spriteCol) * TILE_SCALE,
         backgroundPositionY:
-          (-TILESET_VT_MARGIN - TILE_STEP * spriteRow) * TILE_SCALE,
+          (-TILESET_VT_MARGIN - TILE_STEP_VT * spriteRow) * TILE_SCALE,
         backgroundSize: `${TILESET_WIDTH * TILE_SCALE}px ${TILESET_HEIGHT * TILE_SCALE}px`,
       }}
       {...listeners}

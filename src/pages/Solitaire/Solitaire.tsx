@@ -28,6 +28,7 @@ import {
   VictoryScreen,
 } from './components';
 
+// TODO: add a context provider for state instead of passing it around as props
 // TODO: add mobile view
 // TODO: use windows xp asset pack
 // TODO: add victory animation from windows xp version
