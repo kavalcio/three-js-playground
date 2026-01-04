@@ -1,11 +1,11 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import glsl from 'vite-plugin-glsl';
+import viteTsconfigPaths from 'vite-tsconfig-paths';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   publicDir: 'public',
-  plugins: [react(), glsl()],
+  plugins: [react(), glsl(), viteTsconfigPaths()],
   server: {
     port: 3002,
     open: true,

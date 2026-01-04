@@ -16,5 +16,6 @@ export * from './RagingSea';
 export * from './Refraction';
 export * from './Skyline';
 export * from './SolarSystem';
+export * from './Solitaire';
 export * from './VertexSnapping';
 export * from './Warp';

@@ -6,7 +6,7 @@ import { initializeScene } from '@/utils';
 const DISTANCE = -30;
 
 export const init = (root) => {
-  let params = {
+  const params = {
     distance: DISTANCE,
   };
 

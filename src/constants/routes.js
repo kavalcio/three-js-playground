@@ -115,4 +115,9 @@ export const ROUTES = {
     title: 'Skyline',
     group: ROUTE_GROUPS.other.key,
   },
+  solitaire: {
+    path: '/solitaire',
+    title: 'Solitaire',
+    group: ROUTE_GROUPS.other.key,
+  },
 };
