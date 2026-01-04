@@ -18,7 +18,6 @@ import {
 } from '@/constants';
 import { BoardState } from '@/types';
 
-// TODO: z index of the grabbed item doesnt go over everything else, fix it. i think because its the child of somethign else
 export const Draggable = ({
   index,
   cardId,

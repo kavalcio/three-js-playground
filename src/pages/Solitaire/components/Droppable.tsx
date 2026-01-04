@@ -40,7 +40,7 @@ export const Droppable = ({
           position: 'absolute',
           top: 0,
           left: 0,
-          backgroundColor: 'rgba(255,255,255,0.1)',
+          backgroundColor: '#1a8d1a',
           width: TILE_WIDTH * TILE_SCALE,
           height: TILE_HEIGHT * TILE_SCALE,
         }}

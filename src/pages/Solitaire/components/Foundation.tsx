@@ -27,7 +27,6 @@ export const Foundation = ({
     <Box
       ref={setNodeRef}
       sx={{
-        // padding: 1,
         borderWidth: '2px',
         borderStyle: 'solid',
         borderColor: isOver ? 'white' : 'green',
@@ -54,7 +53,7 @@ export const Foundation = ({
             sx={{
               width: TILE_WIDTH * TILE_SCALE,
               height: TILE_HEIGHT * TILE_SCALE,
-              backgroundColor: 'rgba(255,255,255,0.1)',
+              backgroundColor: '#1a8d1a',
             }}
           >
             {foundation[suit].length > 0 && (

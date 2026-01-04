@@ -1,12 +1,10 @@
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
-  CARDS,
   FOUNDATION_DROPPABLE_ID,
-  STACKS,
   TILE_HEIGHT,
   TILE_SCALE,
   TILE_WIDTH,
@@ -14,7 +12,6 @@ import {
 import { BoardState } from '@/types';
 import {
   flattenStacks,
-  generateSuitArray,
   initializeSolitaireBoard,
   insertCardFoundation,
   insertCardTableau,
@@ -25,16 +22,17 @@ import {
   Draggable,
   Droppable,
   Foundation,
+  MenuBar,
   VictoryScreen,
 } from './components';
 
-// TODO: add a context provider for state instead of passing it around as props
+// TODO: z index of the grabbed item doesnt go over everything else, fix it. i think because its the child of somethign else
 // TODO: add mobile view
-// TODO: use windows xp asset pack
-// TODO: add victory animation from windows xp version
+// TODO: add a context provider for state instead of passing it around as props
 // TODO: add ability to undo move? could just persist the last X versions of state, or maybe persist a diff for each move
 // TODO: do easy and hard mode where you either draw 1 or 3 cards at a time
 // TODO: show move count on victory screen
+// TODO: maybe use dialog in VictoryScreen?
 export const Solitaire = () => {
   const [state, setState] = useState<BoardState>(initializeSolitaireBoard);
   const [moveCount, setMoveCount] = useState(0);
@@ -139,6 +137,9 @@ export const Solitaire = () => {
   };
 
   const onNewGame = () => {
+    if (moveCount > 0 && !isVictory) {
+      // TODO: show confirmation if user is mid-game
+    }
     const output = initializeSolitaireBoard();
     setState(output);
     setIsVictory(false);
@@ -155,6 +156,11 @@ export const Solitaire = () => {
           overflowX: 'hidden',
         }}
       >
+        <MenuBar
+          setIsVictory={setIsVictory}
+          moveCount={moveCount}
+          onNewGame={onNewGame}
+        />
         {isVictory && <VictoryScreen onNewGame={onNewGame} />}
         <Box
           sx={{
@@ -165,15 +171,13 @@ export const Solitaire = () => {
             gap: 2,
             mx: 'auto',
             width: 'fit-content',
-            // maxWidth: 'fit-content',
-            // width: '100%',
           }}
         >
           <Box sx={{ display: 'flex', gap: 2, mb: 5 }}>
             <Box
               onClick={onDrawCard}
               sx={{
-                backgroundColor: 'rgba(255,255,255,0.1)',
+                backgroundColor: '#1a8d1a',
                 border: '2px solid white',
                 cursor: 'pointer',
                 width: TILE_WIDTH * TILE_SCALE,
@@ -193,7 +197,7 @@ export const Solitaire = () => {
             </Box>
             <Box
               sx={{
-                backgroundColor: 'rgba(255,255,255,0.1)',
+                backgroundColor: '#1a8d1a',
                 border: '2px solid white',
                 width: TILE_WIDTH * TILE_SCALE,
                 height: TILE_HEIGHT * TILE_SCALE,
@@ -238,21 +242,6 @@ export const Solitaire = () => {
               </Droppable>
             ))}
           </Box>
-          <button onClick={onNewGame}>Reset</button>
-          <button
-            onClick={() => {
-              setState({
-                cards: structuredClone(CARDS),
-                stacks: structuredClone(STACKS),
-                stock: [],
-                waste: [],
-                foundation: generateSuitArray(),
-              });
-            }}
-          >
-            Clear Board
-          </button>
-          <Box>Moves: {moveCount}</Box>
         </Box>
       </Box>
     </DndContext>
