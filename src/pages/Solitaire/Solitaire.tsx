@@ -1,8 +1,17 @@
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
+import { restrictToWindowEdges } from '@dnd-kit/modifiers';
 import { Box } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { CARDS, FOUNDATION_DROPPABLE_ID, STACKS, SUITS } from '@/constants';
+import {
+  CARDS,
+  FOUNDATION_DROPPABLE_ID,
+  STACKS,
+  SUITS,
+  TILE_HEIGHT,
+  TILE_SCALE,
+  TILE_WIDTH,
+} from '@/constants';
 import { Card, Stack } from '@/types';
 import {
   flattenStacks,
@@ -33,7 +42,20 @@ export const Solitaire = () => {
     foundation: generateSuitArray(),
   });
 
+  const [isVictory, setIsVictory] = useState(false);
+
   const { cards, stacks, stock, waste, foundation } = state;
+
+  useEffect(() => {
+    const foundationCardCount = Object.values(state.foundation).reduce(
+      (acc, f) => acc + f.length,
+      0,
+    );
+    console.log('foundationCardCount', foundationCardCount);
+    if (foundationCardCount >= 52) {
+      setIsVictory(true);
+    }
+  }, [state, setIsVictory]);
 
   const handleDragEnd = (event: DragEndEvent) => {
     console.log('e', event);
@@ -115,89 +137,131 @@ export const Solitaire = () => {
   };
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToWindowEdges]}>
       <Box
         sx={{
           backgroundColor: 'green',
           height: '100vh',
           width: '100vw',
+          overflowX: 'hidden',
         }}
       >
-        <Box sx={{ height: 150, p: 3, display: 'flex', gap: 2 }}>
-          {/* TODO: render all cards in the stock with a 1px offset from the last, so that the deck's thickness shows how many cards are left in the pile */}
-          <Box
-            onClick={onDrawCard}
-            sx={{
-              position: 'relative',
-              border: '1px solid white',
-              cursor: 'pointer',
-              width: 'fit-content',
-            }}
-          >
-            {/* {stock.map((cardId, index) => (
-              <Box key={cardId} sx={{ position: 'absolute', top: 0, left: 0 }}>
-                <Draggable cardId={cardId} index={index} cards={cards} />
-              </Box>
-            ))} */}
-            <Box sx={{ visibility: stock.length > 0 ? 'visible' : 'hidden' }}>
-              <CardPlaceholder />
-            </Box>
-          </Box>
-          <Box sx={{ position: 'relative', height: 150, width: 100 }}>
-            {waste.map((cardId, index) => (
-              <Box key={cardId} sx={{ position: 'absolute', top: 0, left: 0 }}>
-                <Draggable cardId={cardId} index={index} cards={cards} />
-              </Box>
-            ))}
-          </Box>
-          <Droppable id={FOUNDATION_DROPPABLE_ID}>
-            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-              {SUITS.map((suit) => (
-                <Box
-                  key={suit}
-                  sx={{ width: 50, height: 50, border: '1px solid red' }}
-                >
-                  {foundation[suit].length > 0 && (
-                    <Draggable
-                      cardId={foundation[suit][foundation[suit].length - 1]}
-                      index={0}
-                      cards={cards}
-                      disabled
-                    />
-                  )}
-                </Box>
-              ))}
-            </Box>
-          </Droppable>
-          <button
-            style={{ color: 'lightgray' }}
-            onClick={() => {
-              const output = initializeSolitaireBoard();
-              setState(output);
-            }}
-          >
-            Reset
-          </button>
-        </Box>
         <Box
           sx={{
             display: 'flex',
-            flexDirection: 'row',
+            flexDirection: 'column',
+            p: 2,
+            pt: 5,
             gap: 2,
+            mx: 'auto',
+            width: 'fit-content',
           }}
         >
-          {sortedStackIds.map((stackId) => (
-            <Droppable key={stackId} id={stackId}>
-              {!!stacks[stackId].child && (
-                <Draggable
-                  key={stacks[stackId].child}
-                  index={0}
-                  cardId={stacks[stackId].child}
-                  cards={cards}
-                />
-              )}
-            </Droppable>
-          ))}
+          <Box sx={{ display: 'flex', gap: 2, mb: 5 }}>
+            <Box
+              onClick={onDrawCard}
+              sx={{
+                border: '2px solid white',
+                cursor: 'pointer',
+                width: TILE_WIDTH * TILE_SCALE,
+                height: TILE_HEIGHT * TILE_SCALE,
+                padding: 1,
+              }}
+            >
+              <Box sx={{ position: 'relative' }}>
+                {stock.map((cardId, index) => (
+                  <Box
+                    key={cardId}
+                    sx={{ position: 'absolute', top: -index, left: -index }}
+                  >
+                    <CardPlaceholder />
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                border: '2px solid white',
+                padding: 1,
+
+                width: TILE_WIDTH * TILE_SCALE,
+                height: TILE_HEIGHT * TILE_SCALE,
+              }}
+            >
+              <Box sx={{ position: 'relative' }}>
+                {waste.map((cardId, index) => (
+                  <Box
+                    key={cardId}
+                    sx={{ position: 'absolute', top: 0, left: 0 }}
+                  >
+                    <Draggable cardId={cardId} index={index} cards={cards} />
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+            <Box sx={{ ml: 'auto' }}>
+              <Droppable id={FOUNDATION_DROPPABLE_ID}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    height: 'fit-content',
+                    gap: 1,
+                  }}
+                >
+                  {SUITS.map((suit) => (
+                    <Box
+                      key={suit}
+                      sx={{
+                        width: TILE_WIDTH * TILE_SCALE,
+                        height: TILE_HEIGHT * TILE_SCALE,
+                        backgroundColor: 'rgba(255,255,255,0.1)',
+                      }}
+                    >
+                      {foundation[suit].length > 0 && (
+                        <Draggable
+                          cardId={foundation[suit][foundation[suit].length - 1]}
+                          index={0}
+                          cards={cards}
+                          disabled
+                        />
+                      )}
+                    </Box>
+                  ))}
+                </Box>
+              </Droppable>
+            </Box>
+            <button
+              style={{ color: 'lightgray' }}
+              onClick={() => {
+                const output = initializeSolitaireBoard();
+                setState(output);
+                setIsVictory(false);
+              }}
+            >
+              Reset
+            </button>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              gap: 2,
+            }}
+          >
+            {sortedStackIds.map((stackId) => (
+              <Droppable key={stackId} id={stackId}>
+                {!!stacks[stackId].child && (
+                  <Draggable
+                    key={stacks[stackId].child}
+                    index={0}
+                    cardId={stacks[stackId].child}
+                    cards={cards}
+                  />
+                )}
+              </Droppable>
+            ))}
+          </Box>
         </Box>
       </Box>
     </DndContext>

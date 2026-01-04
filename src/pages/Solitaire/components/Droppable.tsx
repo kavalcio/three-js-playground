@@ -1,6 +1,7 @@
 import { useDroppable } from '@dnd-kit/core';
 import { Box } from '@mui/material';
-import { TILE_HEIGHT, TILE_WIDTH } from 'src/constants';
+
+import { TILE_HEIGHT, TILE_SCALE, TILE_WIDTH } from '@/constants';
 
 export const Droppable = ({
   id,
@@ -19,7 +20,6 @@ export const Droppable = ({
       sx={{
         position: 'relative',
         padding: 1,
-        margin: 1,
         borderWidth: '2px',
         borderStyle: 'solid',
         borderColor: isOver ? 'blue' : 'white',
@@ -28,8 +28,8 @@ export const Droppable = ({
         alignItems: 'center',
         justifyContent: 'flex-start',
         gap: 1,
-        minWidth: TILE_WIDTH + 22,
-        minHeight: TILE_HEIGHT + 22,
+        minWidth: TILE_WIDTH * TILE_SCALE,
+        minHeight: TILE_HEIGHT * TILE_SCALE,
         // height: 'fit-content',
       }}
     >

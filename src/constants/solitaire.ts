@@ -436,7 +436,7 @@ export const TILESET_VT_MARGIN = 2;
 export const TILE_STEP = 65;
 export const TILE_WIDTH = 42;
 export const TILE_HEIGHT = 60;
-export const TILE_SCALE = 1.5;
+export const TILE_SCALE = 1.7;
 
 export const CARD_BACK_COORDS = { row: 1, col: 13 } as const;
 

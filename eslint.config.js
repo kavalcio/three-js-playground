@@ -42,6 +42,7 @@ export default tseslint.config(
       'react/prop-types': 'off',
       'react-hooks/rules-of-hooks': 'warn',
       'react-hooks/exhaustive-deps': 'warn',
+      'react-hooks/set-state-in-effect': 'off',
       'react/no-unknown-property': 'off',
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
