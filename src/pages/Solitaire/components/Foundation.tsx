@@ -8,7 +8,7 @@ import {
   TILE_SCALE,
   TILE_WIDTH,
 } from '@/constants';
-import { Card } from '@/types';
+import { BoardState } from '@/types';
 
 import { Draggable } from './Draggable';
 
@@ -16,8 +16,8 @@ export const Foundation = ({
   foundation,
   cards,
 }: {
-  foundation: Record<string, string[]>;
-  cards: Record<string, Card>;
+  foundation: BoardState['foundation'];
+  cards: BoardState['cards'];
 }) => {
   const { isOver, setNodeRef } = useDroppable({
     id: FOUNDATION_DROPPABLE_ID,

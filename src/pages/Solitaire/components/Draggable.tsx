@@ -14,7 +14,7 @@ import {
   TILESET_VT_MARGIN,
   TILESET_WIDTH,
 } from '@/constants';
-import { Card } from '@/types';
+import { BoardState } from '@/types';
 
 // TODO: z index of the grabbed item doesnt go over everything else, fix it. i think because its the child of somethign else
 export const Draggable = ({
@@ -25,7 +25,7 @@ export const Draggable = ({
 }: {
   index: number;
   cardId: string;
-  cards: Record<string, Card>;
+  cards: BoardState['cards'];
   disabled?: boolean;
 }) => {
   const card = cards[cardId];

@@ -11,7 +11,7 @@ import {
   TILE_SCALE,
   TILE_WIDTH,
 } from '@/constants';
-import { Card, Stack } from '@/types';
+import { BoardState } from '@/types';
 import {
   flattenStacks,
   generateSuitArray,
@@ -28,26 +28,15 @@ import {
   VictoryScreen,
 } from './components';
 
+// TODO: use windows xp asset pack
 // TODO: add animations so that cards dont just snap to positions
 // TODO: add win condition when all cards are in foundation
 // TODO: add ability to undo move? could just persist the last X versions of state
 // TODO: do easy and hard mode where you either draw 1 or 3 cards at a time
 // TODO: show move count on screen (and on victory screen. maybe add a leaderboard?)
 export const Solitaire = () => {
-  const [state, setState] = useState<{
-    cards: Record<string, Card>;
-    stacks: Record<string, Stack>;
-    stock: string[];
-    waste: string[];
-    foundation: Record<string, string[]>;
-  }>({
-    cards: structuredClone(CARDS),
-    stacks: structuredClone(STACKS),
-    stock: [],
-    waste: [],
-    foundation: generateSuitArray(),
-  });
-
+  const [state, setState] = useState<BoardState>(initializeSolitaireBoard);
+  const [moveCount, setMoveCount] = useState(0);
   const [isVictory, setIsVictory] = useState(false);
 
   const { cards, stacks, stock, waste, foundation } = state;
@@ -92,10 +81,12 @@ export const Solitaire = () => {
         droppedStackId,
       });
     }
+    if (!newState) return;
     setState({
       ...state,
       ...newState,
     });
+    setMoveCount((prev) => prev + 1);
   };
 
   console.log('aaa', {
@@ -151,6 +142,7 @@ export const Solitaire = () => {
     const output = initializeSolitaireBoard();
     setState(output);
     setIsVictory(false);
+    setMoveCount(0);
   };
 
   return (
@@ -247,6 +239,20 @@ export const Solitaire = () => {
             ))}
           </Box>
           <button onClick={onNewGame}>Reset</button>
+          <button
+            onClick={() => {
+              setState({
+                cards: structuredClone(CARDS),
+                stacks: structuredClone(STACKS),
+                stock: [],
+                waste: [],
+                foundation: generateSuitArray(),
+              });
+            }}
+          >
+            Clear Board
+          </button>
+          <Box>Moves: {moveCount}</Box>
         </Box>
       </Box>
     </DndContext>

@@ -1,5 +1,5 @@
 import { CARDS, STACKS, SUITS } from '@/constants';
-import { Card, Stack } from '@/types';
+import { BoardState, Card, Stack } from '@/types';
 
 // Fisher Yates shuffle algorithm
 const shuffle = (inputArray: any[]) => {
@@ -53,8 +53,8 @@ export const initializeSolitaireBoard = () => {
 };
 
 export const flattenStacks = (
-  stacks: Record<string, Stack>,
-  cards: Record<string, Card>,
+  stacks: BoardState['stacks'],
+  cards: BoardState['cards'],
 ) => {
   const flattened: string[][] = [];
   Object.keys(stacks).forEach((stackId) => {
@@ -75,10 +75,10 @@ export const insertCardFoundation = ({
   foundation,
   draggedCardId,
 }: {
-  stacks: Record<string, Stack>;
-  cards: Record<string, Card>;
-  waste: string[];
-  foundation: Record<string, string[]>;
+  stacks: BoardState['stacks'];
+  cards: BoardState['cards'];
+  waste: BoardState['waste'];
+  foundation: BoardState['foundation'];
   draggedCardId: string;
 }) => {
   // Don't allow if card has any children
@@ -165,9 +165,9 @@ export const insertCardTableau = ({
   draggedCardId,
   droppedStackId,
 }: {
-  stacks: Record<string, Stack>;
-  cards: Record<string, Card>;
-  waste: string[];
+  stacks: BoardState['stacks'];
+  cards: BoardState['cards'];
+  waste: BoardState['waste'];
   draggedCardId: string;
   droppedStackId: string;
 }) => {
@@ -246,7 +246,6 @@ export const checkTableauInsertAllowed = (
   newCard: string,
   previousCard: string | null,
 ) => {
-  // return true;
   if (!previousCard) {
     return newCard.slice(4, 10) === 'king'; // Only allow king if no previous card exists
   }
