@@ -1,7 +1,8 @@
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
+import Confetti from 'react-confetti-boom';
 
 import {
   CARDS,
@@ -21,7 +22,12 @@ import {
   insertCardTableau,
 } from '@/utils';
 
-import { CardPlaceholder, Draggable, Droppable } from './components';
+import {
+  CardPlaceholder,
+  Draggable,
+  Droppable,
+  VictoryScreen,
+} from './components';
 
 // TODO: add animations so that cards dont just snap to positions
 // TODO: add win condition when all cards are in foundation
@@ -143,6 +149,12 @@ export const Solitaire = () => {
     });
   };
 
+  const onNewGame = () => {
+    const output = initializeSolitaireBoard();
+    setState(output);
+    setIsVictory(false);
+  };
+
   return (
     <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToWindowEdges]}>
       <Box
@@ -153,6 +165,7 @@ export const Solitaire = () => {
           overflowX: 'hidden',
         }}
       >
+        {isVictory && <VictoryScreen onNewGame={onNewGame} />}
         <Box
           sx={{
             display: 'flex',
@@ -162,6 +175,8 @@ export const Solitaire = () => {
             gap: 2,
             mx: 'auto',
             width: 'fit-content',
+            // maxWidth: 'fit-content',
+            // width: '100%',
           }}
         >
           <Box sx={{ display: 'flex', gap: 2, mb: 5 }}>
@@ -238,16 +253,7 @@ export const Solitaire = () => {
                 </Box>
               </Droppable>
             </Box>
-            <button
-              style={{ color: 'lightgray' }}
-              onClick={() => {
-                const output = initializeSolitaireBoard();
-                setState(output);
-                setIsVictory(false);
-              }}
-            >
-              Reset
-            </button>
+            <button onClick={onNewGame}>Reset</button>
           </Box>
           <Box
             sx={{
