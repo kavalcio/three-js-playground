@@ -26,9 +26,9 @@ import {
   VictoryScreen,
 } from './components';
 
+// TODO: page scrolling is weird, fix it
 // TODO: do an early detection of win condition when all cards are revealed and removed from the stock
-// TODO: z index of the grabbed item doesnt go over everything else, fix it. i think because its the child of somethign else
-// TODO: add mobile view
+// TODO: use balatro skin
 // TODO: add a context provider for state instead of passing it around as props
 // TODO: add ability to undo move? could just persist the last X versions of state, or maybe persist a diff for each move
 // TODO: do easy and hard mode where you either draw 1 or 3 cards at a time
@@ -255,16 +255,9 @@ export const Solitaire = () => {
                 key={stackId}
                 id={stackId}
                 cardCount={flattenedStacks[index].length}
-              >
-                {!!stacks[stackId].child && (
-                  <Draggable
-                    key={stacks[stackId].child}
-                    index={0}
-                    cardId={stacks[stackId].child}
-                    cards={cards}
-                  />
-                )}
-              </Droppable>
+                stacks={stacks}
+                cards={cards}
+              />
             ))}
           </Box>
         </Box>

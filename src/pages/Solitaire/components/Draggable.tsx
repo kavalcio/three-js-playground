@@ -1,5 +1,6 @@
 import { useDraggable } from '@dnd-kit/core';
 import { Box } from '@mui/material';
+import { useEffect } from 'react';
 
 import {
   CARD_BACK_COORDS,
@@ -23,11 +24,13 @@ export const Draggable = ({
   cardId,
   cards,
   disabled,
+  onDragStateChange,
 }: {
   index: number;
   cardId: string;
   cards: BoardState['cards'];
   disabled?: boolean;
+  onDragStateChange?: (dragging: boolean) => void;
 }) => {
   const card = cards[cardId];
 
@@ -37,6 +40,10 @@ export const Draggable = ({
       disabled: card.hidden || disabled,
     });
 
+  useEffect(() => {
+    onDragStateChange?.(isDragging);
+  }, [cardId, isDragging, onDragStateChange]);
+
   const spriteCol = card.hidden ? CARD_BACK_COORDS.col : card.spriteCoords.col;
   const spriteRow = card.hidden ? CARD_BACK_COORDS.row : card.spriteCoords.row;
 
@@ -44,38 +51,39 @@ export const Draggable = ({
     <Box
       ref={setNodeRef}
       sx={{
-        touchAction: 'none',
         cursor: card.hidden || disabled ? 'default' : 'grab',
-        position: 'relative',
+        touchAction: 'none',
+        zIndex: 10 + index,
         width: TILE_WIDTH * TILE_SCALE,
         height: TILE_HEIGHT * TILE_SCALE,
         transform: transform
           ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
           : 'none',
-        zIndex: 10 + index + (isDragging ? 200 : 0),
-        backgroundImage: `url(${card.hidden ? CARD_BACKS_TILEMAP : CARDS_TILEMAP})`,
-        imageRendering: 'pixelated',
-        backgroundPositionX:
-          (-TILESET_HZ_MARGIN - TILE_STEP_HZ * spriteCol) * TILE_SCALE,
-        backgroundPositionY:
-          (-TILESET_VT_MARGIN - TILE_STEP_VT * spriteRow) * TILE_SCALE,
-        backgroundSize: `${TILESET_WIDTH * TILE_SCALE}px ${TILESET_HEIGHT * TILE_SCALE}px`,
       }}
       {...listeners}
       {...attributes}
     >
+      <Box
+        sx={{
+          width: TILE_WIDTH * TILE_SCALE,
+          height: TILE_HEIGHT * TILE_SCALE,
+          backgroundImage: `url(${card.hidden ? CARD_BACKS_TILEMAP : CARDS_TILEMAP})`,
+          imageRendering: 'pixelated',
+          backgroundPositionX:
+            (-TILESET_HZ_MARGIN - TILE_STEP_HZ * spriteCol) * TILE_SCALE,
+          backgroundPositionY:
+            (-TILESET_VT_MARGIN - TILE_STEP_VT * spriteRow) * TILE_SCALE,
+          backgroundSize: `${TILESET_WIDTH * TILE_SCALE}px ${TILESET_HEIGHT * TILE_SCALE}px`,
+        }}
+      />
       {!!card.child && (
-        <Box
-          sx={{
-            position: 'absolute',
-            top: CARD_PADDING * TILE_SCALE,
-          }}
-        >
+        <Box sx={{ mt: `-${(TILE_HEIGHT - CARD_PADDING) * TILE_SCALE}px` }}>
           <Draggable
             key={card.child}
             index={index + 1}
             cardId={card.child}
             cards={cards}
+            onDragStateChange={onDragStateChange}
           />
         </Box>
       )}

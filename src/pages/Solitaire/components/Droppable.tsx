@@ -1,25 +1,36 @@
 import { useDroppable } from '@dnd-kit/core';
 import { Box } from '@mui/material';
+import { useCallback, useState } from 'react';
 
 import { CARD_PADDING, TILE_HEIGHT, TILE_SCALE, TILE_WIDTH } from '@/constants';
+import { BoardState } from '@/types';
+
+import { Draggable } from './Draggable';
 
 export const Droppable = ({
   id,
-  children,
   cardCount = 1,
+  stacks,
+  cards,
 }: {
   id: string;
   children?: React.ReactNode;
   cardCount?: number;
+  stacks: BoardState['stacks'];
+  cards: BoardState['cards'];
 }) => {
   const { isOver, setNodeRef } = useDroppable({
     id,
   });
+  const [isDragging, setIsDragging] = useState(false);
+
+  const onDragStateChange = useCallback((d: boolean) => setIsDragging(d), []);
 
   return (
     <Box
       ref={setNodeRef}
       sx={{
+        zIndex: isDragging ? 6 : 5,
         position: 'relative',
         borderWidth: '2px',
         borderStyle: 'solid',
@@ -45,7 +56,15 @@ export const Droppable = ({
           height: TILE_HEIGHT * TILE_SCALE,
         }}
       />
-      {children}
+      {!!stacks[id].child && (
+        <Draggable
+          key={stacks[id].child}
+          index={0}
+          cardId={stacks[id].child}
+          cards={cards}
+          onDragStateChange={onDragStateChange}
+        />
+      )}
     </Box>
   );
 };
