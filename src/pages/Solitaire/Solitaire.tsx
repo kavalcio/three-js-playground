@@ -28,12 +28,12 @@ import {
   VictoryScreen,
 } from './components';
 
+// TODO: add mobile view
 // TODO: use windows xp asset pack
-// TODO: add animations so that cards dont just snap to positions
-// TODO: add win condition when all cards are in foundation
-// TODO: add ability to undo move? could just persist the last X versions of state
+// TODO: add victory animation from windows xp version
+// TODO: add ability to undo move? could just persist the last X versions of state, or maybe persist a diff for each move
 // TODO: do easy and hard mode where you either draw 1 or 3 cards at a time
-// TODO: show move count on screen (and on victory screen. maybe add a leaderboard?)
+// TODO: show move count on victory screen
 export const Solitaire = () => {
   const [state, setState] = useState<BoardState>(initializeSolitaireBoard);
   const [moveCount, setMoveCount] = useState(0);
@@ -47,7 +47,6 @@ export const Solitaire = () => {
       (acc, f) => acc + f.length,
       0,
     );
-    console.log('foundationCardCount', foundationCardCount);
     if (foundationCardCount >= 52) {
       setIsVictory(true);
     }
@@ -89,7 +88,7 @@ export const Solitaire = () => {
     setMoveCount((prev) => prev + 1);
   };
 
-  console.log('aaa', {
+  console.log('state', {
     cards,
     stacks,
     waste,
