@@ -44,6 +44,7 @@ export const Draggable = ({
     <Box
       ref={setNodeRef}
       sx={{
+        touchAction: 'none',
         cursor: card.hidden || disabled ? 'default' : 'grab',
         position: 'relative',
         width: TILE_WIDTH * TILE_SCALE,
