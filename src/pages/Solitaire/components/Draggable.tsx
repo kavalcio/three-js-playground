@@ -4,6 +4,7 @@ import { Box } from '@mui/material';
 import cardsTilemap from '/cards_tilemap.png';
 import {
   CARD_BACK_COORDS,
+  CARD_PADDING,
   TILE_HEIGHT,
   TILE_SCALE,
   TILE_STEP,
@@ -65,7 +66,7 @@ export const Draggable = ({
         <Box
           sx={{
             position: 'absolute',
-            top: 15 * TILE_SCALE,
+            top: CARD_PADDING * TILE_SCALE,
           }}
         >
           <Draggable

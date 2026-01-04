@@ -47,6 +47,7 @@ export const Solitaire = () => {
   const { cards, stacks, stock, waste, foundation } = state;
 
   useEffect(() => {
+    // Show win screen if win all cards are collected
     const foundationCardCount = Object.values(state.foundation).reduce(
       (acc, f) => acc + f.length,
       0,
@@ -56,6 +57,11 @@ export const Solitaire = () => {
       setIsVictory(true);
     }
   }, [state, setIsVictory]);
+
+  const deepestStackCardCount = useMemo(() => {
+    const flats = flattenStacks(state.stacks, state.cards);
+    return Math.max(...flats.map((f) => f.length));
+  }, [state]);
 
   const handleDragEnd = (event: DragEndEvent) => {
     console.log('e', event);
@@ -93,6 +99,7 @@ export const Solitaire = () => {
     waste,
     stock,
     foundation,
+    deepestStackCardCount,
     flat: flattenStacks(stacks, cards),
   });
 
@@ -250,7 +257,11 @@ export const Solitaire = () => {
             }}
           >
             {sortedStackIds.map((stackId) => (
-              <Droppable key={stackId} id={stackId}>
+              <Droppable
+                key={stackId}
+                id={stackId}
+                deepestStackCardCount={deepestStackCardCount}
+              >
                 {!!stacks[stackId].child && (
                   <Draggable
                     key={stacks[stackId].child}

@@ -1,14 +1,16 @@
 import { useDroppable } from '@dnd-kit/core';
 import { Box } from '@mui/material';
 
-import { TILE_HEIGHT, TILE_SCALE, TILE_WIDTH } from '@/constants';
+import { CARD_PADDING, TILE_HEIGHT, TILE_SCALE, TILE_WIDTH } from '@/constants';
 
 export const Droppable = ({
   id,
   children,
+  deepestStackCardCount = 1,
 }: {
   id: string;
   children?: React.ReactNode;
+  deepestStackCardCount?: number;
 }) => {
   const { isOver, setNodeRef } = useDroppable({
     id,
@@ -29,8 +31,9 @@ export const Droppable = ({
         justifyContent: 'flex-start',
         gap: 1,
         minWidth: TILE_WIDTH * TILE_SCALE,
-        minHeight: TILE_HEIGHT * TILE_SCALE,
-        // height: 'fit-content',
+        minHeight:
+          TILE_HEIGHT * TILE_SCALE +
+          (deepestStackCardCount - 1) * CARD_PADDING * TILE_SCALE,
       }}
     >
       {children}
