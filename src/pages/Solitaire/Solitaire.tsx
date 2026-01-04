@@ -3,12 +3,7 @@ import { restrictToWindowEdges } from '@dnd-kit/modifiers';
 import { Box } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 
-import {
-  FOUNDATION_DROPPABLE_ID,
-  TILE_HEIGHT,
-  TILE_SCALE,
-  TILE_WIDTH,
-} from '@/constants';
+import { FOUNDATION_DROPPABLE_ID, TILEMAP_VALUES } from '@/constants';
 import { BoardState } from '@/types';
 import {
   flattenStacks,
@@ -198,8 +193,8 @@ export const Solitaire = () => {
                   backgroundColor: '#1a8d1a',
                   border: '2px solid white',
                   cursor: 'pointer',
-                  width: TILE_WIDTH * TILE_SCALE,
-                  height: TILE_HEIGHT * TILE_SCALE,
+                  width: TILEMAP_VALUES.tileWidth,
+                  height: TILEMAP_VALUES.tileHeight,
                 }}
               >
                 <Box sx={{ position: 'relative' }}>
@@ -217,8 +212,8 @@ export const Solitaire = () => {
                 sx={{
                   backgroundColor: '#1a8d1a',
                   border: '2px solid white',
-                  width: TILE_WIDTH * TILE_SCALE,
-                  height: TILE_HEIGHT * TILE_SCALE,
+                  width: TILEMAP_VALUES.tileWidth,
+                  height: TILEMAP_VALUES.tileHeight,
                 }}
               >
                 <Box sx={{ position: 'relative' }}>

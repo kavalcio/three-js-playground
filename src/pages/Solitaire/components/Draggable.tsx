@@ -4,18 +4,9 @@ import { useEffect } from 'react';
 
 import {
   CARD_BACK_COORDS,
-  CARD_BACKS_TILEMAP,
   CARD_PADDING,
-  CARDS_TILEMAP,
-  TILE_HEIGHT,
   TILE_SCALE,
-  TILE_STEP_HZ,
-  TILE_STEP_VT,
-  TILE_WIDTH,
-  TILESET_HEIGHT,
-  TILESET_HZ_MARGIN,
-  TILESET_VT_MARGIN,
-  TILESET_WIDTH,
+  TILEMAP_VALUES as VALUES,
 } from '@/constants';
 import { BoardState } from '@/types';
 
@@ -54,8 +45,8 @@ export const Draggable = ({
         cursor: card.hidden || disabled ? 'default' : 'grab',
         touchAction: 'none',
         zIndex: 10 + index,
-        width: TILE_WIDTH * TILE_SCALE,
-        height: TILE_HEIGHT * TILE_SCALE,
+        width: VALUES.tileWidth,
+        height: VALUES.tileHeight,
         transform: transform
           ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
           : 'none',
@@ -65,19 +56,21 @@ export const Draggable = ({
     >
       <Box
         sx={{
-          width: TILE_WIDTH * TILE_SCALE,
-          height: TILE_HEIGHT * TILE_SCALE,
-          backgroundImage: `url(${card.hidden ? CARD_BACKS_TILEMAP : CARDS_TILEMAP})`,
+          width: VALUES.tileWidth,
+          height: VALUES.tileHeight,
+          backgroundImage: `url(${card.hidden ? VALUES.backUrl : VALUES.frontUrl})`,
           imageRendering: 'pixelated',
           backgroundPositionX:
-            (-TILESET_HZ_MARGIN - TILE_STEP_HZ * spriteCol) * TILE_SCALE,
+            (-VALUES.marginHorizontal - VALUES.stepHorizontal * spriteCol) *
+            TILE_SCALE,
           backgroundPositionY:
-            (-TILESET_VT_MARGIN - TILE_STEP_VT * spriteRow) * TILE_SCALE,
-          backgroundSize: `${TILESET_WIDTH * TILE_SCALE}px ${TILESET_HEIGHT * TILE_SCALE}px`,
+            (-VALUES.marginVertical - VALUES.stepVertical * spriteRow) *
+            TILE_SCALE,
+          backgroundSize: `${VALUES.totalWidth}px ${VALUES.totalHeight}px`,
         }}
       />
       {!!card.child && (
-        <Box sx={{ mt: `-${(TILE_HEIGHT - CARD_PADDING) * TILE_SCALE}px` }}>
+        <Box sx={{ mt: `-${VALUES.tileHeight - CARD_PADDING}px` }}>
           <Draggable
             key={card.child}
             index={index + 1}

@@ -1,13 +1,7 @@
 import { useDroppable } from '@dnd-kit/core';
 import { Box } from '@mui/material';
 
-import {
-  FOUNDATION_DROPPABLE_ID,
-  SUITS,
-  TILE_HEIGHT,
-  TILE_SCALE,
-  TILE_WIDTH,
-} from '@/constants';
+import { FOUNDATION_DROPPABLE_ID, SUITS, TILEMAP_VALUES } from '@/constants';
 import { BoardState } from '@/types';
 
 import { Draggable } from './Draggable';
@@ -35,8 +29,8 @@ export const Foundation = ({
         alignItems: 'center',
         justifyContent: 'flex-start',
         gap: 1,
-        minWidth: TILE_WIDTH * TILE_SCALE,
-        height: TILE_HEIGHT * TILE_SCALE,
+        minWidth: TILEMAP_VALUES.tileWidth,
+        height: TILEMAP_VALUES.tileHeight,
       }}
     >
       <Box
@@ -51,8 +45,8 @@ export const Foundation = ({
           <Box
             key={suit}
             sx={{
-              width: TILE_WIDTH * TILE_SCALE,
-              height: TILE_HEIGHT * TILE_SCALE,
+              width: TILEMAP_VALUES.tileWidth,
+              height: TILEMAP_VALUES.tileHeight,
               backgroundColor: '#1a8d1a',
             }}
           >

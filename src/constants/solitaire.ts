@@ -429,19 +429,35 @@ export const STACKS = {
   stk_7: { id: 'stk_7', child: null },
 } as Record<string, Stack>;
 
-export const CARDS_TILEMAP = '/cards_tilemap.png';
-export const CARD_BACKS_TILEMAP = '/cards_tilemap.png';
-export const TILESET_WIDTH = 909;
-export const TILESET_HEIGHT = 259;
-export const TILESET_HZ_MARGIN = 11;
-export const TILESET_VT_MARGIN = 2;
-export const TILE_STEP_HZ = 65;
-export const TILE_STEP_VT = 65;
-export const TILE_WIDTH = 42;
-export const TILE_HEIGHT = 60;
 export const TILE_SCALE = 1.8;
-export const CARD_PADDING = 15;
+export const CARD_PADDING = 15 * TILE_SCALE;
 export const CARD_BACK_COORDS = { row: 1, col: 13 } as const;
+export const TILEMAP_VALUES = {
+  frontUrl: '/cards_tilemap.png',
+  backUrl: '/cards_tilemap.png',
+  totalWidth: 909 * TILE_SCALE,
+  totalHeight: 259 * TILE_SCALE,
+  marginHorizontal: 11,
+  marginVertical: 2,
+  stepHorizontal: 65,
+  stepVertical: 65,
+  tileWidth: 42 * TILE_SCALE,
+  tileHeight: 60 * TILE_SCALE,
+};
+
+// export const CARDS_TILEMAP = '/cards_tilemap_b_front.png';
+// export const CARD_BACKS_TILEMAP = '/cards_tilemap_b_back.png';
+// export const TILESET_WIDTH = 923;
+// export const TILESET_HEIGHT = 380;
+// export const TILESET_HZ_MARGIN = 0;
+// export const TILESET_VT_MARGIN = 0;
+// export const TILE_WIDTH = 71;
+// export const TILE_HEIGHT = 95;
+// export const TILE_STEP_HZ = TILE_WIDTH;
+// export const TILE_STEP_VT = TILE_HEIGHT;
+// export const TILE_SCALE = 1.1;
+// export const CARD_PADDING = 20;
+// export const CARD_BACK_COORDS = { row: 5, col: 0 } as const;
 
 export const FOUNDATION_DROPPABLE_ID = 'foundation';
 

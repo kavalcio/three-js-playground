@@ -2,7 +2,7 @@ import { useDroppable } from '@dnd-kit/core';
 import { Box } from '@mui/material';
 import { useCallback, useState } from 'react';
 
-import { CARD_PADDING, TILE_HEIGHT, TILE_SCALE, TILE_WIDTH } from '@/constants';
+import { CARD_PADDING, TILEMAP_VALUES } from '@/constants';
 import { BoardState } from '@/types';
 
 import { Draggable } from './Draggable';
@@ -40,10 +40,9 @@ export const Droppable = ({
         alignItems: 'center',
         justifyContent: 'flex-start',
         gap: 1,
-        width: TILE_WIDTH * TILE_SCALE,
+        width: TILEMAP_VALUES.tileWidth,
         height:
-          TILE_HEIGHT * TILE_SCALE +
-          Math.max(0, cardCount - 1) * CARD_PADDING * TILE_SCALE,
+          TILEMAP_VALUES.tileHeight + Math.max(0, cardCount - 1) * CARD_PADDING,
       }}
     >
       <Box
@@ -52,8 +51,8 @@ export const Droppable = ({
           top: 0,
           left: 0,
           backgroundColor: '#1a8d1a',
-          width: TILE_WIDTH * TILE_SCALE,
-          height: TILE_HEIGHT * TILE_SCALE,
+          width: TILEMAP_VALUES.tileWidth,
+          height: TILEMAP_VALUES.tileHeight,
         }}
       />
       {!!stacks[id].child && (
