@@ -6,11 +6,11 @@ import { CARD_PADDING, TILE_HEIGHT, TILE_SCALE, TILE_WIDTH } from '@/constants';
 export const Droppable = ({
   id,
   children,
-  deepestStackCardCount = 1,
+  cardCount = 1,
 }: {
   id: string;
   children?: React.ReactNode;
-  deepestStackCardCount?: number;
+  cardCount?: number;
 }) => {
   const { isOver, setNodeRef } = useDroppable({
     id,
@@ -21,21 +21,30 @@ export const Droppable = ({
       ref={setNodeRef}
       sx={{
         position: 'relative',
-        padding: 1,
         borderWidth: '2px',
         borderStyle: 'solid',
-        borderColor: isOver ? 'blue' : 'white',
+        borderColor: isOver ? 'white' : 'green',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-start',
         gap: 1,
-        minWidth: TILE_WIDTH * TILE_SCALE,
-        minHeight:
+        width: TILE_WIDTH * TILE_SCALE,
+        height:
           TILE_HEIGHT * TILE_SCALE +
-          (deepestStackCardCount - 1) * CARD_PADDING * TILE_SCALE,
+          Math.max(0, cardCount - 1) * CARD_PADDING * TILE_SCALE,
       }}
     >
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          backgroundColor: 'rgba(255,255,255,0.1)',
+          width: TILE_WIDTH * TILE_SCALE,
+          height: TILE_HEIGHT * TILE_SCALE,
+        }}
+      />
       {children}
     </Box>
   );

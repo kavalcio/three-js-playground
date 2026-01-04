@@ -1,14 +1,12 @@
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
-import Confetti from 'react-confetti-boom';
 
 import {
   CARDS,
   FOUNDATION_DROPPABLE_ID,
   STACKS,
-  SUITS,
   TILE_HEIGHT,
   TILE_SCALE,
   TILE_WIDTH,
@@ -26,6 +24,7 @@ import {
   CardPlaceholder,
   Draggable,
   Droppable,
+  Foundation,
   VictoryScreen,
 } from './components';
 
@@ -33,6 +32,7 @@ import {
 // TODO: add win condition when all cards are in foundation
 // TODO: add ability to undo move? could just persist the last X versions of state
 // TODO: do easy and hard mode where you either draw 1 or 3 cards at a time
+// TODO: show move count on screen (and on victory screen. maybe add a leaderboard?)
 export const Solitaire = () => {
   const [state, setState] = useState<{
     cards: Record<string, Card>;
@@ -64,9 +64,8 @@ export const Solitaire = () => {
     }
   }, [state, setIsVictory]);
 
-  const deepestStackCardCount = useMemo(() => {
-    const flats = flattenStacks(state.stacks, state.cards);
-    return Math.max(...flats.map((f) => f.length));
+  const flattenedStacks = useMemo(() => {
+    return flattenStacks(state.stacks, state.cards);
   }, [state]);
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -105,8 +104,7 @@ export const Solitaire = () => {
     waste,
     stock,
     foundation,
-    deepestStackCardCount,
-    flat: flattenStacks(stacks, cards),
+    flattenedStacks,
   });
 
   const sortedStackIds = useMemo(() => {
@@ -183,11 +181,11 @@ export const Solitaire = () => {
             <Box
               onClick={onDrawCard}
               sx={{
+                backgroundColor: 'rgba(255,255,255,0.1)',
                 border: '2px solid white',
                 cursor: 'pointer',
                 width: TILE_WIDTH * TILE_SCALE,
                 height: TILE_HEIGHT * TILE_SCALE,
-                padding: 1,
               }}
             >
               <Box sx={{ position: 'relative' }}>
@@ -203,9 +201,8 @@ export const Solitaire = () => {
             </Box>
             <Box
               sx={{
+                backgroundColor: 'rgba(255,255,255,0.1)',
                 border: '2px solid white',
-                padding: 1,
-
                 width: TILE_WIDTH * TILE_SCALE,
                 height: TILE_HEIGHT * TILE_SCALE,
               }}
@@ -222,38 +219,8 @@ export const Solitaire = () => {
               </Box>
             </Box>
             <Box sx={{ ml: 'auto' }}>
-              <Droppable id={FOUNDATION_DROPPABLE_ID}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    height: 'fit-content',
-                    gap: 1,
-                  }}
-                >
-                  {SUITS.map((suit) => (
-                    <Box
-                      key={suit}
-                      sx={{
-                        width: TILE_WIDTH * TILE_SCALE,
-                        height: TILE_HEIGHT * TILE_SCALE,
-                        backgroundColor: 'rgba(255,255,255,0.1)',
-                      }}
-                    >
-                      {foundation[suit].length > 0 && (
-                        <Draggable
-                          cardId={foundation[suit][foundation[suit].length - 1]}
-                          index={0}
-                          cards={cards}
-                          disabled
-                        />
-                      )}
-                    </Box>
-                  ))}
-                </Box>
-              </Droppable>
+              <Foundation foundation={state.foundation} cards={state.cards} />
             </Box>
-            <button onClick={onNewGame}>Reset</button>
           </Box>
           <Box
             sx={{
@@ -262,11 +229,11 @@ export const Solitaire = () => {
               gap: 2,
             }}
           >
-            {sortedStackIds.map((stackId) => (
+            {sortedStackIds.map((stackId, index) => (
               <Droppable
                 key={stackId}
                 id={stackId}
-                deepestStackCardCount={deepestStackCardCount}
+                cardCount={flattenedStacks[index].length}
               >
                 {!!stacks[stackId].child && (
                   <Draggable
@@ -279,6 +246,7 @@ export const Solitaire = () => {
               </Droppable>
             ))}
           </Box>
+          <button onClick={onNewGame}>Reset</button>
         </Box>
       </Box>
     </DndContext>

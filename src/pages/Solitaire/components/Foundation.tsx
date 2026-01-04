@@ -1,0 +1,73 @@
+import { useDroppable } from '@dnd-kit/core';
+import { Box } from '@mui/material';
+
+import {
+  FOUNDATION_DROPPABLE_ID,
+  SUITS,
+  TILE_HEIGHT,
+  TILE_SCALE,
+  TILE_WIDTH,
+} from '@/constants';
+import { Card } from '@/types';
+
+import { Draggable } from './Draggable';
+
+export const Foundation = ({
+  foundation,
+  cards,
+}: {
+  foundation: Record<string, string[]>;
+  cards: Record<string, Card>;
+}) => {
+  const { isOver, setNodeRef } = useDroppable({
+    id: FOUNDATION_DROPPABLE_ID,
+  });
+
+  return (
+    <Box
+      ref={setNodeRef}
+      sx={{
+        // padding: 1,
+        borderWidth: '2px',
+        borderStyle: 'solid',
+        borderColor: isOver ? 'white' : 'green',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        gap: 1,
+        minWidth: TILE_WIDTH * TILE_SCALE,
+        height: TILE_HEIGHT * TILE_SCALE,
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          height: 'fit-content',
+          gap: 2,
+        }}
+      >
+        {SUITS.map((suit) => (
+          <Box
+            key={suit}
+            sx={{
+              width: TILE_WIDTH * TILE_SCALE,
+              height: TILE_HEIGHT * TILE_SCALE,
+              backgroundColor: 'rgba(255,255,255,0.1)',
+            }}
+          >
+            {foundation[suit].length > 0 && (
+              <Draggable
+                cardId={foundation[suit][foundation[suit].length - 1]}
+                index={0}
+                cards={cards}
+                disabled
+              />
+            )}
+          </Box>
+        ))}
+      </Box>
+    </Box>
+  );
+};
