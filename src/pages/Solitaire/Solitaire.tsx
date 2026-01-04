@@ -26,6 +26,7 @@ import {
   VictoryScreen,
 } from './components';
 
+// TODO: do an early detection of win condition when all cards are revealed and removed from the stock
 // TODO: z index of the grabbed item doesnt go over everything else, fix it. i think because its the child of somethign else
 // TODO: add mobile view
 // TODO: add a context provider for state instead of passing it around as props
