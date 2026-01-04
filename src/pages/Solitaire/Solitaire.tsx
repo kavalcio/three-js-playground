@@ -1,6 +1,6 @@
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
@@ -167,55 +167,78 @@ export const Solitaire = () => {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            p: 2,
+            p: 4,
             pt: 5,
             gap: 2,
             mx: 'auto',
             width: 'fit-content',
           }}
         >
-          <Box sx={{ display: 'flex', gap: 2, mb: 5 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 2,
+              mb: 5,
+              flexWrap: 'wrap',
+              flexDirection: {
+                xs: 'column',
+                sm: 'row',
+              },
+            }}
+          >
             <Box
-              onClick={onDrawCard}
               sx={{
-                backgroundColor: '#1a8d1a',
-                border: '2px solid white',
-                cursor: 'pointer',
-                width: TILE_WIDTH * TILE_SCALE,
-                height: TILE_HEIGHT * TILE_SCALE,
+                display: 'flex',
+                gap: 2,
               }}
             >
-              <Box sx={{ position: 'relative' }}>
-                {stock.map((cardId, index) => (
-                  <Box
-                    key={cardId}
-                    sx={{ position: 'absolute', top: -index, left: -index }}
-                  >
-                    <CardPlaceholder />
-                  </Box>
-                ))}
+              <Box
+                onClick={onDrawCard}
+                sx={{
+                  backgroundColor: '#1a8d1a',
+                  border: '2px solid white',
+                  cursor: 'pointer',
+                  width: TILE_WIDTH * TILE_SCALE,
+                  height: TILE_HEIGHT * TILE_SCALE,
+                }}
+              >
+                <Box sx={{ position: 'relative' }}>
+                  {stock.map((cardId, index) => (
+                    <Box
+                      key={cardId}
+                      sx={{ position: 'absolute', top: -index, left: -index }}
+                    >
+                      <CardPlaceholder />
+                    </Box>
+                  ))}
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  backgroundColor: '#1a8d1a',
+                  border: '2px solid white',
+                  width: TILE_WIDTH * TILE_SCALE,
+                  height: TILE_HEIGHT * TILE_SCALE,
+                }}
+              >
+                <Box sx={{ position: 'relative' }}>
+                  {waste.map((cardId, index) => (
+                    <Box
+                      key={cardId}
+                      sx={{ position: 'absolute', top: 0, left: 0 }}
+                    >
+                      <Draggable cardId={cardId} index={index} cards={cards} />
+                    </Box>
+                  ))}
+                </Box>
               </Box>
             </Box>
             <Box
               sx={{
-                backgroundColor: '#1a8d1a',
-                border: '2px solid white',
-                width: TILE_WIDTH * TILE_SCALE,
-                height: TILE_HEIGHT * TILE_SCALE,
+                ml: { xs: 0, sm: 'auto' },
+                mr: { xs: 'auto', sm: 0 },
               }}
             >
-              <Box sx={{ position: 'relative' }}>
-                {waste.map((cardId, index) => (
-                  <Box
-                    key={cardId}
-                    sx={{ position: 'absolute', top: 0, left: 0 }}
-                  >
-                    <Draggable cardId={cardId} index={index} cards={cards} />
-                  </Box>
-                ))}
-              </Box>
-            </Box>
-            <Box sx={{ ml: 'auto' }}>
               <Foundation foundation={state.foundation} cards={state.cards} />
             </Box>
           </Box>
@@ -224,6 +247,7 @@ export const Solitaire = () => {
               display: 'flex',
               flexDirection: 'row',
               gap: 2,
+              flexWrap: 'wrap',
             }}
           >
             {sortedStackIds.map((stackId, index) => (

@@ -439,7 +439,7 @@ export const TILE_STEP_HZ = 65;
 export const TILE_STEP_VT = 65;
 export const TILE_WIDTH = 42;
 export const TILE_HEIGHT = 60;
-export const TILE_SCALE = 1.7;
+export const TILE_SCALE = 1.8;
 export const CARD_PADDING = 15;
 export const CARD_BACK_COORDS = { row: 1, col: 13 } as const;
 

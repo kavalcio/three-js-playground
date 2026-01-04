@@ -44,7 +44,7 @@ export const Foundation = ({
           display: 'flex',
           flexDirection: 'row',
           height: 'fit-content',
-          gap: 2,
+          gap: '20px',
         }}
       >
         {SUITS.map((suit) => (
