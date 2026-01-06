@@ -4,7 +4,7 @@ import { Box, Dialog } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import Confetti from 'react-confetti-boom';
 
-import { FOUNDATION_DROPPABLE_ID, TILEMAP_VALUES } from '@/constants';
+import { FOUNDATION_DROPPABLE_ID } from '@/constants';
 import { BoardState } from '@/types';
 import {
   flattenStacks,
@@ -14,13 +14,13 @@ import {
 } from '@/utils';
 
 import {
-  CardPlaceholder,
-  Draggable,
   Droppable,
   Foundation,
   MenuBar,
   NewGameConfirmation,
+  Stock,
   VictoryScreen,
+  Waste,
 } from './components';
 
 const MOVE_HISTORY_LENGTH = 10;
@@ -204,7 +204,6 @@ export const Solitaire = () => {
           onUndoMove={onUndoMove}
           hasMovesToUndo={moveHistory.length > 0}
         />
-        {/* {isVictory && <VictoryScreen onNewGame={onNewGame} />} */}
         <Box
           sx={{
             display: 'flex',
@@ -228,57 +227,9 @@ export const Solitaire = () => {
               },
             }}
           >
-            <Box
-              sx={{
-                display: 'flex',
-                gap: 2,
-              }}
-            >
-              <Box
-                onClick={onDrawCard}
-                sx={{
-                  backgroundColor: '#1a8d1a',
-                  border: '2px solid white',
-                  cursor: 'pointer',
-                  width: TILEMAP_VALUES.tileWidth,
-                  height: TILEMAP_VALUES.tileHeight,
-                }}
-              >
-                <Box sx={{ position: 'relative' }}>
-                  {stock.map((cardId, index) => (
-                    <Box
-                      key={cardId}
-                      sx={{ position: 'absolute', top: -index, left: -index }}
-                    >
-                      <CardPlaceholder />
-                    </Box>
-                  ))}
-                </Box>
-              </Box>
-              <Box
-                sx={{
-                  backgroundColor: '#1a8d1a',
-                  border: '2px solid white',
-                  width: TILEMAP_VALUES.tileWidth,
-                  height: TILEMAP_VALUES.tileHeight,
-                }}
-              >
-                <Box sx={{ position: 'relative' }}>
-                  {waste.map((cardId, index) => (
-                    <Box
-                      key={cardId}
-                      sx={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        zIndex: 6,
-                      }}
-                    >
-                      <Draggable cardId={cardId} index={index} cards={cards} />
-                    </Box>
-                  ))}
-                </Box>
-              </Box>
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <Stock onDrawCard={onDrawCard} stock={stock} />
+              <Waste cards={cards} waste={waste} />
             </Box>
             <Box
               sx={{
