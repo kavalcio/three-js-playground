@@ -48,7 +48,6 @@ export const initializeSolitaireBoard = () => {
     cards[cardId].hidden = true;
   });
 
-  console.log('r', { cards, stacks, stock });
   return { cards, stacks, stock, waste: [], foundation: generateSuitArray() };
 };
 
@@ -153,7 +152,6 @@ export const checkFoundationInsertAllowed = (
   } else {
     const newValue = parseInt(newNumber, 10);
     const previousValue = parseInt(previousNumber, 10);
-    console.log('numbers', { newValue, previousValue });
     return newValue === previousValue + 1;
   }
 };

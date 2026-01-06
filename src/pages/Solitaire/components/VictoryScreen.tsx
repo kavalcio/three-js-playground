@@ -1,40 +1,34 @@
-import { Box, Typography } from '@mui/material';
-import Confetti from 'react-confetti-boom';
+import { Box } from '@mui/material';
 
-export const VictoryScreen = ({ onNewGame }: { onNewGame: () => void }) => {
+export const VictoryScreen = ({
+  onNewGame,
+  moveCount,
+}: {
+  onNewGame: () => void;
+  moveCount: number;
+}) => {
   return (
     <>
       <Box
         sx={{
-          position: 'absolute',
           width: 300,
           height: 200,
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
           backgroundColor: 'white',
           display: 'flex',
           flexDirection: 'column',
-          zIndex: 10000,
           alignItems: 'center',
           justifyContent: 'center',
-          gap: 3,
+          gap: 2,
+          fontFamily: '"Comic Sans MS", "Comic Sans", cursive',
+          border: '2px solid gray',
         }}
       >
-        <Typography
-          sx={{
-            color: 'black',
-            fontFamily: '"Comic Sans MS", "Comic Sans", cursive',
-            fontSize: 30,
-          }}
-        >
-          YOU WIN!!!
-        </Typography>
+        <span style={{ fontSize: 30 }}>YOU WIN!!!</span>
+        <span>Moves: {moveCount}</span>
         <button style={{ width: 'fit-content' }} onClick={onNewGame}>
           new game
         </button>
       </Box>
-      <Confetti mode="fall" style={{ zIndex: 10001 }} />
     </>
   );
 };

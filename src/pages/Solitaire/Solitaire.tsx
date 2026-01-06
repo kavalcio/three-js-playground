@@ -1,7 +1,8 @@
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
-import { Box } from '@mui/material';
+import { Box, Dialog } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
+import Confetti from 'react-confetti-boom';
 
 import { FOUNDATION_DROPPABLE_ID, TILEMAP_VALUES } from '@/constants';
 import { BoardState } from '@/types';
@@ -18,23 +19,36 @@ import {
   Droppable,
   Foundation,
   MenuBar,
+  NewGameConfirmation,
   VictoryScreen,
 } from './components';
 
+const MOVE_HISTORY_LENGTH = 10;
+
 // TODO: page scrolling is weird, fix it
 // TODO: do an early detection of win condition when all cards are revealed and removed from the stock
-// TODO: use balatro skin
+// TODO: use balatro skin, allow picking between different card backs
 // TODO: add a context provider for state instead of passing it around as props
-// TODO: add ability to undo move? could just persist the last X versions of state, or maybe persist a diff for each move
 // TODO: do easy and hard mode where you either draw 1 or 3 cards at a time
-// TODO: show move count on victory screen
-// TODO: maybe use dialog in VictoryScreen?
 export const Solitaire = () => {
   const [state, setState] = useState<BoardState>(initializeSolitaireBoard);
+  const [moveHistory, setMoveHistory] = useState<BoardState[]>([]);
   const [moveCount, setMoveCount] = useState(0);
   const [isVictory, setIsVictory] = useState(false);
+  const [showNewGameConfirmation, setShowNewGameConfirmation] = useState(false);
+
+  // Keep track of stack whose child is being dragged, so we can increase its z-index
+  const [activeDraggedStackId, setActiveDraggedStackId] = useState<
+    string | null
+  >(null);
 
   const { cards, stacks, stock, waste, foundation } = state;
+
+  const updateState = (oldState: BoardState, newState: BoardState) => {
+    setMoveHistory((prev) => [...prev, oldState].slice(-MOVE_HISTORY_LENGTH));
+    setMoveCount((prev) => prev + 1);
+    setState(newState);
+  };
 
   useEffect(() => {
     // Show win screen if win all cards are collected
@@ -51,8 +65,24 @@ export const Solitaire = () => {
     return flattenStacks(state.stacks, state.cards);
   }, [state]);
 
+  const sortedStackIds = useMemo(() => {
+    return Object.keys(stacks).sort((a, b) => a.localeCompare(b));
+  }, [stacks]);
+
+  const handleDragStart = (event: DragEndEvent) => {
+    console.log('handleDragStart', event);
+    const cardId = event.active.id;
+    const parentStackIndex = flattenedStacks.findIndex((stack) =>
+      stack.some((c) => c === cardId),
+    );
+    if (parentStackIndex === -1) return;
+    const parentStackId = sortedStackIds[parentStackIndex];
+    setActiveDraggedStackId(parentStackId);
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
-    console.log('e', event);
+    console.log('handleDragEnd', event);
+    setActiveDraggedStackId(null);
     if (!event.over) return;
     const draggedCardId = event.active.id as string;
     const droppedStackId = event.over.id as string;
@@ -76,11 +106,11 @@ export const Solitaire = () => {
       });
     }
     if (!newState) return;
-    setState({
+    const combinedState = {
       ...state,
       ...newState,
-    });
-    setMoveCount((prev) => prev + 1);
+    };
+    updateState(state, combinedState);
   };
 
   console.log('state', {
@@ -90,11 +120,8 @@ export const Solitaire = () => {
     stock,
     foundation,
     flattenedStacks,
+    moveHistory,
   });
-
-  const sortedStackIds = useMemo(() => {
-    return Object.keys(stacks).sort((a, b) => a.localeCompare(b));
-  }, [stacks]);
 
   const onDrawCard = () => {
     if (stock.length === 0) {
@@ -108,7 +135,7 @@ export const Solitaire = () => {
           hidden: true, // Hide the card when added back to stock
         };
       });
-      setState({
+      updateState(state, {
         ...state,
         stock: newStock,
         waste: newWaste,
@@ -124,7 +151,7 @@ export const Solitaire = () => {
       ...cards[stock[stock.length - 1]],
       hidden: false, // Reveal the card when drawn
     };
-    setState({
+    updateState(state, {
       ...state,
       stock: newStock,
       waste: newWaste,
@@ -132,18 +159,36 @@ export const Solitaire = () => {
     });
   };
 
-  const onNewGame = () => {
-    if (moveCount > 0 && !isVictory) {
-      // TODO: show confirmation if user is mid-game
-    }
+  const createNewGame = () => {
     const output = initializeSolitaireBoard();
     setState(output);
+    setMoveHistory([]);
     setIsVictory(false);
     setMoveCount(0);
+    setShowNewGameConfirmation(false);
+  };
+
+  const onNewGame = () => {
+    if (moveCount > 0 && !isVictory) {
+      // Show confirmation dialog if user is in the middle of a game
+      setShowNewGameConfirmation(true);
+      return;
+    }
+    createNewGame();
+  };
+
+  const onUndoMove = () => {
+    setState(moveHistory[moveHistory.length - 1]);
+    setMoveHistory((prev) => prev.slice(0, moveHistory.length - 1));
+    setMoveCount((prev) => prev - 1);
   };
 
   return (
-    <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToWindowEdges]}>
+    <DndContext
+      onDragEnd={handleDragEnd}
+      onDragStart={handleDragStart}
+      modifiers={[restrictToWindowEdges]}
+    >
       <Box
         sx={{
           backgroundColor: 'green',
@@ -156,8 +201,10 @@ export const Solitaire = () => {
           setIsVictory={setIsVictory}
           moveCount={moveCount}
           onNewGame={onNewGame}
+          onUndoMove={onUndoMove}
+          hasMovesToUndo={moveHistory.length > 0}
         />
-        {isVictory && <VictoryScreen onNewGame={onNewGame} />}
+        {/* {isVictory && <VictoryScreen onNewGame={onNewGame} />} */}
         <Box
           sx={{
             display: 'flex',
@@ -220,7 +267,12 @@ export const Solitaire = () => {
                   {waste.map((cardId, index) => (
                     <Box
                       key={cardId}
-                      sx={{ position: 'absolute', top: 0, left: 0 }}
+                      sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        zIndex: 6,
+                      }}
                     >
                       <Draggable cardId={cardId} index={index} cards={cards} />
                     </Box>
@@ -252,11 +304,26 @@ export const Solitaire = () => {
                 cardCount={flattenedStacks[index].length}
                 stacks={stacks}
                 cards={cards}
+                isDraggingChild={activeDraggedStackId === stackId}
               />
             ))}
           </Box>
         </Box>
       </Box>
+      <Dialog open={isVictory} transitionDuration={0}>
+        <VictoryScreen onNewGame={onNewGame} moveCount={moveCount} />
+      </Dialog>
+      {isVictory && <Confetti mode="fall" style={{ zIndex: 10001 }} />}
+      <Dialog
+        open={showNewGameConfirmation}
+        transitionDuration={0}
+        onClose={() => setShowNewGameConfirmation(false)}
+      >
+        <NewGameConfirmation
+          onCancel={() => setShowNewGameConfirmation(false)}
+          onConfirm={createNewGame}
+        />
+      </Dialog>
     </DndContext>
   );
 };
