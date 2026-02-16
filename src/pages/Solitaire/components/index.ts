@@ -3,4 +3,7 @@ export * from './Draggable';
 export * from './Droppable';
 export * from './Foundation';
 export * from './MenuBar';
+export * from './NewGameConfirmation';
+export * from './Stock';
 export * from './VictoryScreen';
+export * from './Waste';
