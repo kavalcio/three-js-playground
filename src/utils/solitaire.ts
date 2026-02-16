@@ -13,6 +13,24 @@ const shuffle = (inputArray: any[]) => {
   return array;
 };
 
+export const generateSuitArray = () => {
+  return SUITS.reduce(
+    (acc, suit) => {
+      acc[suit] = [];
+      return acc;
+    },
+    {} as Record<string, string[]>,
+  );
+};
+
+export const EMPTY_BOARD_STATE: BoardState = {
+  cards: {},
+  stacks: structuredClone(STACKS),
+  stock: [],
+  waste: [],
+  foundation: generateSuitArray(),
+};
+
 export const initializeSolitaireBoard = () => {
   const stacks = structuredClone(STACKS);
   const cards = structuredClone(CARDS);
@@ -279,14 +297,4 @@ export const checkTableauInsertAllowed = (
     const previousValue = parseInt(previousNumber, 10);
     return newValue === previousValue - 1;
   }
-};
-
-export const generateSuitArray = () => {
-  return SUITS.reduce(
-    (acc, suit) => {
-      acc[suit] = [];
-      return acc;
-    },
-    {} as Record<string, string[]>,
-  );
 };

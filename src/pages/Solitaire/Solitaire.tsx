@@ -7,6 +7,7 @@ import Confetti from 'react-confetti-boom';
 import { FOUNDATION_DROPPABLE_ID } from '@/constants';
 import { BoardState } from '@/types';
 import {
+  EMPTY_BOARD_STATE,
   flattenStacks,
   initializeSolitaireBoard,
   insertCardFoundation,
@@ -27,15 +28,14 @@ const MOVE_HISTORY_LENGTH = 10;
 
 // TODO: page scrolling is weird, fix it
 // TODO: do an early detection of win condition when all cards are revealed and removed from the stock
-// TODO: use balatro skin, allow picking between different card backs
 // TODO: add a context provider for state instead of passing it around as props
-// TODO: do easy and hard mode where you either draw 1 or 3 cards at a time
 export const Solitaire = () => {
-  const [state, setState] = useState<BoardState>(initializeSolitaireBoard);
+  const [state, setState] = useState<BoardState>(EMPTY_BOARD_STATE);
   const [moveHistory, setMoveHistory] = useState<BoardState[]>([]);
   const [moveCount, setMoveCount] = useState(0);
   const [isVictory, setIsVictory] = useState(false);
-  const [showNewGameConfirmation, setShowNewGameConfirmation] = useState(false);
+  const [showNewGameConfirmation, setShowNewGameConfirmation] = useState(true);
+  const [stockStepSize, setStockStepSize] = useState(1); // 1 for easy mode, 3 for hard mode
 
   // Keep track of stack whose child is being dragged, so we can increase its z-index
   const [activeDraggedStackId, setActiveDraggedStackId] = useState<
@@ -143,14 +143,19 @@ export const Solitaire = () => {
       });
       return;
     }
-    // Draw a card from the stock
-    const newWaste = [...waste, stock[stock.length - 1]];
-    const newStock = stock.slice(0, stock.length - 1);
+    // Draw stockStepSize cards from the stock
+    const newWaste = [
+      ...waste,
+      ...stock.slice(-stockStepSize).reverse(), // Reverse to maintain order
+    ];
+    const newStock = stock.slice(0, Math.max(0, stock.length - stockStepSize));
     const newCards = { ...cards };
-    newCards[stock[stock.length - 1]] = {
-      ...cards[stock[stock.length - 1]],
-      hidden: false, // Reveal the card when drawn
-    };
+    stock.slice(-stockStepSize).forEach((cardId) => {
+      newCards[cardId] = {
+        ...cards[cardId],
+        hidden: false, // Reveal the card when drawn
+      };
+    });
     updateState(state, {
       ...state,
       stock: newStock,
@@ -159,23 +164,17 @@ export const Solitaire = () => {
     });
   };
 
-  const createNewGame = () => {
+  const createNewGame = (step: number) => {
     const output = initializeSolitaireBoard();
     setState(output);
     setMoveHistory([]);
     setIsVictory(false);
     setMoveCount(0);
+    setStockStepSize(step);
     setShowNewGameConfirmation(false);
   };
 
-  const onNewGame = () => {
-    if (moveCount > 0 && !isVictory) {
-      // Show confirmation dialog if user is in the middle of a game
-      setShowNewGameConfirmation(true);
-      return;
-    }
-    createNewGame();
-  };
+  const onNewGame = () => setShowNewGameConfirmation(true);
 
   const onUndoMove = () => {
     setState(moveHistory[moveHistory.length - 1]);
@@ -272,7 +271,7 @@ export const Solitaire = () => {
       >
         <NewGameConfirmation
           onCancel={() => setShowNewGameConfirmation(false)}
-          onConfirm={createNewGame}
+          onConfirm={(step) => createNewGame(step)}
         />
       </Dialog>
     </DndContext>
