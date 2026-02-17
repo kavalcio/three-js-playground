@@ -57,7 +57,7 @@ export const ROUTES = {
   },
   warp: {
     path: '/warp',
-    title: 'Warp',
+    title: 'Warp Transition',
     group: ROUTE_GROUPS.shaders.key,
   },
   galaxy: {
@@ -118,6 +118,11 @@ export const ROUTES = {
   solitaire: {
     path: '/solitaire',
     title: 'Solitaire',
+    group: ROUTE_GROUPS.other.key,
+  },
+  scavenger: {
+    path: '/scavenger',
+    title: 'Scavenger',
     group: ROUTE_GROUPS.other.key,
   },
 };

@@ -18,6 +18,7 @@ import {
   R3FDemo,
   RagingSea,
   Refraction,
+  Scavenger,
   Skyline,
   SolarSystem,
   Solitaire,
@@ -117,6 +118,10 @@ const router = createBrowserRouter([
       {
         path: ROUTES.warp.path,
         element: <Warp />,
+      },
+      {
+        path: ROUTES.scavenger.path,
+        element: <Scavenger />,
       },
     ],
   },

@@ -14,6 +14,7 @@ export * from './Postprocessing';
 export * from './R3FDemo';
 export * from './RagingSea';
 export * from './Refraction';
+export * from './Scavenger';
 export * from './Skyline';
 export * from './SolarSystem';
 export * from './Solitaire';
