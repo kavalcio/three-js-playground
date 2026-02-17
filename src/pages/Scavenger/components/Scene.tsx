@@ -1,55 +1,21 @@
-import {
-  OrbitControls,
-  Stats,
-  TransformControls,
-  useKeyboardControls,
-} from '@react-three/drei';
+import { OrbitControls, Stats, useKeyboardControls } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useControls } from 'leva';
 import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import * as THREE from 'three';
 
 // TODO: add r3f-perf
 // TODO: try tweakpane. it doesn't work with react out of the box, but it's possible to make it work
 export const Scene = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [initialized, setInitialized] = useState(false);
+  const groupRef = useRef<THREE.Group | null>(null);
+  const cubeRef = useRef<THREE.Mesh | null>(null);
+  const sphereRef = useRef<THREE.Mesh | null>(null);
 
-  const groupRef = useRef();
-  const cubeRef = useRef();
-  const sphereRef = useRef();
-
-  const [rotate, setRotate] = useState(true);
-
-  useFrame((state, delta) => {
-    if (!rotate) return;
-    // cubeRef.current.rotation.x += delta;
-    // cubeRef.current.rotation.y += delta;
-
-    // groupRef.current.rotation.y += delta / 2;
-  });
-
-  const [{ color1, color2, planeCoords, showTransformControls }, set] =
-    useControls(() => ({
-      color1: { value: '#ffffff', label: 'Cube color' },
-      color2: { value: '#ff0000', label: 'Sphere color' },
-      planeCoords: { value: { x: 0, z: 0 }, step: 0.1, label: 'Plane coords' },
-      showTransformControls: { value: false, label: 'Show transform controls' },
-    }));
-
-  useEffect(() => {
-    if (initialized) return;
-    const hash = location.hash;
-    set({ showTransformControls: hash === '#show-transform' });
-    setInitialized(true);
-  }, [location, initialized, set]);
-
-  useEffect(() => {
-    if (!initialized) return;
-    navigate(showTransformControls ? '#show-transform' : '#');
-  }, [navigate, initialized, showTransformControls]);
+  const [{ color1, color2, planeCoords }, set] = useControls(() => ({
+    color1: { value: '#ffffff', label: 'Cube color' },
+    color2: { value: '#ff0000', label: 'Sphere color' },
+    planeCoords: { value: { x: 0, z: 0 }, step: 0.1, label: 'Plane coords' },
+  }));
 
   const { camera } = useThree();
   const [subscribeKeys, getKeys] = useKeyboardControls(); // useKeyboardControls returns [subscribe, get, api]
@@ -76,9 +42,10 @@ export const Scene = () => {
     // camera.position.x += -direction.x * speed * delta;
     // camera.position.z += direction.z * speed * delta;
 
-    cubeRef.current.position.x += -direction.x * speed * delta;
-    cubeRef.current.position.z += direction.z * speed * delta;
-
+    if (cubeRef.current) {
+      cubeRef.current.position.x += -direction.x * speed * delta;
+      cubeRef.current.position.z += direction.z * speed * delta;
+    }
     // If using OrbitControls, keep its target synced to the camera's position
     // const controls = state.controls;
     // if (controls) controls.target.copy(camera.position);
@@ -99,22 +66,6 @@ export const Scene = () => {
         position={[3, 3, 3]}
         castShadow
       />
-
-      {showTransformControls && (
-        <>
-          <TransformControls
-            object={cubeRef}
-            onMouseDown={() => setRotate(false)}
-            onMouseUp={() => setRotate(true)}
-          />
-
-          <TransformControls
-            object={sphereRef}
-            onMouseDown={() => setRotate(false)}
-            onMouseUp={() => setRotate(true)}
-          />
-        </>
-      )}
       <group ref={groupRef}>
         <mesh
           ref={cubeRef}
