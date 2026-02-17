@@ -4,6 +4,9 @@ import { useControls } from 'leva';
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 
+import { CharacterController } from './CharacterController';
+import { Environment } from './Environment';
+
 // TODO: add r3f-perf
 // TODO: try tweakpane. it doesn't work with react out of the box, but it's possible to make it work
 export const Scene = () => {
@@ -17,55 +20,16 @@ export const Scene = () => {
     planeCoords: { value: { x: 0, z: 0 }, step: 0.1, label: 'Plane coords' },
   }));
 
-  const { camera } = useThree();
-  const [subscribeKeys, getKeys] = useKeyboardControls(); // useKeyboardControls returns [subscribe, get, api]
-  const speed = 5;
-
-  // Ensure OrbitControls' target is updated to prevent glitches if using both
-  // You can also use OrbitControls with makeDefault and update its target
-
-  useFrame((state, delta) => {
-    const { forward, back, left, right } = getKeys();
-
-    // Calculate direction vector based on input
-    const direction = new THREE.Vector3();
-    const frontVector = new THREE.Vector3(0, 0, back ? 1 : forward ? -1 : 0);
-    const sideVector = new THREE.Vector3(left ? -1 : right ? 1 : 0, 0, 0);
-
-    direction
-      .subVectors(frontVector, sideVector)
-      .normalize()
-      // Apply camera rotation to direction for world-relative movement
-      .applyEuler(camera.rotation);
-
-    // Move the camera/object
-    // camera.position.x += -direction.x * speed * delta;
-    // camera.position.z += direction.z * speed * delta;
-
-    if (cubeRef.current) {
-      cubeRef.current.position.x += -direction.x * speed * delta;
-      cubeRef.current.position.z += direction.z * speed * delta;
-    }
-    // If using OrbitControls, keep its target synced to the camera's position
-    // const controls = state.controls;
-    // if (controls) controls.target.copy(camera.position);
-  });
-
-  // return <OrbitControls />; // Example of using OrbitControls for mouse look
-
   return (
     <>
       <Stats />
 
       <OrbitControls dampingFactor={0.18} makeDefault />
 
-      <ambientLight color={0x404040} intensity={1.5} />
-      <directionalLight
-        color={0xffffff}
-        intensity={1}
-        position={[3, 3, 3]}
-        castShadow
-      />
+      <Environment />
+
+      <CharacterController />
+
       <group ref={groupRef}>
         <mesh
           ref={cubeRef}

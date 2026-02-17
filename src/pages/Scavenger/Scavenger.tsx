@@ -21,6 +21,7 @@ Rendering effects:
 - Vertex snapping
 - Pixellation
 - Fade objects with distance, like fog of war
+- Maybe stipple shader
 
 Things to implement:
 - WASD controls
