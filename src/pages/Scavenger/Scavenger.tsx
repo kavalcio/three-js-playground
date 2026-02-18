@@ -41,8 +41,10 @@ export const Scavenger = () => {
     () => [
       { name: 'forward', keys: ['ArrowUp', 'KeyW'] },
       { name: 'back', keys: ['ArrowDown', 'KeyS'] },
-      { name: 'left', keys: ['ArrowLeft', 'KeyA'] },
-      { name: 'right', keys: ['ArrowRight', 'KeyD'] },
+      { name: 'rotateLeft', keys: ['ArrowLeft', 'KeyA'] },
+      { name: 'rotateRight', keys: ['ArrowRight', 'KeyD'] },
+      { name: 'strafeLeft', keys: ['KeyQ'] },
+      { name: 'strafeRight', keys: ['KeyE'] },
       { name: 'jump', keys: ['Space'] },
     ],
     [],

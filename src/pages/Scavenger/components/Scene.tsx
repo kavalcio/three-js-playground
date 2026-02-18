@@ -24,7 +24,7 @@ export const Scene = () => {
     <>
       <Stats />
 
-      <OrbitControls dampingFactor={0.18} makeDefault />
+      <OrbitControls dampingFactor={0.18} makeDefault enablePan={false} />
 
       <Environment />
 
