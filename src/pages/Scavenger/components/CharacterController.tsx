@@ -51,7 +51,7 @@ export const CharacterController = () => {
       character.current.rotation.y = THREE.MathUtils.lerp(
         character.current.rotation.y,
         rotationTarget.current,
-        0.05,
+        0.08,
       );
 
       character.current.position.x +=

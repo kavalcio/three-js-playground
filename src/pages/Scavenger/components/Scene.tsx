@@ -3,6 +3,8 @@ import { useControls } from 'leva';
 import { useRef } from 'react';
 import * as THREE from 'three';
 
+import fragmentShader from '../shaders/fragment.glsl';
+import vertexShader from '../shaders/vertex.glsl';
 import { CharacterController } from './CharacterController';
 import { Environment } from './Environment';
 
@@ -33,11 +35,17 @@ export const Scene = () => {
           castShadow
         >
           <boxGeometry />
-          <meshStandardMaterial />
+          <shaderMaterial
+            vertexShader={vertexShader}
+            fragmentShader={fragmentShader}
+          />
         </mesh>
         <mesh ref={sphereRef} position={[-1, 0, 0]} castShadow>
           <sphereGeometry args={[0.7, 32, 32]} />
-          <meshStandardMaterial />
+          <shaderMaterial
+            vertexShader={vertexShader}
+            fragmentShader={fragmentShader}
+          />
         </mesh>
       </group>
       <mesh
