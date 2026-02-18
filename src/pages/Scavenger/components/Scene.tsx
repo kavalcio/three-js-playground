@@ -1,22 +1,17 @@
-import { OrbitControls, Stats, useKeyboardControls } from '@react-three/drei';
-import { useFrame, useThree } from '@react-three/fiber';
+import { OrbitControls, Stats } from '@react-three/drei';
 import { useControls } from 'leva';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import * as THREE from 'three';
 
 import { CharacterController } from './CharacterController';
 import { Environment } from './Environment';
 
-// TODO: add r3f-perf
-// TODO: try tweakpane. it doesn't work with react out of the box, but it's possible to make it work
 export const Scene = () => {
   const groupRef = useRef<THREE.Group | null>(null);
   const cubeRef = useRef<THREE.Mesh | null>(null);
   const sphereRef = useRef<THREE.Mesh | null>(null);
 
-  const [{ color1, color2, planeCoords }, set] = useControls(() => ({
-    color1: { value: '#ffffff', label: 'Cube color' },
-    color2: { value: '#ff0000', label: 'Sphere color' },
+  const [{ planeCoords }, set] = useControls(() => ({
     planeCoords: { value: { x: 0, z: 0 }, step: 0.1, label: 'Plane coords' },
   }));
 
@@ -38,11 +33,11 @@ export const Scene = () => {
           castShadow
         >
           <boxGeometry />
-          <meshStandardMaterial color={color1} />
+          <meshStandardMaterial />
         </mesh>
         <mesh ref={sphereRef} position={[-1, 0, 0]} castShadow>
           <sphereGeometry args={[0.7, 32, 32]} />
-          <meshStandardMaterial color={color2} />
+          <meshStandardMaterial />
         </mesh>
       </group>
       <mesh
@@ -53,7 +48,7 @@ export const Scene = () => {
         receiveShadow
       >
         <planeGeometry args={[6, 6]} />
-        <meshStandardMaterial color={0x99dd44} side={THREE.DoubleSide} />
+        <meshStandardMaterial side={THREE.DoubleSide} />
       </mesh>
     </>
   );
