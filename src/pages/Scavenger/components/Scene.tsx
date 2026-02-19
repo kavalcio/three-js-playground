@@ -1,6 +1,6 @@
 import { OrbitControls, Stats } from '@react-three/drei';
 import { useControls } from 'leva';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
 import fragmentShader from '../shaders/fragment.glsl';
@@ -8,17 +8,43 @@ import vertexShader from '../shaders/vertex.glsl';
 import { CharacterController } from './CharacterController';
 import { Environment } from './Environment';
 
+const FAR_COLOR = '#4a1818';
+const NEAR_COLOR = '#b8b8b8';
+
 export const Scene = () => {
   const groupRef = useRef<THREE.Group | null>(null);
   const cubeRef = useRef<THREE.Mesh | null>(null);
   const sphereRef = useRef<THREE.Mesh | null>(null);
 
-  const [{ planeCoords }, set] = useControls(() => ({
-    planeCoords: { value: { x: 0, z: 0 }, step: 0.1, label: 'Plane coords' },
+  const materialRef = useRef<THREE.ShaderMaterial>(null);
+
+  const [inputs, set] = useControls(() => ({
+    far: {
+      value: 0.1,
+      step: 0.1,
+      min: 0.1,
+      max: 100,
+      onChange: (v) => {
+        console.log(materialRef);
+        if (!materialRef.current) return;
+        materialRef.current.uniforms.uFar.value = v;
+      },
+    },
   }));
+
+  const uniforms = useMemo(() => {
+    // console.log(inputs);
+    return {
+      uFar: { value: inputs.far, type: 'f' },
+      uNearColor: { value: new THREE.Color(NEAR_COLOR) },
+      uFarColor: { value: new THREE.Color(FAR_COLOR) },
+    };
+  }, [inputs.far]);
 
   return (
     <>
+      <color attach="background" args={[FAR_COLOR]} />
+
       <Stats />
 
       <OrbitControls dampingFactor={0.18} makeDefault enablePan={false} />
@@ -38,6 +64,8 @@ export const Scene = () => {
           <shaderMaterial
             vertexShader={vertexShader}
             fragmentShader={fragmentShader}
+            uniforms={uniforms}
+            ref={materialRef}
           />
         </mesh>
         <mesh ref={sphereRef} position={[-1, 0, 0]} castShadow>
@@ -45,14 +73,15 @@ export const Scene = () => {
           <shaderMaterial
             vertexShader={vertexShader}
             fragmentShader={fragmentShader}
+            uniforms={uniforms}
           />
         </mesh>
       </group>
       <mesh
         rotation={[Math.PI / 2, 0, 0]}
-        position-x={planeCoords.x}
+        position-x={0}
         position-y={-1}
-        position-z={planeCoords.z}
+        position-z={0}
         receiveShadow
       >
         <planeGeometry args={[6, 6]} />
