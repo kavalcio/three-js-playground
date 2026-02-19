@@ -1,6 +1,6 @@
 import { OrbitControls, Stats } from '@react-three/drei';
 import { useControls } from 'leva';
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
 import fragmentShader from '../shaders/fragment.glsl';
@@ -9,18 +9,19 @@ import { CharacterController } from './CharacterController';
 import { Environment } from './Environment';
 
 const FAR_COLOR = '#4a1818';
-const NEAR_COLOR = '#b8b8b8';
+const NEAR_COLOR = '#7a3b3b';
+const OBSTACLE_COUNT = 300;
+const FIELD_RADIUS = 30;
+const temp = new THREE.Object3D();
 
 export const Scene = () => {
-  const groupRef = useRef<THREE.Group | null>(null);
-  const cubeRef = useRef<THREE.Mesh | null>(null);
-  const sphereRef = useRef<THREE.Mesh | null>(null);
+  const instancedMeshRef = useRef<THREE.InstancedMesh>(null);
 
   const materialRef = useRef<THREE.ShaderMaterial>(null);
 
   const [inputs, set] = useControls(() => ({
     far: {
-      value: 0.1,
+      value: 10,
       step: 0.1,
       min: 0.1,
       max: 100,
@@ -41,6 +42,22 @@ export const Scene = () => {
     };
   }, [inputs.far]);
 
+  useEffect(() => {
+    if (!instancedMeshRef.current) return;
+    // Set positions
+    for (let i = 0; i < OBSTACLE_COUNT; i++) {
+      temp.position.set(
+        (Math.random() - 0.5) * FIELD_RADIUS,
+        (Math.random() - 0.5) * FIELD_RADIUS,
+        (Math.random() - 0.5) * FIELD_RADIUS,
+      );
+      temp.updateMatrix();
+      instancedMeshRef.current.setMatrixAt(i, temp.matrix);
+    }
+    // Update the instance
+    instancedMeshRef.current.instanceMatrix.needsUpdate = true;
+  }, []);
+
   return (
     <>
       <color attach="background" args={[FAR_COLOR]} />
@@ -53,40 +70,21 @@ export const Scene = () => {
 
       <CharacterController />
 
-      <group ref={groupRef}>
-        <mesh
-          ref={cubeRef}
-          position={[1, 0, 0]}
-          rotation={[0, Math.PI / 3, 0]}
-          castShadow
-        >
-          <boxGeometry />
-          <shaderMaterial
-            vertexShader={vertexShader}
-            fragmentShader={fragmentShader}
-            uniforms={uniforms}
-            ref={materialRef}
-          />
-        </mesh>
-        <mesh ref={sphereRef} position={[-1, 0, 0]} castShadow>
-          <sphereGeometry args={[0.7, 32, 32]} />
-          <shaderMaterial
-            vertexShader={vertexShader}
-            fragmentShader={fragmentShader}
-            uniforms={uniforms}
-          />
-        </mesh>
-      </group>
-      <mesh
-        rotation={[Math.PI / 2, 0, 0]}
-        position-x={0}
-        position-y={-1}
-        position-z={0}
-        receiveShadow
+      <instancedMesh
+        ref={instancedMeshRef}
+        args={[undefined, undefined, OBSTACLE_COUNT]}
+        count={OBSTACLE_COUNT}
+        frustumCulled={false}
+        castShadow
       >
-        <planeGeometry args={[6, 6]} />
-        <meshStandardMaterial side={THREE.DoubleSide} />
-      </mesh>
+        <boxGeometry />
+        <shaderMaterial
+          vertexShader={vertexShader}
+          fragmentShader={fragmentShader}
+          uniforms={uniforms}
+          ref={materialRef}
+        />
+      </instancedMesh>
     </>
   );
 };
