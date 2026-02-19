@@ -50,7 +50,11 @@ export const Scavenger = () => {
     [],
   );
   return (
-    <Canvas shadows style={{ height: '100vh', width: '100vw' }}>
+    <Canvas
+      shadows
+      style={{ height: '100vh', width: '100vw' }}
+      camera={{ fov: 45 }}
+    >
       <KeyboardControls map={map}>
         <Scene />
       </KeyboardControls>
