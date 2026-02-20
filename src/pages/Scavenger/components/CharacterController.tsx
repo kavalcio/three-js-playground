@@ -1,6 +1,12 @@
-import { useKeyboardControls } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
-import { use, useRef } from 'react';
+import {
+  OrbitControls,
+  PerspectiveCamera,
+  PointerLockControls,
+  PresentationControls,
+  useKeyboardControls,
+} from '@react-three/drei';
+import { useFrame, useThree } from '@react-three/fiber';
+import { useRef } from 'react';
 import * as THREE from 'three';
 
 const speed = 5;
@@ -25,7 +31,10 @@ export const CharacterController = () => {
   useFrame((state, delta) => {
     const { forward, back, strafeLeft, strafeRight, rotateLeft, rotateRight } =
       getKeys();
-    console.log(state.controls);
+    // console.log(state.controls);
+
+    const anyKeyIsPressed =
+      forward || back || strafeLeft || strafeRight || rotateLeft || rotateRight;
 
     // Calculate direction vector based on input
     const direction = new THREE.Vector3();
@@ -62,17 +71,21 @@ export const CharacterController = () => {
         Math.sin(character.current.rotation.y) * direction.x * speed * delta;
     }
 
+    // if (anyKeyIsPressed) {
     // Move the camera to follow the character
-    cameraPosition.current?.getWorldPosition(cameraWorldPosition.current);
-    state.camera.position.lerp(cameraWorldPosition.current, 0.1);
+    // cameraPosition.current?.getWorldPosition(cameraWorldPosition.current);
+    // state.camera.position.lerp(cameraWorldPosition.current, 0.1);
 
-    // Rotate the camera to look at the target point in front of the character
-    if (cameraTarget.current) {
-      cameraTarget.current.getWorldPosition(cameraLookAtWorldPosition.current);
-      cameraLookAt.current.lerp(cameraLookAtWorldPosition.current, 0.1);
+    // // Rotate the camera to look at the target point in front of the character
+    // if (cameraTarget.current) {
+    //   cameraTarget.current.getWorldPosition(cameraLookAtWorldPosition.current);
+    //   cameraLookAt.current.lerp(cameraLookAtWorldPosition.current, 0.1);
 
-      state.camera.lookAt(cameraLookAt.current);
-    }
+    //   state.camera.lookAt(cameraLookAt.current);
+    //   // state.controls?.target?.copy(cameraLookAt.current);
+    //   // state.controls?.update();
+    // }
+    // }
 
     // If using OrbitControls, keep its target synced to the player's position
     // if (controls) controls.target.copy(character.current?.position);
@@ -97,8 +110,10 @@ export const CharacterController = () => {
       </mesh> */}
       <group ref={container}>
         <group ref={character}>
+          <OrbitControls dampingFactor={0.18} makeDefault enablePan={false} />
+          {/* <PointerLockControls makeDefault /> */}
           <mesh castShadow>
-            <boxGeometry />
+            <sphereGeometry />
             <meshStandardMaterial />
           </mesh>
           <group ref={cameraTarget} position-z={1.5} />

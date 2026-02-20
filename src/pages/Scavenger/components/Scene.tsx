@@ -164,13 +164,27 @@ export const Scene = () => {
     instancedMeshRef.current.instanceMatrix.needsUpdate = true;
   }, []);
 
+  // const instances = useMemo(() => {
+  //   const arr = [];
+  //   Array.from({ length: OBSTACLE_COUNT }).forEach((i) => {
+  //     arr.push({
+  //       position: new THREE.Vector3(
+  //         (Math.random() - 0.5) * FIELD_RADIUS,
+  //         (Math.random() - 0.5) * FIELD_RADIUS,
+  //         (Math.random() - 0.5) * FIELD_RADIUS,
+  //       ),
+  //     });
+  //   });
+  //   return arr;
+  // }, []);
+
   return (
     <>
       <color attach="background" args={[FAR_COLOR]} />
 
       <Stats />
 
-      <OrbitControls dampingFactor={0.18} makeDefault enablePan={false} />
+      {/* <OrbitControls dampingFactor={0.18} makeDefault enablePan={false} /> */}
 
       <Environment />
 
@@ -186,13 +200,31 @@ export const Scene = () => {
         <boxGeometry />
         <shaderMaterial
           transparent
-          // side={THREE.FrontSide}
+          side={THREE.FrontSide}
           vertexShader={vertexShader}
           fragmentShader={fragmentShader}
           uniforms={uniforms}
           ref={materialRef}
         />
       </instancedMesh>
+      {/* {instances.map(({ position }, i) => (
+        <mesh
+          key={i as number}
+          castShadow
+          position={[position.x, position.y, position.z]}
+        >
+          <boxGeometry />
+          <shaderMaterial
+            transparent
+            side={THREE.FrontSide}
+            // side={THREE.DoubleSide}
+            vertexShader={vertexShader}
+            fragmentShader={fragmentShader}
+            uniforms={uniforms}
+            ref={materialRef}
+          />
+        </mesh>
+      ))} */}
     </>
   );
 };
