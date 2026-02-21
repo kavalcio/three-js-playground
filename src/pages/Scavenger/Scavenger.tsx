@@ -1,5 +1,6 @@
 import { KeyboardControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
+import { Physics } from '@react-three/rapier';
 import { useMemo } from 'react';
 
 import { Scene } from './components';
@@ -39,13 +40,15 @@ Things to implement:
 export const Scavenger = () => {
   const map = useMemo(
     () => [
+      // TODO: add roll, and use mouse input to change rotation
       { name: 'forward', keys: ['ArrowUp', 'KeyW'] },
       { name: 'back', keys: ['ArrowDown', 'KeyS'] },
       { name: 'rotateLeft', keys: ['ArrowLeft', 'KeyA'] },
       { name: 'rotateRight', keys: ['ArrowRight', 'KeyD'] },
       { name: 'strafeLeft', keys: ['KeyQ'] },
       { name: 'strafeRight', keys: ['KeyE'] },
-      { name: 'jump', keys: ['Space'] },
+      { name: 'up', keys: ['Shift'] },
+      { name: 'down', keys: ['Control'] },
     ],
     [],
   );
@@ -56,7 +59,9 @@ export const Scavenger = () => {
       camera={{ fov: 45 }}
     >
       <KeyboardControls map={map}>
-        <Scene />
+        <Physics debug gravity={[0, 0, 0]}>
+          <Scene />
+        </Physics>
       </KeyboardControls>
     </Canvas>
   );

@@ -1,4 +1,5 @@
 import { OrbitControls, PointerLockControls, Stats } from '@react-three/drei';
+import { InstancedRigidBodies } from '@react-three/rapier';
 import { animate, utils } from 'animejs';
 import gsap from 'gsap';
 import { useControls } from 'leva';
@@ -22,7 +23,7 @@ const BAND_3_COLOR = '#5e2b2b';
 const NEAR_COLOR = '#cd7878';
 
 const OBSTACLE_COUNT = 1000;
-const FIELD_RADIUS = 30;
+const FIELD_RADIUS = 100;
 const temp = new THREE.Object3D();
 
 // TODO: if we use 3rd person camera, the shader's proximity check should use the player position as reference, not the camera position
@@ -178,6 +179,50 @@ export const Scene = () => {
   //   return arr;
   // }, []);
 
+  const rbInstances = useMemo(() => {
+    const instances = [];
+
+    // const scale = Math.random() + 0.5;
+
+    for (let i = 0; i < OBSTACLE_COUNT; i++) {
+      instances.push({
+        key: 'instance_' + Math.random(),
+        position: [
+          Math.max(
+            Math.min(
+              ((Math.random() - 0.5) * FIELD_RADIUS) / 2,
+              FIELD_RADIUS / 2 - 1,
+            ),
+            -FIELD_RADIUS / 2 + 1,
+          ),
+          Math.max(
+            Math.min(
+              ((Math.random() - 0.5) * FIELD_RADIUS) / 2,
+              FIELD_RADIUS / 2 - 1,
+            ),
+            -FIELD_RADIUS / 2 + 1,
+          ),
+          Math.max(
+            Math.min(
+              ((Math.random() - 0.5) * FIELD_RADIUS) / 2,
+              FIELD_RADIUS / 2 - 1,
+            ),
+            -FIELD_RADIUS / 2 + 1,
+          ),
+        ],
+        rotation: [Math.random(), Math.random(), Math.random()],
+        // scale: [scale],
+        // angularVelocity: [
+        //   (Math.random() - 0.5) * 10,
+        //   (Math.random() - 0.5) * 10,
+        //   (Math.random() - 0.5) * 10,
+        // ],
+      });
+    }
+
+    return instances;
+  }, []);
+
   return (
     <>
       <color attach="background" args={[FAR_COLOR]} />
@@ -188,25 +233,32 @@ export const Scene = () => {
 
       <Environment />
 
-      <CharacterController />
+      <CharacterController materialRef={materialRef} />
 
-      <instancedMesh
-        ref={instancedMeshRef}
-        args={[undefined, undefined, OBSTACLE_COUNT]}
-        count={OBSTACLE_COUNT}
-        frustumCulled={false}
-        castShadow
+      <InstancedRigidBodies
+        // ref={rigidBodyRef}
+        instances={rbInstances}
+        // colliders="hull"
       >
-        <boxGeometry />
-        <shaderMaterial
-          transparent
-          side={THREE.FrontSide}
-          vertexShader={vertexShader}
-          fragmentShader={fragmentShader}
-          uniforms={uniforms}
-          ref={materialRef}
-        />
-      </instancedMesh>
+        <instancedMesh
+          ref={instancedMeshRef}
+          args={[undefined, undefined, OBSTACLE_COUNT]}
+          count={OBSTACLE_COUNT}
+          frustumCulled={false}
+          castShadow
+        >
+          <boxGeometry />
+          <shaderMaterial
+            transparent
+            side={THREE.FrontSide}
+            vertexShader={vertexShader}
+            fragmentShader={fragmentShader}
+            uniforms={uniforms}
+            ref={materialRef}
+          />
+          {/* <meshStandardMaterial /> */}
+        </instancedMesh>
+      </InstancedRigidBodies>
       {/* {instances.map(({ position }, i) => (
         <mesh
           key={i as number}

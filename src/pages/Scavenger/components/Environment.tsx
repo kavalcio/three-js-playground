@@ -1,4 +1,5 @@
 export const Environment = () => {
+  // TODO; remove these light if not necessary
   return (
     <>
       <ambientLight color={0x404040} intensity={1.5} />
