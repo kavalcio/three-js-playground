@@ -235,11 +235,7 @@ export const Scene = () => {
 
       <CharacterController materialRef={materialRef} />
 
-      <InstancedRigidBodies
-        // ref={rigidBodyRef}
-        instances={rbInstances}
-        // colliders="hull"
-      >
+      <InstancedRigidBodies instances={rbInstances}>
         <instancedMesh
           ref={instancedMeshRef}
           args={[undefined, undefined, OBSTACLE_COUNT]}
@@ -256,7 +252,6 @@ export const Scene = () => {
             uniforms={uniforms}
             ref={materialRef}
           />
-          {/* <meshStandardMaterial /> */}
         </instancedMesh>
       </InstancedRigidBodies>
       {/* {instances.map(({ position }, i) => (

@@ -1,22 +1,15 @@
-import {
-  OrbitControls,
-  PerspectiveCamera,
-  PointerLockControls,
-  PresentationControls,
-  useKeyboardControls,
-} from '@react-three/drei';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useKeyboardControls } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
 import { RapierRigidBody, RigidBody } from '@react-three/rapier';
 import { useRef } from 'react';
 import * as THREE from 'three';
 
-const speed = 5;
-const rotationSpeed = 3;
-const LIN_VEL_SCALE = 5;
-const ANG_VEL_SCALE = 5;
+const LIN_ACC = 1; // Linear acceleration
+const ANG_ACC = 0.3; // Angular acceleration
 
+// TODO: do something on collisions - damage, sounds, game over?
+// TODO: add some particle effect in the void that helps you tell that you're rotating or moving even if there are not objects around
 // TODO; limit top velocity somehow
-// TODO: add button to stabilize movement, bring linvel and angvel to 0
 // TODO: disconnect character rotation and container rotation, lerp between the two for smoother camera movement
 // TODO: dont create Vector3 instances every frame, reuse refs instead
 export const CharacterController = ({
@@ -32,13 +25,14 @@ export const CharacterController = ({
     new THREE.Quaternion(),
   );
 
+  const linearDirection = useRef<THREE.Vector3>(new THREE.Vector3());
+  const angularDirection = useRef<THREE.Vector3>(new THREE.Vector3());
+
   const rb = useRef<RapierRigidBody>(null);
 
-  const [_, getKeys] = useKeyboardControls(); // useKeyboardControls returns [subscribe, get, api]
+  const [_, getKeys] = useKeyboardControls();
 
-  // Ensure OrbitControls' target is updated to prevent glitches if using both
-  // You can also use OrbitControls with makeDefault and update its target
-  useFrame((state, delta) => {
+  useFrame((state) => {
     const {
       forward,
       back,
@@ -48,50 +42,87 @@ export const CharacterController = ({
       rotateRight,
       up,
       down,
+      stabilize,
     } = getKeys();
 
+    const anyKeyPressed =
+      forward ||
+      back ||
+      strafeLeft ||
+      strafeRight ||
+      rotateLeft ||
+      rotateRight ||
+      up ||
+      down ||
+      stabilize;
+
+    // TODO: characterWorldRotation keeps getting skewed and character collides with things, throwing route off axis
     character.current?.getWorldQuaternion(characterWorldRotation.current);
 
-    // Calculate direction vector based on input
-    const direction = new THREE.Vector3(
-      strafeRight ? 1 : strafeLeft ? -1 : 0,
-      up ? 1 : down ? -1 : 0,
-      back ? 1 : forward ? -1 : 0,
-    )
-      .normalize()
-      .applyQuaternion(characterWorldRotation.current);
+    if (anyKeyPressed && rb.current) {
+      // Calculate direction vector based on input
+      if (stabilize) {
+        const linvel = rb.current.linvel();
+        linearDirection.current
+          .set(linvel.x, linvel.y, linvel.z)
+          .multiplyScalar(-1)
+          .normalize();
 
-    const rotationVector = new THREE.Vector3(
-      0,
-      rotateLeft ? 1 : rotateRight ? -1 : 0,
-      0,
-    );
+        const angvel = rb.current.angvel();
+        angularDirection.current
+          .set(angvel.x, angvel.y, angvel.x)
+          .multiplyScalar(-1)
+          .normalize();
 
-    // if (character.current) {
-    //   rotationTarget.current += rotationVector.y * rotationSpeed * delta;
+        const linvelMagnitude = Math.sqrt(
+          Math.pow(linvel.x, 2) + Math.pow(linvel.y, 2) + Math.pow(linvel.z, 2),
+        );
+        const angvelMagnitude = Math.sqrt(
+          Math.pow(angvel.x, 2) + Math.pow(angvel.y, 2) + Math.pow(angvel.z, 2),
+        );
 
-    //   character.current.rotation.y = THREE.MathUtils.lerp(
-    //     character.current.rotation.y,
-    //     rotationTarget.current,
-    //     0.08,
-    //   );
+        if (linvelMagnitude > 0.001) {
+          rb.current.applyImpulse(
+            linearDirection.current.multiplyScalar(
+              Math.min(linvelMagnitude, LIN_ACC),
+            ),
+            true,
+          );
+        }
+        if (angvelMagnitude > 0.001) {
+          rb.current.applyTorqueImpulse(
+            angularDirection.current.multiplyScalar(
+              Math.min(angvelMagnitude, ANG_ACC),
+            ),
+            true,
+          );
+        }
+      } else {
+        linearDirection.current
+          .set(
+            strafeRight ? 1 : strafeLeft ? -1 : 0,
+            up ? 1 : down ? -1 : 0,
+            back ? 1 : forward ? -1 : 0,
+          )
+          .normalize()
+          .applyQuaternion(characterWorldRotation.current);
 
-    //   character.current.position.x +=
-    //     -Math.sin(character.current.rotation.y) * direction.z * speed * delta +
-    //     Math.cos(character.current.rotation.y) * direction.x * speed * delta;
-    //   character.current.position.z +=
-    //     -Math.cos(character.current.rotation.y) * direction.z * speed * delta -
-    //     Math.sin(character.current.rotation.y) * direction.x * speed * delta;
-    // }
+        // TODO: do we need to apply character world rotation quaternion to this?
+        angularDirection.current.set(
+          0,
+          rotateLeft ? 1 : rotateRight ? -1 : 0,
+          0,
+        );
 
-    if (rb.current) {
-      // const linvel = rb.current.linvel();
-      // const speed = Math.sqrt(
-      //   Math.pow(linvel.x, 2) + Math.pow(linvel.y, 2) + Math.pow(linvel.z, 2),
-      // );
-      // console.log(speed, linvel);
-      rb.current.addForce(direction.multiplyScalar(LIN_VEL_SCALE), true);
-      rb.current.addTorque(rotationVector.multiplyScalar(ANG_VEL_SCALE), true);
+        rb.current.applyImpulse(
+          linearDirection.current.multiplyScalar(LIN_ACC),
+          true,
+        );
+        rb.current.applyTorqueImpulse(
+          angularDirection.current.multiplyScalar(ANG_ACC),
+          true,
+        );
+      }
     }
 
     // Move the camera to follow the character
@@ -131,8 +162,10 @@ export const CharacterController = ({
       <RigidBody
         colliders="ball"
         ref={rb}
-        linearDamping={5}
-        angularDamping={55}
+        linearDamping={0.5}
+        angularDamping={3}
+        // linearDamping={505}
+        // angularDamping={55}
       >
         <group ref={character}>
           <mesh castShadow>

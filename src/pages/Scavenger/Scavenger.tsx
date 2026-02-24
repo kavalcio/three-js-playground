@@ -49,6 +49,8 @@ export const Scavenger = () => {
       { name: 'strafeRight', keys: ['KeyE'] },
       { name: 'up', keys: ['Shift'] },
       { name: 'down', keys: ['Control'] },
+      { name: 'stabilize', keys: ['Space'] },
+      { name: 'scanArea', keys: ['KeyF'] }, // TODO: implement
     ],
     [],
   );
