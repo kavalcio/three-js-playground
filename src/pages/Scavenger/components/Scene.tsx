@@ -1,8 +1,6 @@
-import { OrbitControls, PointerLockControls, Stats } from '@react-three/drei';
+import { Stats } from '@react-three/drei';
 import { InstancedRigidBodies } from '@react-three/rapier';
-import { animate, utils } from 'animejs';
-import gsap from 'gsap';
-import { useControls } from 'leva';
+import { animate } from 'animejs';
 import GUI from 'lil-gui';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
@@ -28,54 +26,14 @@ const temp = new THREE.Object3D();
 
 // TODO: if we use 3rd person camera, the shader's proximity check should use the player position as reference, not the camera position
 
-export const Scene = () => {
+export const Scene = ({
+  canvasRef,
+}: {
+  canvasRef: React.RefObject<HTMLCanvasElement>;
+}) => {
   const instancedMeshRef = useRef<THREE.InstancedMesh>(null);
 
   const materialRef = useRef<THREE.ShaderMaterial>(null);
-
-  // const [inputs, set] = useControls(() => ({
-  //   far: {
-  //     value: FAR_START_POINT,
-  //     step: 0.1,
-  //     min: 0.1,
-  //     max: 100,
-  //     onChange: (v) => {
-  //       if (!materialRef.current) return;
-  //       materialRef.current.uniforms.uFar.value = v;
-  //     },
-  //   },
-  //   band1Range: {
-  //     value: BAND_1_RANGE,
-  //     step: 0.1,
-  //     min: 0,
-  //     max: 10,
-  //     onChange: (v) => {
-  //       if (!materialRef.current) return;
-  //       materialRef.current.uniforms.uBand1Range.value = v;
-  //     },
-  //   },
-  //   band2Range: {
-  //     value: BAND_2_RANGE,
-  //     step: 0.1,
-  //     min: 0,
-  //     max: 10,
-  //     onChange: (v) => {
-  //       if (!materialRef.current) return;
-  //       materialRef.current.uniforms.uBand2Range.value = v;
-  //     },
-  //   },
-  //   band3Range: {
-  //     value: BAND_3_RANGE,
-  //     step: 0.1,
-  //     min: 0,
-  //     max: 10,
-  //     onChange: (v) => {
-  //       if (!materialRef.current) return;
-  //       materialRef.current.uniforms.uBand3Range.value = v;
-  //     },
-  //   },
-  //   // doThing: () => console.log('hey'),
-  // }));
 
   useEffect(() => {
     const gui = new GUI();
@@ -107,9 +65,6 @@ export const Scene = () => {
       {
         'Do a thing': () => {
           if (!materialRef.current) return;
-          // gsap.to(materialRef.current.uniforms.uFar, {
-          //   value: materialRef.current.uniforms.uFar.value + 1,
-          // });
           animate(materialRef.current.uniforms.uFar, {
             // value: materialRef.current.uniforms.uFar.value + 1,
             // value: [10, 20, 10],
@@ -165,20 +120,6 @@ export const Scene = () => {
     instancedMeshRef.current.instanceMatrix.needsUpdate = true;
   }, []);
 
-  // const instances = useMemo(() => {
-  //   const arr = [];
-  //   Array.from({ length: OBSTACLE_COUNT }).forEach((i) => {
-  //     arr.push({
-  //       position: new THREE.Vector3(
-  //         (Math.random() - 0.5) * FIELD_RADIUS,
-  //         (Math.random() - 0.5) * FIELD_RADIUS,
-  //         (Math.random() - 0.5) * FIELD_RADIUS,
-  //       ),
-  //     });
-  //   });
-  //   return arr;
-  // }, []);
-
   const rbInstances = useMemo(() => {
     const instances = [];
 
@@ -229,11 +170,9 @@ export const Scene = () => {
 
       <Stats />
 
-      {/* <OrbitControls dampingFactor={0.18} makeDefault enablePan={false} /> */}
-
       <Environment />
 
-      <CharacterController materialRef={materialRef} />
+      <CharacterController materialRef={materialRef} canvasRef={canvasRef} />
 
       <InstancedRigidBodies instances={rbInstances}>
         <instancedMesh
@@ -254,24 +193,6 @@ export const Scene = () => {
           />
         </instancedMesh>
       </InstancedRigidBodies>
-      {/* {instances.map(({ position }, i) => (
-        <mesh
-          key={i as number}
-          castShadow
-          position={[position.x, position.y, position.z]}
-        >
-          <boxGeometry />
-          <shaderMaterial
-            transparent
-            side={THREE.FrontSide}
-            // side={THREE.DoubleSide}
-            vertexShader={vertexShader}
-            fragmentShader={fragmentShader}
-            uniforms={uniforms}
-            ref={materialRef}
-          />
-        </mesh>
-      ))} */}
     </>
   );
 };

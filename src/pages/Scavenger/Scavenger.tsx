@@ -1,7 +1,8 @@
 import { KeyboardControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
-import { useMemo } from 'react';
+import { ReactElement, useMemo, useRef } from 'react';
+import * as THREE from 'three';
 
 import { Scene } from './components';
 
@@ -22,7 +23,6 @@ Rendering effects:
 - Vertex snapping
 - Pixellation
 - Fade objects with distance, like fog of war
-- Maybe stipple shader
 
 Things to implement:
 - WASD controls
@@ -38,15 +38,16 @@ Things to implement:
 */
 
 export const Scavenger = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const map = useMemo(
     () => [
       // TODO: add roll, and use mouse input to change rotation
-      { name: 'forward', keys: ['ArrowUp', 'KeyW'] },
-      { name: 'back', keys: ['ArrowDown', 'KeyS'] },
-      { name: 'rotateLeft', keys: ['ArrowLeft', 'KeyA'] },
-      { name: 'rotateRight', keys: ['ArrowRight', 'KeyD'] },
-      { name: 'strafeLeft', keys: ['KeyQ'] },
-      { name: 'strafeRight', keys: ['KeyE'] },
+      { name: 'forward', keys: ['KeyW'] },
+      { name: 'back', keys: ['KeyS'] },
+      { name: 'strafeLeft', keys: ['KeyA'] },
+      { name: 'strafeRight', keys: ['KeyD'] },
+      { name: 'rollCCW', keys: ['KeyQ'] },
+      { name: 'rollCW', keys: ['KeyE'] },
       { name: 'up', keys: ['Shift'] },
       { name: 'down', keys: ['Control'] },
       { name: 'stabilize', keys: ['Space'] },
@@ -56,13 +57,14 @@ export const Scavenger = () => {
   );
   return (
     <Canvas
+      ref={canvasRef}
       shadows
       style={{ height: '100vh', width: '100vw' }}
       camera={{ fov: 45 }}
     >
       <KeyboardControls map={map}>
         <Physics debug gravity={[0, 0, 0]}>
-          <Scene />
+          <Scene canvasRef={canvasRef} />
         </Physics>
       </KeyboardControls>
     </Canvas>
