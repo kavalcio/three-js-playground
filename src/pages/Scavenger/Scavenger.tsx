@@ -1,10 +1,10 @@
 import { KeyboardControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
-import { ReactElement, useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 
-import { Scene } from './components';
+import { CharacterController, HUD, Scene } from './components';
 
 /*
 Bug-like drone traversing through a desolate landscape (need to make it feel like space/spaceship for it to fit challenge theme) digging through ruins for artifact fragments. Collecting enough fragments reveals pieces of information and lore.
@@ -25,15 +25,13 @@ Rendering effects:
 - Fade objects with distance, like fog of war
 
 Things to implement:
-- WASD controls
-- Camera following player
-- Player and environment models
-- Object-player collisions (no physics needed)
-- Animated model
-- HUD
-- Loading and restarting scene
-- Inverse kinematics legs
-
+- [x] WASD controls
+- [x] Camera following player
+- [x] Object-player collisions
+- [ ] Player and environment models
+- [ ] Animated model
+- [ ] HUD
+- [ ] Loading and restarting scene
 
 */
 
@@ -41,7 +39,6 @@ export const Scavenger = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const map = useMemo(
     () => [
-      // TODO: add roll, and use mouse input to change rotation
       { name: 'forward', keys: ['KeyW'] },
       { name: 'back', keys: ['KeyS'] },
       { name: 'strafeLeft', keys: ['KeyA'] },
@@ -51,22 +48,37 @@ export const Scavenger = () => {
       { name: 'up', keys: ['Shift'] },
       { name: 'down', keys: ['Control'] },
       { name: 'stabilize', keys: ['Space'] },
-      { name: 'scanArea', keys: ['KeyF'] }, // TODO: implement
+      { name: 'scanArea', keys: ['KeyF'] },
     ],
     [],
   );
+
+  const [health, setHealth] = useState(70);
+  const materialRef = useRef<THREE.ShaderMaterial>(null);
+
   return (
-    <Canvas
-      ref={canvasRef}
-      shadows
-      style={{ height: '100vh', width: '100vw' }}
-      camera={{ fov: 45 }}
-    >
-      <KeyboardControls map={map}>
-        <Physics debug gravity={[0, 0, 0]}>
-          <Scene canvasRef={canvasRef} />
-        </Physics>
-      </KeyboardControls>
-    </Canvas>
+    <>
+      <Canvas
+        ref={canvasRef}
+        shadows
+        style={{ height: '100vh', width: '100vw' }}
+        camera={{ fov: 45 }}
+      >
+        <KeyboardControls map={map}>
+          <Physics debug gravity={[0, 0, 0]}>
+            <Scene
+              materialRef={materialRef}
+              // canvasRef={canvasRef}
+            />
+            <CharacterController
+              materialRef={materialRef}
+              canvasRef={canvasRef}
+              setHealth={setHealth}
+            />
+          </Physics>
+        </KeyboardControls>
+      </Canvas>
+      <HUD health={health} />
+    </>
   );
 };

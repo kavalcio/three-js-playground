@@ -1,4 +1,5 @@
-import { Stats, useKeyboardControls } from '@react-three/drei';
+import { Box } from '@mui/material';
+import { Hud, Stats, useKeyboardControls } from '@react-three/drei';
 import { InstancedRigidBodies } from '@react-three/rapier';
 import { animate } from 'animejs';
 import GUI from 'lil-gui';
@@ -27,13 +28,15 @@ const temp = new THREE.Object3D();
 // TODO: if we use 3rd person camera, the shader's proximity check should use the player position as reference, not the camera position
 
 export const Scene = ({
-  canvasRef,
+  // canvasRef,
+  materialRef,
 }: {
-  canvasRef: React.RefObject<HTMLCanvasElement>;
+  // canvasRef: React.RefObject<HTMLCanvasElement>;
+  materialRef: React.RefObject<THREE.Material>;
 }) => {
   const instancedMeshRef = useRef<THREE.InstancedMesh>(null);
 
-  const materialRef = useRef<THREE.ShaderMaterial>(null);
+  // const materialRef = useRef<THREE.ShaderMaterial>(null);
 
   const isScanning = useRef<boolean>(false);
 
@@ -182,7 +185,7 @@ export const Scene = ({
 
       <Environment />
 
-      <CharacterController materialRef={materialRef} canvasRef={canvasRef} />
+      {/* <CharacterController materialRef={materialRef} canvasRef={canvasRef} /> */}
 
       <InstancedRigidBodies instances={rbInstances}>
         <instancedMesh
@@ -203,6 +206,9 @@ export const Scene = ({
           />
         </instancedMesh>
       </InstancedRigidBodies>
+      {/* <Hud>
+        <Box>bingus</Box>
+      </Hud> */}
     </>
   );
 };

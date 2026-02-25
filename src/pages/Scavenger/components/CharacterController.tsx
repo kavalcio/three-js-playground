@@ -5,7 +5,13 @@ import {
   RapierRigidBody,
   RigidBody,
 } from '@react-three/rapier';
-import { useCallback, useEffect, useRef } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react';
 import * as THREE from 'three';
 
 const LIN_ACC = 0.07; // Linear acceleration
@@ -17,9 +23,11 @@ const ANG_ACC_MOUSE = 1 / 550;
 export const CharacterController = ({
   materialRef,
   canvasRef,
+  setHealth,
 }: {
   materialRef: React.RefObject<THREE.ShaderMaterial | null>;
   canvasRef: React.RefObject<HTMLCanvasElement>;
+  setHealth: Dispatch<SetStateAction<number>>;
 }) => {
   const character = useRef<THREE.Group | null>(null);
   const cameraTarget = useRef<THREE.Group | null>(null);
@@ -135,10 +143,13 @@ export const CharacterController = ({
       );
       console.log('collision', collisionSpeed);
 
+      // TODO: doing this update causes frame freeze, i think the state update is causing some rerenders. figure it out, maybe use a ref
+      setHealth((health) => Math.max(0, health - collisionSpeed));
+
       // TODO: do something based on how hard the objects collided
       // TODO: add a period of immunity after a collision so that back to back collisions dont insta kill player
     },
-    [],
+    [setHealth],
   );
 
   useEffect(() => {
