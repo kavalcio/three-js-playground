@@ -8,13 +8,12 @@ import {
 import { useCallback, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-const LIN_ACC = 1; // Linear acceleration
-const ANG_ACC = 0.3; // Angular acceleration
+const LIN_ACC = 0.07; // Linear acceleration
+const ANG_ACC = 0.02; // Angular acceleration
+const ANG_ACC_MOUSE = 1 / 550;
 
 // TODO: do something on collisions - damage, sounds, game over?
 // TODO: add some particle effect in the void that helps you tell that you're rotating or moving even if there are not objects around
-// TODO; limit top velocity somehow
-// TODO: disconnect character rotation and container rotation, lerp between the two for smoother camera movement
 export const CharacterController = ({
   materialRef,
   canvasRef,
@@ -61,7 +60,6 @@ export const CharacterController = ({
       down ||
       stabilize;
 
-    // TODO: characterWorldRotation keeps getting skewed and character collides with things, throwing route off axis
     character.current?.getWorldQuaternion(characterWorldRotation.current);
 
     if (anyKeyPressed && rb.current) {
@@ -72,8 +70,6 @@ export const CharacterController = ({
           .set(linvel.x, linvel.y, linvel.z)
           .multiplyScalar(-1)
           .normalize();
-
-        const angvel = rb.current.angvel();
 
         const linvelMagnitude = Math.sqrt(
           Math.pow(linvel.x, 2) + Math.pow(linvel.y, 2) + Math.pow(linvel.z, 2),
@@ -97,7 +93,6 @@ export const CharacterController = ({
           .normalize()
           .applyQuaternion(characterWorldRotation.current);
 
-        // TODO: do we need to apply character world rotation quaternion to this?
         angularDirection.current
           .set(0, 0, rollCCW ? 1 : rollCW ? -1 : 0)
           .normalize()
@@ -120,15 +115,7 @@ export const CharacterController = ({
     // Rotate the camera to look at the target point in front of the character
     cameraTarget.current?.getWorldPosition(cameraLookAt.current);
     state.camera.lookAt(cameraLookAt.current);
-
     cameraPosition.current?.getWorldQuaternion(state.camera.quaternion);
-
-    // state.camera.setRotationFromQuaternion(characterWorldRotation.current);
-    // const camrot = new THREE.Quaternion();
-    // cameraPosition.current?.getWorldQuaternion(camrot);
-    // state.camera.setRotationFromQuaternion(camrot);
-
-    console.log(state.camera.rotation);
 
     // Update player position in shader uniforms for visibility range calculation
     if (materialRef.current) {
@@ -136,22 +123,6 @@ export const CharacterController = ({
         materialRef.current.uniforms.uPlayerWorldPosition.value,
       );
     }
-
-    // If using OrbitControls, keep its target synced to the player's position
-    // if (controls) controls.target.copy(character.current?.position);
-    // state.camera.lookAt(character.current.position);
-    // state.camera.position.x += -direction.x * speed * delta;
-    // state.camera.position.z += direction.z * speed * delta;
-
-    // Move the camera to follow the character
-    // if (cameraPosition.current && character.current) {
-    //   const desiredPosition = new THREE.Vector3()
-    //     .copy(character.current.position)
-    //     .add(new THREE.Vector3(0, 4, -4));
-    //   cameraPosition.current.position.lerp(desiredPosition, 0.1);
-    // }
-
-    // rb.current?.
   });
 
   const onPlayerCollisionEnter = useCallback(
@@ -180,13 +151,12 @@ export const CharacterController = ({
     const updateMousePosition = (e: MouseEvent) => {
       if (e.movementX || e.movementY) {
         const rotationImpulse = new THREE.Vector3(
-          -e.movementY / 20,
-          -e.movementX / 20,
+          -e.movementY * ANG_ACC_MOUSE,
+          -e.movementX * ANG_ACC_MOUSE,
           0,
         ).applyQuaternion(characterWorldRotation.current);
 
         rb.current!.applyTorqueImpulse(
-          // { x: -e.movementY / 20, y: -e.movementX / 20, z: 0 },
           { x: rotationImpulse.x, y: rotationImpulse.y, z: rotationImpulse.z },
           true,
         );
@@ -213,11 +183,11 @@ export const CharacterController = ({
       >
         <group ref={character}>
           <mesh castShadow>
-            <sphereGeometry />
+            <sphereGeometry args={[0.6]} />
             <meshStandardMaterial />
           </mesh>
           <group ref={cameraTarget} position-z={-2.5} />
-          <group ref={cameraPosition} position-y={2} position-z={5} />
+          <group ref={cameraPosition} position-y={1} position-z={5} />
         </group>
       </RigidBody>
     </>

@@ -1,8 +1,8 @@
-import { Stats } from '@react-three/drei';
+import { Stats, useKeyboardControls } from '@react-three/drei';
 import { InstancedRigidBodies } from '@react-three/rapier';
 import { animate } from 'animejs';
 import GUI from 'lil-gui';
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
 import fragmentShader from '../shaders/fragment.glsl';
@@ -35,6 +35,37 @@ export const Scene = ({
 
   const materialRef = useRef<THREE.ShaderMaterial>(null);
 
+  const isScanning = useRef<boolean>(false);
+
+  const scanEnvironment = useCallback(async () => {
+    if (!!isScanning.current || !materialRef.current) return;
+    isScanning.current = true;
+    await animate(materialRef.current.uniforms.uFar, {
+      // value: [10, 20, 10],
+      value: 30,
+      alternate: true,
+      loop: 1,
+    });
+    isScanning.current = false;
+    // animate(materialRef.current.uniforms.uBand1Color, {
+    //   value: [BAND_2_COLOR, BAND_1_COLOR, BAND_2_COLOR],
+    // });
+    // animate(materialRef.current.uniforms.uBand1Color.value, {
+    //   value: [BAND_2_COLOR, BAND_1_COLOR, BAND_2_COLOR],
+    //   onUpdate: (self) => console.log(self),
+    // });
+  }, []);
+
+  const [subscribe] = useKeyboardControls();
+
+  useEffect(() => {
+    // Do a scan on scanArea key press
+    const unsubscribe = subscribe(({ scanArea }) => {
+      if (scanArea) scanEnvironment();
+    });
+    return () => unsubscribe();
+  }, [subscribe, scanEnvironment]);
+
   useEffect(() => {
     const gui = new GUI();
     gui
@@ -61,32 +92,11 @@ export const Scene = ({
         if (!materialRef.current) return;
         materialRef.current.uniforms.uBand3Range.value = v;
       });
-    gui.add(
-      {
-        'Do a thing': () => {
-          if (!materialRef.current) return;
-          animate(materialRef.current.uniforms.uFar, {
-            // value: materialRef.current.uniforms.uFar.value + 1,
-            // value: [10, 20, 10],
-            value: 30,
-            alternate: true,
-            loop: 1,
-          });
-          // animate(materialRef.current.uniforms.uBand1Color, {
-          //   value: [BAND_2_COLOR, BAND_1_COLOR, BAND_2_COLOR],
-          // });
-          // animate(materialRef.current.uniforms.uBand1Color.value, {
-          //   value: [BAND_2_COLOR, BAND_1_COLOR, BAND_2_COLOR],
-          //   onUpdate: (self) => console.log(self),
-          // });
-        },
-      },
-      'Do a thing',
-    );
+    gui.add({ scan: scanEnvironment }, 'scan');
     return () => {
       gui.destroy();
     };
-  }, []);
+  }, [scanEnvironment]);
 
   const uniforms = useMemo(() => {
     return {
