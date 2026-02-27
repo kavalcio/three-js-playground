@@ -16,7 +16,7 @@ import * as THREE from 'three';
 
 const LIN_ACC = 0.07; // Linear acceleration
 const ANG_ACC = 0.02; // Angular acceleration
-const ANG_ACC_MOUSE = 1 / 550;
+const ANG_ACC_MOUSE = 1 / 1000;
 
 // TODO: do something on collisions - damage, sounds, game over?
 // TODO: add some particle effect in the void that helps you tell that you're rotating or moving even if there are not objects around

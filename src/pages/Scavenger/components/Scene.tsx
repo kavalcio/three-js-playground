@@ -32,7 +32,7 @@ export const Scene = ({
   materialRef,
 }: {
   // canvasRef: React.RefObject<HTMLCanvasElement>;
-  materialRef: React.RefObject<THREE.Material>;
+  materialRef: React.RefObject<THREE.ShaderMaterial>;
 }) => {
   const instancedMeshRef = useRef<THREE.InstancedMesh>(null);
 
@@ -57,7 +57,7 @@ export const Scene = ({
     //   value: [BAND_2_COLOR, BAND_1_COLOR, BAND_2_COLOR],
     //   onUpdate: (self) => console.log(self),
     // });
-  }, []);
+  }, [materialRef]);
 
   const [subscribe] = useKeyboardControls();
 
@@ -99,7 +99,7 @@ export const Scene = ({
     return () => {
       gui.destroy();
     };
-  }, [scanEnvironment]);
+  }, [scanEnvironment, materialRef]);
 
   const uniforms = useMemo(() => {
     return {

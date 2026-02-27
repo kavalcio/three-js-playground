@@ -15,7 +15,7 @@ Bug-like drone traversing through a desolate landscape (need to make it feel lik
 - Kind of lofi horror, like Outer Wilds. No immediate threat in the game but the feeling that you’re not alone, that there’s something right outside your field of vision.
 - Sound and ambience very important. Droning, out of tune synth soundtrack? Maybe auto generate it live
 - Fade objects with distance, like fog of war
-- Need to make lanscape feel eerie and alient, spacey. Or maybe you’re exploring the carcass of a spaceship! Space hulk style. You move through hallways and chambers, distant echoey metallic clanging and scraping sounds every now and then.
+- Need to make lanscape feel eerie and alien, spacey. Or maybe you’re exploring the carcass of a spaceship! Space hulk style. You move through hallways and chambers, distant echoey metallic clanging and scraping sounds every now and then.
 
 Rendering effects:
 - Maybe use hologram shader?
@@ -29,9 +29,20 @@ Things to implement:
 - [x] Camera following player
 - [x] Object-player collisions
 - [ ] Player and environment models
-- [ ] Animated model
-- [ ] HUD
+  - Drone design scarab-like, inspired by 40k necrons
+- [ ] Sound effects on collision
+  - Lots of reverb
+- [ ] Ambient sound
+  - Droning synth soundtrack
+  - distant echoey metallic clanging and scraping sounds
+- [ ] Better looking HUD
+  - UI looks like terminator HUD
+- [ ] Win condition
+- [ ] Lose condition
 - [ ] Loading and restarting scene
+- [ ] Postprocessing
+- [ ] World-space grid effect in the material shader. Maybe also fresnel/outline to make shapes easier to distinguish
+- [ ] Give player limited-use ability to push objects, maybe replenishable through pickups
 
 */
 
