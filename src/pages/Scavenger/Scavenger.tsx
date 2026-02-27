@@ -1,11 +1,11 @@
 import { KeyboardControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
 import { CharacterController, HUD, Scene } from './components';
-import { AudioHandler } from './utils/AudioHandler';
+import { AudioHandler, GameStateHandler } from './utils';
 
 /*
 Bug-like drone traversing through a desolate landscape (need to make it feel like space/spaceship for it to fit challenge theme) digging through ruins for artifact fragments. Collecting enough fragments reveals pieces of information and lore.
@@ -69,9 +69,9 @@ export const Scavenger = () => {
     [],
   );
 
-  const [health, setHealth] = useState(70);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const audioHandler = useRef(new AudioHandler());
+  const gameStateHandler = useRef(new GameStateHandler());
 
   useEffect(() => {
     audioHandler.current.load('bang', '/audio/hollow_metal_bang.mp3'); // https://freesound.org/people/Artninja/sounds/699994/
@@ -106,13 +106,13 @@ export const Scavenger = () => {
             <CharacterController
               materialRef={materialRef}
               canvasRef={canvasRef}
-              setHealth={setHealth}
               audioHandler={audioHandler}
+              gameStateHandler={gameStateHandler}
             />
           </Physics>
         </KeyboardControls>
       </Canvas>
-      <HUD health={health} />
+      <HUD gameStateHandler={gameStateHandler} />
     </>
   );
 };

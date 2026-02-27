@@ -1,4 +1,10 @@
-export const HUD = ({ health }: { health: number }) => {
+import { GameStateHandler } from '../utils';
+
+export const HUD = ({
+  gameStateHandler,
+}: {
+  gameStateHandler: React.RefObject<GameStateHandler>;
+}) => {
   return (
     <div
       style={{
@@ -21,8 +27,9 @@ export const HUD = ({ health }: { health: number }) => {
         }}
       >
         <div
+          ref={gameStateHandler.current.healthBarDivRef}
           style={{
-            width: `${health}%`,
+            width: '100%',
             height: '100%',
             backgroundColor: 'green',
           }}

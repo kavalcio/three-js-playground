@@ -7,7 +7,7 @@ import * as THREE from 'three';
 
 import fragmentShader from '../shaders/fragment.glsl';
 import vertexShader from '../shaders/vertex.glsl';
-import { AudioHandler } from '../utils/AudioHandler';
+import { AudioHandler } from '../utils';
 import { Environment } from './Environment';
 
 const FAR_START_POINT = 10;
