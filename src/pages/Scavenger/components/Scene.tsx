@@ -20,7 +20,7 @@ const BAND_3_RANGE = 4;
 const BAND_3_COLOR = '#5e2b2b';
 const NEAR_COLOR = '#cd7878';
 
-const OBSTACLE_COUNT = 1000;
+const OBSTACLE_COUNT = 4000;
 const FIELD_RADIUS = 100;
 const temp = new THREE.Object3D();
 
@@ -28,7 +28,7 @@ export const Scene = ({
   materialRef,
   audioHandler,
 }: {
-  materialRef: React.RefObject<THREE.ShaderMaterial>;
+  materialRef: React.RefObject<THREE.ShaderMaterial | null>;
   audioHandler: React.RefObject<AudioHandler>;
 }) => {
   const instancedMeshRef = useRef<THREE.InstancedMesh>(null);
@@ -60,7 +60,7 @@ export const Scene = ({
     //   value: [BAND_2_COLOR, BAND_1_COLOR, BAND_2_COLOR],
     //   onUpdate: (self) => console.log(self),
     // });
-  }, [materialRef]);
+  }, [materialRef, audioHandler]);
 
   const [subscribe] = useKeyboardControls();
 

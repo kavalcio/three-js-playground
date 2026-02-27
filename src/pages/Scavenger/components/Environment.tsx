@@ -30,7 +30,7 @@ export const Environment = () => {
           height={480}
         /> */}
         {/* <DitherPass /> */}
-        <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} />
+        {/* <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} /> */}
         {/* <PixellationPass granularity={3} /> */}
         <Noise opacity={0.03} />
         <Vignette eskil={false} offset={0.05} darkness={1.05} opacity={0.7} />

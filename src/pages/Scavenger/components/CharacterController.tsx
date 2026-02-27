@@ -29,7 +29,7 @@ export const CharacterController = ({
   setHealth,
 }: {
   materialRef: React.RefObject<THREE.ShaderMaterial | null>;
-  canvasRef: React.RefObject<HTMLCanvasElement>;
+  canvasRef: React.RefObject<HTMLCanvasElement | null>;
   audioHandler: React.RefObject<AudioHandler>;
   setHealth: Dispatch<SetStateAction<number>>;
 }) => {
@@ -165,7 +165,7 @@ export const CharacterController = ({
       audioHandler.current.play('bang', { reverb: 'hall', lowpass: 1500 });
 
       // TODO: doing this update causes frame freeze, i think the state update is causing some rerenders. figure it out, maybe use a ref
-      setHealth((health) => Math.max(0, health - collisionSpeed));
+      // setHealth((health) => Math.max(0, health - collisionSpeed));
 
       // TODO: do something based on how hard the objects collided
       // TODO: add a period of immunity after a collision so that back to back collisions dont insta kill player
@@ -176,12 +176,12 @@ export const CharacterController = ({
   useEffect(() => {
     // Handle pointer locking and character rotation based on mouse movement
     const requestPointerLock = async () => {
-      await canvasRef.current.requestPointerLock({
+      await canvasRef.current?.requestPointerLock({
         unadjustedMovement: true,
       });
     };
     const canvas = canvasRef.current;
-    canvas.addEventListener('click', requestPointerLock);
+    canvas?.addEventListener('click', requestPointerLock);
 
     const updateMousePosition = (e: MouseEvent) => {
       if (e.movementX || e.movementY) {
@@ -221,7 +221,7 @@ export const CharacterController = ({
     document.addEventListener('pointerlockchange', onPointerLockChange);
 
     return () => {
-      canvas.removeEventListener('click', requestPointerLock);
+      canvas?.removeEventListener('click', requestPointerLock);
       document.removeEventListener('mousemove', updateMousePosition);
       document.removeEventListener('pointerlockchange', onPointerLockChange);
     };
