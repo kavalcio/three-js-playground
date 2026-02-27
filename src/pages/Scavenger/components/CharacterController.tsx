@@ -44,6 +44,8 @@ export const CharacterController = ({
   const linearDirection = useRef<THREE.Vector3>(new THREE.Vector3());
   const angularDirection = useRef<THREE.Vector3>(new THREE.Vector3());
 
+  const wasAccelerating = useRef(false);
+
   const rb = useRef<RapierRigidBody>(null);
 
   const [_, getKeys] = useKeyboardControls();
@@ -71,6 +73,19 @@ export const CharacterController = ({
       up ||
       down ||
       stabilize;
+
+    const isAccelerating =
+      forward || back || strafeLeft || strafeRight || up || down;
+
+    // TODO: find a better sound that loops
+    if (!wasAccelerating.current && isAccelerating) {
+      // Start playing acceleration sound
+      audioHandler.current.fade('hiss', 0.04, 0.08);
+    } else if (wasAccelerating.current && !isAccelerating) {
+      // Stop playing acceleration sound
+      audioHandler.current.fade('hiss', 0.3, 0);
+    }
+    wasAccelerating.current = isAccelerating;
 
     character.current?.getWorldQuaternion(characterWorldRotation.current);
 
@@ -189,12 +204,18 @@ export const CharacterController = ({
         audioHandler.current.play('drone', {
           loop: true,
           lowpass: 500,
-          volume: 0.3,
+          volume: 0.4,
+        });
+        audioHandler.current.play('hiss', {
+          loop: true,
+          volume: 0,
+          lowpass: 5000,
         });
       } else {
         console.log('pointer: UNLOCKED');
         document.removeEventListener('mousemove', updateMousePosition);
         audioHandler.current.pause('drone');
+        audioHandler.current.pause('hiss');
       }
     };
     document.addEventListener('pointerlockchange', onPointerLockChange);

@@ -15,6 +15,7 @@ export class AudioHandler {
   pausedAt: Record<string, number>;
   startedAt: Record<string, number>;
   looping: Record<string, boolean>;
+  _synthCutoff: Record<string, number>;
 
   constructor() {
     this.audioContext = null;
@@ -25,6 +26,7 @@ export class AudioHandler {
     this.pausedAt = {};
     this.startedAt = {};
     this.looping = {};
+    this._synthCutoff = {};
   }
 
   async init(): Promise<void> {
@@ -75,17 +77,22 @@ export class AudioHandler {
       lastNode.connect(convolver);
       lastNode = convolver;
     }
-    // Low pass filter
-    if (lowpass && typeof lowpass === 'number') {
+    // Low pass filter (use default for synthesized hiss if not provided)
+    let effectiveLowpass = lowpass;
+    if (lowpass == null && this._synthCutoff[name]) {
+      effectiveLowpass = this._synthCutoff[name];
+    }
+    if (effectiveLowpass && typeof effectiveLowpass === 'number') {
       const filter = this.audioContext!.createBiquadFilter();
       filter.type = 'lowpass';
-      filter.frequency.value = lowpass;
+      filter.frequency.value = effectiveLowpass;
       lastNode.connect(filter);
       lastNode = filter;
     }
     // Gain (volume)
+    let gainNode: GainNode | null = null;
     if (typeof volume === 'number' && volume >= 0 && volume <= 2) {
-      const gainNode = this.audioContext!.createGain();
+      gainNode = this.audioContext!.createGain();
       gainNode.gain.value = volume;
       lastNode.connect(gainNode);
       lastNode = gainNode;
@@ -93,9 +100,11 @@ export class AudioHandler {
     lastNode.connect(this.audioContext!.destination);
     source.start(0, offset);
 
-    // Track for pause/resume
+    // Track for pause/resume and gain for fading
     if (!this.activeSources[name]) this.activeSources[name] = [];
     this.activeSources[name].push(source);
+    // Attach gainNode to source for fading
+    (source as any)._gainNode = gainNode;
     this.startedAt[name] = this.audioContext!.currentTime - offset;
     this.looping[name] = !!loop;
 
@@ -107,6 +116,33 @@ export class AudioHandler {
     };
 
     return source;
+  }
+
+  /**
+   * Fade the volume of a sound up/down.
+   * @param name The name of the sound
+   * @param duration Fade duration in seconds
+   * @param targetVolume Final volume (default 1.0)
+   */
+  async fade(
+    name: string,
+    duration: number = 1,
+    targetVolume: number = 1.0,
+  ): Promise<void> {
+    if (!this.activeSources[name] || !this.activeSources[name].length) return;
+    for (const source of this.activeSources[name]) {
+      const gainNode = (source as any)._gainNode as GainNode | undefined;
+      if (!gainNode) return;
+      gainNode.gain.cancelScheduledValues(this.audioContext!.currentTime);
+      gainNode.gain.setValueAtTime(
+        gainNode.gain.value,
+        this.audioContext!.currentTime,
+      );
+      gainNode.gain.linearRampToValueAtTime(
+        targetVolume,
+        this.audioContext!.currentTime + duration,
+      );
+    }
   }
 
   pause(name: string): void {
@@ -131,5 +167,40 @@ export class AudioHandler {
     this.activeSources[name].forEach((source) => source.stop());
     this.activeSources[name] = [];
     this.pausedAt[name] = 0;
+  }
+
+  /**
+   * Synthesize a looping hiss sound and store it as a buffer under the given name.
+   * @param name The name to store the hiss sound under
+   * @param duration Duration of the buffer in seconds (default 1.0 for seamless loop)
+   * @param volume Volume of the hiss (0.0 to 1.0, default 0.2)
+   * @param cutoff Lowpass filter frequency in Hz (default 3000)
+   */
+  async synthesizeHiss(
+    name: string,
+    duration: number = 1.0,
+    volume: number = 0.2,
+    cutoff: number = 3000,
+  ): Promise<void> {
+    if (!this.initialized) await this.init();
+    const sampleRate = this.audioContext!.sampleRate;
+    const length = Math.floor(sampleRate * duration);
+    const buffer = this.audioContext!.createBuffer(1, length, sampleRate);
+    const data = buffer.getChannelData(0);
+    // White noise
+    for (let i = 0; i < length; i++) {
+      data[i] = (Math.random() * 2 - 1) * volume;
+    }
+    // Optional: fade edges for seamless loop
+    // const fadeLen = Math.floor(sampleRate * 0.01); // 10ms fade
+    // for (let i = 0; i < fadeLen; i++) {
+    //   const fade = i / fadeLen;
+    //   data[i] *= fade;
+    //   data[length - 1 - i] *= fade;
+    // }
+    // Store buffer
+    this.buffers[name] = buffer;
+    // Optionally, store cutoff for default playback
+    this._synthCutoff[name] = cutoff;
   }
 }

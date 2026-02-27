@@ -40,7 +40,11 @@ export const Scene = ({
     isScanning.current = true;
 
     // Play sound
-    audioHandler.current.play('clang');
+    audioHandler.current.play('sonar', {
+      lowpass: 1000,
+      reverb: 'hall',
+      volume: 0.5,
+    });
 
     await animate(materialRef.current.uniforms.uFar, {
       // value: [10, 20, 10],

@@ -33,16 +33,13 @@ Things to implement:
   - Drone design scarab-like, inspired by 40k necrons
 - [ ] Sound effects
   - [ ] Collision (pick randomly from a pool of sounds)
-  - [ ] Acceleration
-  - [ ] Environment scan
+  - [x] Acceleration
+  - [x] Environment scan
   - [ ] Player object push ability, if it exists
   - Dont forget to do attribution for sounds used
 - [ ] Ambient sound
-  - [ ] Passive drone
+  - [x] Passive drone
   - [ ] Clanging and scraping sounds off in the distance, played at random intervals
-  - Droning synth soundtrack
-  - Lots of reverb
-  - distant echoey metallic clanging and scraping sounds
 - [ ] Better looking HUD
   - like terminator HUD
 - [ ] Win condition
@@ -77,12 +74,14 @@ export const Scavenger = () => {
   const audioHandler = useRef(new AudioHandler());
 
   useEffect(() => {
-    audioHandler.current.load('bang', '/audio/hollow_metal_bang.mp3');
-    audioHandler.current.load('clang', '/audio/metallic-clangs.mp3');
-    audioHandler.current.load('drone', '/audio/cavern-drone.wav');
+    audioHandler.current.load('bang', '/audio/hollow_metal_bang.mp3'); // https://freesound.org/people/Artninja/sounds/699994/
+    audioHandler.current.load('clang', '/audio/metallic-clangs.mp3'); // https://freesound.org/people/soundmary/sounds/194996/?
+    audioHandler.current.load('drone', '/audio/cavern-drone.wav'); // https://freesound.org/people/loscolt890/sounds/434184/
+    audioHandler.current.load('sonar', '/audio/sonar.wav'); // https://freesound.org/people/KIZILSUNGUR/sounds/70299/
+    audioHandler.current.synthesizeHiss('hiss');
     audioHandler.current.loadReverbImpulse(
       'hall',
-      '/audio/large-long-echo-hall.wav',
+      '/audio/large-long-echo-hall.wav', // https://www.voxengo.com/impulses/
     );
   }, [audioHandler]);
 
