@@ -1,5 +1,4 @@
-import { Box } from '@mui/material';
-import { Hud, Stats, useKeyboardControls } from '@react-three/drei';
+import { Stats, useKeyboardControls } from '@react-three/drei';
 import { InstancedRigidBodies } from '@react-three/rapier';
 import { animate } from 'animejs';
 import GUI from 'lil-gui';
@@ -8,7 +7,7 @@ import * as THREE from 'three';
 
 import fragmentShader from '../shaders/fragment.glsl';
 import vertexShader from '../shaders/vertex.glsl';
-import { CharacterController } from './CharacterController';
+import { AudioHandler } from '../utils/AudioHandler';
 import { Environment } from './Environment';
 
 const FAR_START_POINT = 10;
@@ -25,24 +24,24 @@ const OBSTACLE_COUNT = 1000;
 const FIELD_RADIUS = 100;
 const temp = new THREE.Object3D();
 
-// TODO: if we use 3rd person camera, the shader's proximity check should use the player position as reference, not the camera position
-
 export const Scene = ({
-  // canvasRef,
   materialRef,
+  audioHandler,
 }: {
-  // canvasRef: React.RefObject<HTMLCanvasElement>;
   materialRef: React.RefObject<THREE.ShaderMaterial>;
+  audioHandler: React.RefObject<AudioHandler>;
 }) => {
   const instancedMeshRef = useRef<THREE.InstancedMesh>(null);
-
-  // const materialRef = useRef<THREE.ShaderMaterial>(null);
 
   const isScanning = useRef<boolean>(false);
 
   const scanEnvironment = useCallback(async () => {
     if (!!isScanning.current || !materialRef.current) return;
     isScanning.current = true;
+
+    // Play sound
+    audioHandler.current.play('clang');
+
     await animate(materialRef.current.uniforms.uFar, {
       // value: [10, 20, 10],
       value: 30,

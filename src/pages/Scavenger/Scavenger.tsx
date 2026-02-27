@@ -1,10 +1,11 @@
 import { KeyboardControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 import { CharacterController, HUD, Scene } from './components';
+import { AudioHandler } from './utils/AudioHandler';
 
 /*
 Bug-like drone traversing through a desolate landscape (need to make it feel like space/spaceship for it to fit challenge theme) digging through ruins for artifact fragments. Collecting enough fragments reveals pieces of information and lore.
@@ -30,13 +31,20 @@ Things to implement:
 - [x] Object-player collisions
 - [ ] Player and environment models
   - Drone design scarab-like, inspired by 40k necrons
-- [ ] Sound effects on collision
-  - Lots of reverb
+- [ ] Sound effects
+  - [ ] Collision (pick randomly from a pool of sounds)
+  - [ ] Acceleration
+  - [ ] Environment scan
+  - [ ] Player object push ability, if it exists
+  - Dont forget to do attribution for sounds used
 - [ ] Ambient sound
+  - [ ] Passive drone
+  - [ ] Clanging and scraping sounds off in the distance, played at random intervals
   - Droning synth soundtrack
+  - Lots of reverb
   - distant echoey metallic clanging and scraping sounds
 - [ ] Better looking HUD
-  - UI looks like terminator HUD
+  - like terminator HUD
 - [ ] Win condition
 - [ ] Lose condition
 - [ ] Loading and restarting scene
@@ -66,6 +74,17 @@ export const Scavenger = () => {
 
   const [health, setHealth] = useState(70);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
+  const audioHandler = useRef(new AudioHandler());
+
+  useEffect(() => {
+    audioHandler.current.load('bang', '/audio/hollow_metal_bang.mp3');
+    audioHandler.current.load('clang', '/audio/metallic-clangs.mp3');
+    audioHandler.current.load('drone', '/audio/cavern-drone.wav');
+    audioHandler.current.loadReverbImpulse(
+      'hall',
+      '/audio/large-long-echo-hall.wav',
+    );
+  }, [audioHandler]);
 
   return (
     <>
@@ -76,15 +95,20 @@ export const Scavenger = () => {
         camera={{ fov: 45 }}
       >
         <KeyboardControls map={map}>
-          <Physics debug gravity={[0, 0, 0]}>
+          <Physics
+            // debug
+            gravity={[0, 0, 0]}
+          >
             <Scene
               materialRef={materialRef}
+              audioHandler={audioHandler}
               // canvasRef={canvasRef}
             />
             <CharacterController
               materialRef={materialRef}
               canvasRef={canvasRef}
               setHealth={setHealth}
+              audioHandler={audioHandler}
             />
           </Physics>
         </KeyboardControls>

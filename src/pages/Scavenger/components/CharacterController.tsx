@@ -14,6 +14,8 @@ import {
 } from 'react';
 import * as THREE from 'three';
 
+import { AudioHandler } from '../utils/AudioHandler';
+
 const LIN_ACC = 0.07; // Linear acceleration
 const ANG_ACC = 0.02; // Angular acceleration
 const ANG_ACC_MOUSE = 1 / 1000;
@@ -23,10 +25,12 @@ const ANG_ACC_MOUSE = 1 / 1000;
 export const CharacterController = ({
   materialRef,
   canvasRef,
+  audioHandler,
   setHealth,
 }: {
   materialRef: React.RefObject<THREE.ShaderMaterial | null>;
   canvasRef: React.RefObject<HTMLCanvasElement>;
+  audioHandler: React.RefObject<AudioHandler>;
   setHealth: Dispatch<SetStateAction<number>>;
 }) => {
   const character = useRef<THREE.Group | null>(null);
@@ -143,22 +147,27 @@ export const CharacterController = ({
       );
       console.log('collision', collisionSpeed);
 
+      audioHandler.current.play('bang', { reverb: 'hall', lowpass: 1500 });
+
       // TODO: doing this update causes frame freeze, i think the state update is causing some rerenders. figure it out, maybe use a ref
       setHealth((health) => Math.max(0, health - collisionSpeed));
 
       // TODO: do something based on how hard the objects collided
       // TODO: add a period of immunity after a collision so that back to back collisions dont insta kill player
     },
-    [setHealth],
+    [setHealth, audioHandler, audioHandler.current],
   );
 
   useEffect(() => {
     // Handle pointer locking and character rotation based on mouse movement
-    canvasRef.current.addEventListener('click', async () => {
+    const requestPointerLock = async () => {
       await canvasRef.current.requestPointerLock({
         unadjustedMovement: true,
       });
-    });
+    };
+    const canvas = canvasRef.current;
+    canvas.addEventListener('click', requestPointerLock);
+
     const updateMousePosition = (e: MouseEvent) => {
       if (e.movementX || e.movementY) {
         const rotationImpulse = new THREE.Vector3(
@@ -173,16 +182,29 @@ export const CharacterController = ({
         );
       }
     };
-    document.addEventListener('pointerlockchange', () => {
+    const onPointerLockChange = () => {
       if (document.pointerLockElement === canvasRef.current) {
         console.log('pointer: LOCKED');
         document.addEventListener('mousemove', updateMousePosition);
+        audioHandler.current.play('drone', {
+          loop: true,
+          lowpass: 500,
+          volume: 0.3,
+        });
       } else {
         console.log('pointer: UNLOCKED');
         document.removeEventListener('mousemove', updateMousePosition);
+        audioHandler.current.pause('drone');
       }
-    });
-  }, [canvasRef, rb]);
+    };
+    document.addEventListener('pointerlockchange', onPointerLockChange);
+
+    return () => {
+      canvas.removeEventListener('click', requestPointerLock);
+      document.removeEventListener('mousemove', updateMousePosition);
+      document.removeEventListener('pointerlockchange', onPointerLockChange);
+    };
+  }, [canvasRef, rb, audioHandler]);
   return (
     <>
       <RigidBody
