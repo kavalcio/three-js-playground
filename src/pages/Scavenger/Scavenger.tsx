@@ -19,11 +19,8 @@ Bug-like drone traversing through a desolate landscape (need to make it feel lik
 - Need to make lanscape feel eerie and alien, spacey. Or maybe you’re exploring the carcass of a spaceship! Space hulk style. You move through hallways and chambers, distant echoey metallic clanging and scraping sounds every now and then.
 
 Rendering effects:
-- Maybe use hologram shader?
 - Postprocessing dithering
 - Vertex snapping
-- Pixellation
-- Fade objects with distance, like fog of war
 
 Things to implement:
 - [x] WASD controls
@@ -48,7 +45,7 @@ Things to implement:
 - [ ] Postprocessing
 - [ ] Particle effects for acceleration and collisions
 - [ ] Floating particle effects for ambience
-- [ ] World-space grid effect in the material shader. Maybe also fresnel/outline to make shapes easier to distinguish
+- [x] World-space grid effect in the material shader. Maybe also fresnel/outline to make shapes easier to distinguish
 - [ ] Give player limited-use ability to push objects, maybe replenishable through pickups
 - [ ] Procedurally generate the landscape to make it more interesting and replayable. Maybe have some pre-made chunks that get stitched together in a random order each time you play
 

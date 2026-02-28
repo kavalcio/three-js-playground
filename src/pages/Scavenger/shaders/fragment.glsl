@@ -1,7 +1,6 @@
-// Check out https://github.com/mattdesl/webgl-wireframes for inspo
-
 varying float vDistToCamera;
 varying vec3 vModelPosition;
+varying vec3 vNormal;
 
 uniform float uFar;
 uniform float uBand1Range;
@@ -23,6 +22,12 @@ void main () {
   float band3StartPoint = band2StartPoint - uBand3Range;
   float interpolatedDistance;
   vec4 col;
+
+  vec3 normal = normalize(vNormal);
+  vec3 viewDirection = normalize(vModelPosition - cameraPosition);
+  float fresnel = 1. + dot(viewDirection, normal);
+  fresnel = pow(fresnel, 4.0);
+  
   // if (vDistToCamera > uFar) {
   //   col = vec4(0.);
   // } else 
@@ -43,6 +48,9 @@ void main () {
   // if (vDistToCamera <= uFar && (mod(vModelPosition.x, gridFrequency) <= gridThickness || mod(vModelPosition.y, gridFrequency) <= gridThickness)) {
   //   col = vec4(0., 0.7, 0., 1.);
   // }
+  if (vDistToCamera <= uFar) {
+    col = mix(col, vec4(1.), smoothstep(0., 7., fresnel));
+  }
  
   gl_FragColor = col;
 
