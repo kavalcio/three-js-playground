@@ -1,4 +1,4 @@
-import { useKeyboardControls } from '@react-three/drei';
+import { useGLTF, useKeyboardControls } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import {
   CollisionEnterPayload,
@@ -11,11 +11,12 @@ import * as THREE from 'three';
 import { AudioHandler, GameStateHandler } from '../utils';
 
 const LIN_ACC = 0.07; // Linear acceleration
-const ANG_ACC = 0.02; // Angular acceleration
+const ANG_ACC = 0.004; // Angular acceleration
 const ANG_ACC_MOUSE = 1 / 1000;
+const PLAYER_SCALE = 0.3;
 
-// TODO: do something on collisions - damage, sounds, game over?
-// TODO: add some particle effect in the void that helps you tell that you're rotating or moving even if there are not objects around
+const collisionSoundPool = ['bang1', 'bang2', 'bang3', 'bang4'];
+
 export const CharacterController = ({
   materialRef,
   canvasRef,
@@ -41,6 +42,8 @@ export const CharacterController = ({
   const wasAccelerating = useRef(false);
 
   const rb = useRef<RapierRigidBody>(null);
+
+  const model = useGLTF('/models/scavenger/player.glb');
 
   const [_, getKeys] = useKeyboardControls();
 
@@ -71,7 +74,6 @@ export const CharacterController = ({
     const isAccelerating =
       forward || back || strafeLeft || strafeRight || up || down;
 
-    // TODO: find a better sound that loops
     if (!wasAccelerating.current && isAccelerating) {
       // Start playing acceleration sound
       audioHandler.current.fade('hiss', 0.04, 0.08);
@@ -134,8 +136,9 @@ export const CharacterController = ({
     cameraPosition.current?.getWorldPosition(state.camera.position);
 
     // Rotate the camera to look at the target point in front of the character
-    cameraTarget.current?.getWorldPosition(cameraLookAt.current);
-    state.camera.lookAt(cameraLookAt.current);
+    // TODO: the next two lines get overridden by the getWorldQuaternion call at the end of this block
+    // cameraTarget.current?.getWorldPosition(cameraLookAt.current);
+    // state.camera.lookAt(cameraLookAt.current);
     cameraPosition.current?.getWorldQuaternion(state.camera.quaternion);
 
     // Update player position in shader uniforms for visibility range calculation
@@ -148,9 +151,6 @@ export const CharacterController = ({
 
   const onPlayerCollisionEnter = useCallback(
     ({ target, other }: CollisionEnterPayload) => {
-      const canCollide = gameStateHandler.current.handleCollision();
-      if (!canCollide) return;
-
       const tv = target.rigidBody!.linvel();
       const ov = other.rigidBody!.linvel();
       const cv = { x: tv.x - ov.x, y: tv.y - ov.y, z: tv.z - ov.z }; // collision velocity
@@ -159,14 +159,20 @@ export const CharacterController = ({
       );
       console.log('collision', collisionSpeed);
 
-      audioHandler.current.play('bang', { reverb: 'hall', lowpass: 1500 });
+      const soundToPlay =
+        collisionSoundPool[
+        Math.floor(Math.random() * collisionSoundPool.length)
+        ];
 
+      audioHandler.current.play(soundToPlay, {
+        reverb: 'hall',
+        lowpass: 2000,
+        volume: Math.max(0.2, Math.min(1.5, collisionSpeed / 10)),
+      });
+
+      const canCollide = gameStateHandler.current.handleCollision();
+      if (!canCollide) return;
       gameStateHandler.current.reduceHealth(collisionSpeed);
-      // TODO: doing this update causes frame freeze, i think the state update is causing some rerenders. figure it out, maybe use a ref
-      // setHealth((health) => Math.max(0, health - collisionSpeed));
-
-      // TODO: do something based on how hard the objects collided
-      // TODO: add a period of immunity after a collision so that back to back collisions dont insta kill player
     },
     [
       gameStateHandler,
@@ -229,21 +235,28 @@ export const CharacterController = ({
       document.removeEventListener('pointerlockchange', onPointerLockChange);
     };
   }, [canvasRef, rb, audioHandler]);
+
   return (
     <>
       <RigidBody
-        colliders="ball"
+        colliders="hull"
         ref={rb}
         linearDamping={0.5}
         angularDamping={3}
         onCollisionEnter={onPlayerCollisionEnter}
       >
         <group ref={character}>
-          <mesh castShadow>
-            <sphereGeometry args={[0.6]} />
+          <mesh
+            castShadow
+            scale={[PLAYER_SCALE, PLAYER_SCALE, PLAYER_SCALE]}
+            rotation={[0, -Math.PI / 2, 0]}
+          >
+            {/* <sphereGeometry args={[0.6]} /> */}
+            <bufferGeometry attach="geometry" {...model.nodes.ship.geometry} />
             <meshStandardMaterial />
           </mesh>
-          <group ref={cameraTarget} position-z={-2.5} />
+          {/* TODO: position of this cameratarget might not be getting used correctly */}
+          <group ref={cameraTarget} position-z={1} />
           <group ref={cameraPosition} position-y={1} position-z={5} />
         </group>
       </RigidBody>

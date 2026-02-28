@@ -27,7 +27,7 @@ const fragmentShaderAlt = `
   uniform int uThresholdMatrixWidth;
 
   const vec3 uBrightColor = vec3(0.9, 0.3, 0.5);
-  const vec3 uDarkColor = vec3(0.05, 0.1, 0.);
+  const vec3 uDarkColor = vec3(0.05, 0.05, 0.02);
 
   void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
   {

@@ -29,18 +29,18 @@ export const Environment = () => {
           bokehScale={2}
           height={480}
         /> */}
-        {/* <DitherPass /> */}
-        {/* <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} /> */}
-        {/* <PixellationPass granularity={3} /> */}
-        <Noise opacity={0.03} />
+        <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} />
+        <PixellationPass granularity={2} />
+        <Noise opacity={0.01} />
         <Vignette eskil={false} offset={0.05} darkness={1.05} opacity={0.7} />
+        {/* <DitherPass /> */}
         {/* <ToneMapping
           blendFunction={BlendFunction.NORMAL} // blend mode
           adaptive={true} // toggle adaptive luminance map usage
           resolution={256} // texture resolution of the luminance map
           middleGrey={0.6} // middle grey factor
-          maxLuminance={16.0} // maximum luminance
-          averageLuminance={1.0} // average luminance
+          maxLuminance={6.0} // maximum luminance
+          averageLuminance={24.0} // average luminance
           adaptationRate={1.0} // luminance adaptation rate
         /> */}
       </EffectComposer>

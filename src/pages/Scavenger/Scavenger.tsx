@@ -50,6 +50,7 @@ Things to implement:
 - [ ] Floating particle effects for ambience
 - [ ] World-space grid effect in the material shader. Maybe also fresnel/outline to make shapes easier to distinguish
 - [ ] Give player limited-use ability to push objects, maybe replenishable through pickups
+- [ ] Procedurally generate the landscape to make it more interesting and replayable. Maybe have some pre-made chunks that get stitched together in a random order each time you play
 
 */
 
@@ -76,7 +77,11 @@ export const Scavenger = () => {
   const gameStateHandler = useRef(new GameStateHandler());
 
   useEffect(() => {
-    audioHandler.current.load('bang', '/audio/hollow_metal_bang.mp3'); // https://freesound.org/people/Artninja/sounds/699994/
+    audioHandler.current.load('bang1', '/audio/bang1.mp3'); // https://freesound.org/people/nothayama/sounds/172497/
+    audioHandler.current.load('bang2', '/audio/bang2.mp3'); // same as above
+    audioHandler.current.load('bang3', '/audio/bang3.mp3'); // same as above
+    audioHandler.current.load('bang4', '/audio/hollow_metal_bang.mp3'); // https://freesound.org/people/Artninja/sounds/699994/
+
     audioHandler.current.load('clang', '/audio/metallic-clangs.mp3'); // https://freesound.org/people/soundmary/sounds/194996/?
     audioHandler.current.load('drone', '/audio/cavern-drone.wav'); // https://freesound.org/people/loscolt890/sounds/434184/
     audioHandler.current.load('sonar', '/audio/sonar.wav'); // https://freesound.org/people/KIZILSUNGUR/sounds/70299/
@@ -96,7 +101,7 @@ export const Scavenger = () => {
         camera={{ fov: 45 }}
       >
         <KeyboardControls map={map}>
-          <Physics debug gravity={[0, 0, 0]} colliders={false}>
+          <Physics gravity={[0, 0, 0]} colliders={false}>
             <Scene materialRef={materialRef} audioHandler={audioHandler} />
             <CharacterController
               materialRef={materialRef}
