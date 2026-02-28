@@ -1,5 +1,9 @@
-import { Stats, useKeyboardControls } from '@react-three/drei';
-import { InstancedRigidBodies } from '@react-three/rapier';
+import { Stats, useGLTF, useKeyboardControls } from '@react-three/drei';
+import {
+  BallCollider,
+  CapsuleCollider,
+  InstancedRigidBodies,
+} from '@react-three/rapier';
 import { animate } from 'animejs';
 import GUI from 'lil-gui';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
@@ -20,9 +24,43 @@ const BAND_3_RANGE = 4;
 const BAND_3_COLOR = '#5e2b2b';
 const NEAR_COLOR = '#cd7878';
 
-const OBSTACLE_COUNT = 4000;
+const OBSTACLE_COUNT = 600;
 const FIELD_RADIUS = 100;
 const temp = new THREE.Object3D();
+
+const OBSTACLE_TYPES = [
+  { key: 'asteroid_1', colliderNodes: [<BallCollider args={[0.8]} />] },
+  {
+    key: 'asteroid_2',
+    colliderNodes: [<BallCollider args={[0.8]} />],
+  },
+  { key: 'asteroid_3', colliderNodes: [<BallCollider args={[0.8]} />] },
+  {
+    key: 'asteroid_4',
+    colliderNodes: [<BallCollider args={[0.7]} position={[-0.4, 0, 0]} />],
+  },
+  {
+    key: 'asteroid_5',
+    colliderNodes: [
+      <CapsuleCollider
+        args={[0.7, 0.7]}
+        position={[0, 0.3, 0.3]}
+        rotation={[Math.PI * 0.5, 0, Math.PI * 0.8]}
+      />,
+    ],
+  },
+  {
+    key: 'asteroid_6',
+    colliderNodes: [<BallCollider args={[0.7]} position={[-0, 0.1, 0.5]} />],
+  },
+  {
+    key: 'asteroid_7',
+    colliderNodes: [
+      <BallCollider args={[0.8]} />,
+      <BallCollider args={[0.5]} position={[0.3, 1.2, 0.4]} />,
+    ],
+  },
+];
 
 export const Scene = ({
   materialRef,
@@ -34,6 +72,10 @@ export const Scene = ({
   const instancedMeshRef = useRef<THREE.InstancedMesh>(null);
 
   const isScanning = useRef<boolean>(false);
+
+  const model = useGLTF('/models/scavenger/scavenger.glb');
+
+  console.log(model);
 
   const scanEnvironment = useCallback(async () => {
     if (!!isScanning.current || !materialRef.current) return;
@@ -136,49 +178,46 @@ export const Scene = ({
     instancedMeshRef.current.instanceMatrix.needsUpdate = true;
   }, []);
 
-  const rbInstances = useMemo(() => {
-    const instances = [];
-
-    // const scale = Math.random() + 0.5;
-
-    for (let i = 0; i < OBSTACLE_COUNT; i++) {
-      instances.push({
-        key: 'instance_' + Math.random(),
-        position: [
-          Math.max(
-            Math.min(
-              ((Math.random() - 0.5) * FIELD_RADIUS) / 2,
-              FIELD_RADIUS / 2 - 1,
+  const obstacleInstances = useMemo(() => {
+    return OBSTACLE_TYPES.reduce((acc, { key }) => {
+      const instances = [];
+      for (let i = 0; i < OBSTACLE_COUNT / OBSTACLE_TYPES.length; i++) {
+        const scale = Math.random() + 0.5;
+        instances.push({
+          key: 'instance_' + Math.random(),
+          position: [
+            Math.max(
+              Math.min(
+                ((Math.random() - 0.5) * FIELD_RADIUS) / 2,
+                FIELD_RADIUS / 2 - 1,
+              ),
+              -FIELD_RADIUS / 2 + 1,
             ),
-            -FIELD_RADIUS / 2 + 1,
-          ),
-          Math.max(
-            Math.min(
-              ((Math.random() - 0.5) * FIELD_RADIUS) / 2,
-              FIELD_RADIUS / 2 - 1,
+            Math.max(
+              Math.min(
+                ((Math.random() - 0.5) * FIELD_RADIUS) / 2,
+                FIELD_RADIUS / 2 - 1,
+              ),
+              -FIELD_RADIUS / 2 + 1,
             ),
-            -FIELD_RADIUS / 2 + 1,
-          ),
-          Math.max(
-            Math.min(
-              ((Math.random() - 0.5) * FIELD_RADIUS) / 2,
-              FIELD_RADIUS / 2 - 1,
+            Math.max(
+              Math.min(
+                ((Math.random() - 0.5) * FIELD_RADIUS) / 2,
+                FIELD_RADIUS / 2 - 1,
+              ),
+              -FIELD_RADIUS / 2 + 1,
             ),
-            -FIELD_RADIUS / 2 + 1,
-          ),
-        ],
-        rotation: [Math.random(), Math.random(), Math.random()],
-        // scale: [scale],
-        // angularVelocity: [
-        //   (Math.random() - 0.5) * 10,
-        //   (Math.random() - 0.5) * 10,
-        //   (Math.random() - 0.5) * 10,
-        // ],
-      });
-    }
-
-    return instances;
+          ],
+          rotation: [Math.random(), Math.random(), Math.random()],
+          scale: [scale, scale, scale],
+        });
+      }
+      acc[key] = instances;
+      return acc;
+    }, {});
   }, []);
+
+  console.log('obstacleInstances', obstacleInstances);
 
   return (
     <>
@@ -187,31 +226,32 @@ export const Scene = ({
       <Stats />
 
       <Environment />
-
-      {/* <CharacterController materialRef={materialRef} canvasRef={canvasRef} /> */}
-
-      <InstancedRigidBodies instances={rbInstances}>
-        <instancedMesh
-          ref={instancedMeshRef}
-          args={[undefined, undefined, OBSTACLE_COUNT]}
-          count={OBSTACLE_COUNT}
-          frustumCulled={false}
-          castShadow
+      {OBSTACLE_TYPES.map(({ key: type, colliderNodes }) => (
+        <InstancedRigidBodies
+          instances={obstacleInstances[type]}
+          colliders={false}
+          colliderNodes={colliderNodes}
         >
-          <boxGeometry />
-          <shaderMaterial
-            transparent
-            side={THREE.FrontSide}
-            vertexShader={vertexShader}
-            fragmentShader={fragmentShader}
-            uniforms={uniforms}
-            ref={materialRef}
-          />
-        </instancedMesh>
-      </InstancedRigidBodies>
-      {/* <Hud>
-        <Box>bingus</Box>
-      </Hud> */}
+          <instancedMesh
+            ref={instancedMeshRef}
+            args={[undefined, undefined, obstacleInstances[type].length]}
+            count={obstacleInstances[type].length}
+            frustumCulled={false}
+            castShadow
+          >
+            <bufferGeometry attach="geometry" {...model.nodes[type].geometry} />
+            <shaderMaterial
+              transparent
+              side={THREE.FrontSide}
+              vertexShader={vertexShader}
+              fragmentShader={fragmentShader}
+              uniforms={uniforms}
+              ref={materialRef}
+            />
+            {/* <meshStandardMaterial wireframe /> */}
+          </instancedMesh>
+        </InstancedRigidBodies>
+      ))}
     </>
   );
 };

@@ -46,6 +46,8 @@ Things to implement:
 - [ ] Lose condition
 - [ ] Loading and restarting scene
 - [ ] Postprocessing
+- [ ] Particle effects for acceleration and collisions
+- [ ] Floating particle effects for ambience
 - [ ] World-space grid effect in the material shader. Maybe also fresnel/outline to make shapes easier to distinguish
 - [ ] Give player limited-use ability to push objects, maybe replenishable through pickups
 
@@ -94,15 +96,8 @@ export const Scavenger = () => {
         camera={{ fov: 45 }}
       >
         <KeyboardControls map={map}>
-          <Physics
-            // debug
-            gravity={[0, 0, 0]}
-          >
-            <Scene
-              materialRef={materialRef}
-              audioHandler={audioHandler}
-              // canvasRef={canvasRef}
-            />
+          <Physics debug gravity={[0, 0, 0]} colliders={false}>
+            <Scene materialRef={materialRef} audioHandler={audioHandler} />
             <CharacterController
               materialRef={materialRef}
               canvasRef={canvasRef}
