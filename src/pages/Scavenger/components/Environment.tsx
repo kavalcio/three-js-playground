@@ -34,15 +34,15 @@ export const Environment = () => {
         <Noise opacity={0.01} />
         <Vignette eskil={false} offset={0.05} darkness={1.05} opacity={0.7} />
         {/* <DitherPass /> */}
-        {/* <ToneMapping
+        <ToneMapping
           blendFunction={BlendFunction.NORMAL} // blend mode
           adaptive={true} // toggle adaptive luminance map usage
           resolution={256} // texture resolution of the luminance map
           middleGrey={0.6} // middle grey factor
-          maxLuminance={6.0} // maximum luminance
+          maxLuminance={56.0} // maximum luminance
           averageLuminance={24.0} // average luminance
           adaptationRate={1.0} // luminance adaptation rate
-        /> */}
+        />
       </EffectComposer>
     </>
   );

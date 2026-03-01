@@ -24,8 +24,8 @@ const BAND_3_RANGE = 4;
 const BAND_3_COLOR = '#5e2b2b';
 const NEAR_COLOR = '#cd7878';
 
-const OBSTACLE_COUNT = 600;
-const FIELD_RADIUS = 100;
+const OBSTACLE_COUNT = 2000;
+const FIELD_RADIUS = 200;
 const temp = new THREE.Object3D();
 
 const OBSTACLE_TYPES = [
@@ -182,7 +182,7 @@ export const Scene = ({
     return OBSTACLE_TYPES.reduce((acc, { key }) => {
       const instances = [];
       for (let i = 0; i < OBSTACLE_COUNT / OBSTACLE_TYPES.length; i++) {
-        const scale = Math.random() + 0.5;
+        const scale = Math.random() * 4 + 0.5;
         instances.push({
           key: 'instance_' + Math.random(),
           position: [

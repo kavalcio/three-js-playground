@@ -8,7 +8,7 @@ import { CharacterController, HUD, Scene } from './components';
 import { AudioHandler, GameStateHandler } from './utils';
 
 /*
-Bug-like drone traversing through a desolate landscape (need to make it feel like space/spaceship for it to fit challenge theme) digging through ruins for artifact fragments. Collecting enough fragments reveals pieces of information and lore.
+Bug-like drone traversing through a desolate landscape digging through ruins for artifact fragments. Collecting enough fragments reveals pieces of information and lore.
 - Drone design scarab-like, inspired by 40k necrons
 - Inverse kinematics legs
 - Render everything in wireframe (but not transparent faces)
