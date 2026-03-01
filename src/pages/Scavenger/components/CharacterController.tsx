@@ -13,7 +13,7 @@ import { AudioHandler, GameStateHandler } from '../utils';
 const LIN_ACC = 0.07; // Linear acceleration
 const ANG_ACC = 0.004; // Angular acceleration
 const ANG_ACC_MOUSE = 1 / 1000;
-const PLAYER_SCALE = 0.3;
+const PLAYER_SCALE = 0.35;
 
 const collisionSoundPool = ['bang1', 'bang2', 'bang3', 'bang4'];
 
@@ -22,11 +22,13 @@ export const CharacterController = ({
   canvasRef,
   audioHandler,
   gameStateHandler,
+  setIsPaused,
 }: {
   materialRef: React.RefObject<THREE.ShaderMaterial | null>;
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
   audioHandler: React.RefObject<AudioHandler>;
   gameStateHandler: React.RefObject<GameStateHandler>;
+  setIsPaused: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const character = useRef<THREE.Group | null>(null);
   const cameraTarget = useRef<THREE.Group | null>(null);
@@ -220,11 +222,13 @@ export const CharacterController = ({
           volume: 0,
           lowpass: 5000,
         });
+        setIsPaused(false);
       } else {
         console.log('pointer: UNLOCKED');
         document.removeEventListener('mousemove', updateMousePosition);
         audioHandler.current.pause('drone');
         audioHandler.current.pause('hiss');
+        setIsPaused(true);
       }
     };
     document.addEventListener('pointerlockchange', onPointerLockChange);
@@ -234,7 +238,7 @@ export const CharacterController = ({
       document.removeEventListener('mousemove', updateMousePosition);
       document.removeEventListener('pointerlockchange', onPointerLockChange);
     };
-  }, [canvasRef, rb, audioHandler]);
+  }, [canvasRef, rb, audioHandler, setIsPaused]);
 
   return (
     <>

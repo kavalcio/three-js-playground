@@ -1,7 +1,7 @@
 import { KeyboardControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 import { CharacterController, HUD, Scene } from './components';
@@ -29,7 +29,7 @@ Things to implement:
 - [ ] Player and environment models
   - Drone design scarab-like, inspired by 40k necrons
 - [ ] Sound effects
-  - [ ] Collision (pick randomly from a pool of sounds)
+  - [x] Collision (pick randomly from a pool of sounds)
   - [x] Acceleration
   - [x] Environment scan
   - [ ] Player object push ability, if it exists
@@ -39,26 +39,27 @@ Things to implement:
   - [ ] Clanging and scraping sounds off in the distance, played at random intervals
 - [ ] Better looking HUD
   - like terminator HUD
+  - [ ] pause menu with controls shown
+  - [ ] Loading and restarting scene
 - [ ] Win condition
 - [ ] Lose condition
-- [ ] Loading and restarting scene
 - [ ] Postprocessing
 - [ ] Particle effects for acceleration and collisions
 - [ ] Floating particle effects for ambience
 - [x] World-space grid effect in the material shader. Maybe also fresnel/outline to make shapes easier to distinguish
 - [ ] Give player limited-use ability to push objects, maybe replenishable through pickups
 - [ ] Procedurally generate the landscape to make it more interesting and replayable. Maybe have some pre-made chunks that get stitched together in a random order each time you play
-
+- [ ] azerty keyboard support
 */
 
 export const Scavenger = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const map = useMemo(
     () => [
-      { name: 'forward', keys: ['KeyW'] },
-      { name: 'back', keys: ['KeyS'] },
-      { name: 'strafeLeft', keys: ['KeyA'] },
-      { name: 'strafeRight', keys: ['KeyD'] },
+      { name: 'forward', keys: ['KeyW', 'ArrowUp'] },
+      { name: 'back', keys: ['KeyS', 'ArrowDown'] },
+      { name: 'strafeLeft', keys: ['KeyA', 'ArrowLeft'] },
+      { name: 'strafeRight', keys: ['KeyD', 'ArrowRight'] },
       { name: 'rollCCW', keys: ['KeyQ'] },
       { name: 'rollCW', keys: ['KeyE'] },
       { name: 'up', keys: ['Shift'] },
@@ -89,6 +90,8 @@ export const Scavenger = () => {
     );
   }, [audioHandler]);
 
+  const [isPaused, setIsPaused] = useState(true);
+
   return (
     <>
       <Canvas
@@ -105,11 +108,17 @@ export const Scavenger = () => {
               canvasRef={canvasRef}
               audioHandler={audioHandler}
               gameStateHandler={gameStateHandler}
+              setIsPaused={setIsPaused}
             />
           </Physics>
         </KeyboardControls>
       </Canvas>
-      <HUD gameStateHandler={gameStateHandler} />
+      <HUD
+        canvasRef={canvasRef}
+        gameStateHandler={gameStateHandler}
+        isPaused={isPaused}
+        setIsPaused={setIsPaused}
+      />
     </>
   );
 };

@@ -3,7 +3,7 @@ import React from 'react';
 const MAX_HEALTH = 30;
 
 export class GameStateHandler {
-  health: number | null;
+  public health: number | null;
   public healthBarDivRef: React.RefObject<HTMLDivElement | null>;
   private lastCollisionTime: number;
   private collisionCooldown: number;

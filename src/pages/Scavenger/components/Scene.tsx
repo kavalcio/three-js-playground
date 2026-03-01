@@ -114,37 +114,37 @@ export const Scene = ({
     return () => unsubscribe();
   }, [subscribe, scanEnvironment]);
 
-  useEffect(() => {
-    const gui = new GUI();
-    gui
-      .add({ far: FAR_START_POINT }, 'far', 0, 30, 0.1)
-      .onChange((v: number) => {
-        if (!materialRef.current) return;
-        materialRef.current.uniforms.uFar.value = v;
-      });
-    gui
-      .add({ band1Range: BAND_1_RANGE }, 'band1Range', 0, 10, 0.1)
-      .onChange((v: number) => {
-        if (!materialRef.current) return;
-        materialRef.current.uniforms.uBand1Range.value = v;
-      });
-    gui
-      .add({ band2Range: BAND_2_RANGE }, 'band2Range', 0, 10, 0.1)
-      .onChange((v: number) => {
-        if (!materialRef.current) return;
-        materialRef.current.uniforms.uBand2Range.value = v;
-      });
-    gui
-      .add({ band3Range: BAND_3_RANGE }, 'band3Range', 0, 10, 0.1)
-      .onChange((v: number) => {
-        if (!materialRef.current) return;
-        materialRef.current.uniforms.uBand3Range.value = v;
-      });
-    gui.add({ scan: scanEnvironment }, 'scan');
-    return () => {
-      gui.destroy();
-    };
-  }, [scanEnvironment, materialRef]);
+  // useEffect(() => {
+  //   const gui = new GUI();
+  //   gui
+  //     .add({ far: FAR_START_POINT }, 'far', 0, 30, 0.1)
+  //     .onChange((v: number) => {
+  //       if (!materialRef.current) return;
+  //       materialRef.current.uniforms.uFar.value = v;
+  //     });
+  //   gui
+  //     .add({ band1Range: BAND_1_RANGE }, 'band1Range', 0, 10, 0.1)
+  //     .onChange((v: number) => {
+  //       if (!materialRef.current) return;
+  //       materialRef.current.uniforms.uBand1Range.value = v;
+  //     });
+  //   gui
+  //     .add({ band2Range: BAND_2_RANGE }, 'band2Range', 0, 10, 0.1)
+  //     .onChange((v: number) => {
+  //       if (!materialRef.current) return;
+  //       materialRef.current.uniforms.uBand2Range.value = v;
+  //     });
+  //   gui
+  //     .add({ band3Range: BAND_3_RANGE }, 'band3Range', 0, 10, 0.1)
+  //     .onChange((v: number) => {
+  //       if (!materialRef.current) return;
+  //       materialRef.current.uniforms.uBand3Range.value = v;
+  //     });
+  //   gui.add({ scan: scanEnvironment }, 'scan');
+  //   return () => {
+  //     gui.destroy();
+  //   };
+  // }, [scanEnvironment, materialRef]);
 
   const uniforms = useMemo(() => {
     return {
@@ -217,13 +217,11 @@ export const Scene = ({
     }, {});
   }, []);
 
-  console.log('obstacleInstances', obstacleInstances);
-
   return (
     <>
       <color attach="background" args={[FAR_COLOR]} />
 
-      <Stats />
+      {/* <Stats /> */}
 
       <Environment />
       {OBSTACLE_TYPES.map(({ key: type, colliderNodes }) => (

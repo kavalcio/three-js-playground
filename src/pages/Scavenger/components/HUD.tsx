@@ -1,9 +1,17 @@
+import { useState } from 'react';
+
 import { GameStateHandler } from '../utils';
 
 export const HUD = ({
   gameStateHandler,
+  isPaused,
+  setIsPaused,
+  canvasRef,
 }: {
   gameStateHandler: React.RefObject<GameStateHandler>;
+  isPaused: boolean;
+  setIsPaused: React.Dispatch<React.SetStateAction<boolean>>;
+  canvasRef: React.RefObject<HTMLCanvasElement | null>;
 }) => {
   return (
     <div
@@ -13,7 +21,7 @@ export const HUD = ({
         position: 'absolute',
         top: 0,
         left: 0,
-        pointerEvents: 'none',
+        pointerEvents: isPaused ? 'auto' : 'none',
       }}
     >
       <div
@@ -35,6 +43,36 @@ export const HUD = ({
           }}
         />
       </div>
+      {isPaused && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            color: 'white',
+            fontSize: '24px',
+            flexDirection: 'column',
+          }}
+        >
+          Game Paused
+          <button
+            onClick={async () => {
+              await canvasRef.current?.requestPointerLock({
+                unadjustedMovement: true,
+              });
+              setIsPaused(false);
+            }}
+          >
+            resume
+          </button>
+        </div>
+      )}
     </div>
   );
 };
