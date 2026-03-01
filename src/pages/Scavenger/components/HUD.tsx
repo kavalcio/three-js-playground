@@ -30,7 +30,7 @@ export const HUD = ({
           bottom: 20,
           left: 20,
           width: 200,
-          height: 30,
+          height: 20,
           border: '2px solid white',
         }}
       >
@@ -39,7 +39,7 @@ export const HUD = ({
           style={{
             width: '100%',
             height: '100%',
-            backgroundColor: 'green',
+            backgroundColor: 'maroon',
           }}
         />
       </div>
@@ -71,6 +71,39 @@ export const HUD = ({
           >
             resume
           </button>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              marginTop: 20,
+              fontSize: 16,
+            }}
+          >
+            <div>
+              Move: <b>WASD</b>
+            </div>
+            <div>
+              Roll: <b>QE</b>
+            </div>
+            <div>
+              Look: <b>Mouse</b>
+            </div>
+            <div>
+              Ascend: <b>Shift</b>
+            </div>
+            <div>
+              Descend: <b>Ctrl</b>
+            </div>
+            <div>
+              Stabilize: <b>Space</b>
+            </div>
+            <div>
+              Scan: <b>F</b>
+            </div>
+            <div>
+              Pause: <b>Esc</b>
+            </div>
+          </div>
         </div>
       )}
     </div>
