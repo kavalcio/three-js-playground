@@ -6,8 +6,6 @@ varying vec2 vUv;
 uniform sampler2D uMap;
 uniform float[256] uThresholdArray;
 uniform int uThresholdMatrixWidth;
-uniform vec3 uBrightColor;
-uniform vec3 uDarkColor;
 
 void main()
 {
